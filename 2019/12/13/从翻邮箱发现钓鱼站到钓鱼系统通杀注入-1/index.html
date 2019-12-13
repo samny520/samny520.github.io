@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>从翻邮箱发现钓鱼站到钓鱼系统通杀注入 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="[TOC]
+前言故事纯属虚构！请不要相信我瞎白话。
+
+主要事情：日钓鱼网站
+主要人物：
+
+丞相
+
+丞相大表哥有传言我丞相表哥是个富二代，高富帅，简直是黑阔界的担当。U1S1 丞相表哥是挺帅，有没有钱,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">从翻邮箱发现钓鱼站到钓鱼系统通杀注入</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">从翻邮箱发现钓鱼站到钓鱼系统通杀注入</h1>
+        <div class="stuff">
+            <span>十二月 13, 2019</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>[TOC]</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>故事纯属虚构！请不要相信我瞎白话。</p>
+<p><img src="https://s2.ax1x.com/2019/12/12/Q6ojsS.jpg" alt="Q6ojsS.jpg"></p>
+<p>主要事情：日钓鱼网站</p>
+<p>主要人物：</p>
+<ul>
+<li><p>丞相</p>
+<ul>
+<li>丞相大表哥有传言我丞相表哥是个富二代，高富帅，简直是黑阔界的担当。U1S1 丞相表哥是挺帅，有没有钱我就不知道了。</li>
+</ul>
+</li>
+<li><p>05</p>
+<ul>
+<li>05是一个传说中的黑阔，相传黑阔界年龄最小的表哥。</li>
+</ul>
+</li>
+<li><p>我本人</p>
+<ul>
+<li>相对前两位表哥，我简直就是个弟弟存在。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="故事起源"><a href="#故事起源" class="headerlink" title="故事起源"></a>故事起源</h1><p>群里有小哥哥发了一个截图，这明眼人一看就是钓鱼网站呀！</p>
+<p><img src="https://s2.ax1x.com/2019/12/12/Q6TFzV.png" alt="Q6TFzV.png"><br><img src="https://s2.ax1x.com/2019/12/12/Q67jEQ.md.png" alt="Q67jEQ.md.png"><br><img src="https://imgse.com/i/Q6HEE4" alt><br><img src="https://s2.ax1x.com/2019/12/12/Q6H1bD.png" alt="Q6H1bD.png"><br><img src="https://s2.ax1x.com/2019/12/12/Q6H8Ve.png" alt="Q6H8Ve.png"><br><img src="https://s2.ax1x.com/2019/12/12/Q6HQKK.png" alt="Q6HQKK.png"></p>
+<hr>
+<h1 id="故事开始"><a href="#故事开始" class="headerlink" title="故事开始"></a>故事开始</h1><p>上述步骤是之前丞相和05表哥们在群里聊天记录，当天晚上奈何我在看追韩剧电视剧《辅助官2》。</p>
+<p><img src="https://s2.ax1x.com/2019/12/12/Q6beeS.jpg" alt="Q6beeS.jpg"></p>
+<p>嗯哼，澄清一下大家别以为是那种女生爱看的韩剧，情情爱爱的，我这里看的烧脑剧丫丫！！！（有点扯远了，大家关心不是我追剧事情，请忽略掉这段。）</p>
+<hr>
+<p>当我第二天睡醒，然后看见群里聊天记录的时候。我当时居然一笔带过的撩了一眼，摸不在意的忽略掉了。现在想想。。。。。。</p>
+<p><img src="https://s2.ax1x.com/2019/12/12/Q6H22q.png" alt="Q6H22q.png"></p>
+<p>观众：我靠，你这个作者戏真多，说了这么多，正菜还没上<em>￥**@</em>-/-/@#232</p>
+<p><img src="https://s2.ax1x.com/2019/12/12/Q6HgGn.jpg" alt="Q6HgGn.jpg"></p>
+<p>各位看好了下面就是表演时刻！</p>
+<hr>
+<p>看这个网站，看看只有这个登录框能测，其他都功能点都会跳转到腾讯的正品网站上。</p>
+<p><img src="https://sm.ms/image/7IuPWi1sHCLgcAj" alt="在这里插入图片描述"></p>
+<p>啧啧，居然禁止访问，但是你为啥你不直接banIP？sqlmap还在跑你，小破站都不用脑子想想？</p>
+<p><img src="https://i.loli.net/2019/12/12/mnZs8Tqfxdt1NuO.png" alt="15.png"></p>
+<p><img src="https://i.loli.net/2019/12/12/b8Z7Soqi34KR5Lp.gif" alt="05.gif"></p>
+<hr>
+<h1 id="故事高潮"><a href="#故事高潮" class="headerlink" title="故事高潮"></a>故事高潮</h1><p>开始对User-Agent尝试注入，一顿乱七八糟的操作之后发现没过。</p>
+<p><img src="https://i.loli.net/2019/12/12/k1sj9afIwVhTezq.png" alt="24.png"></p>
+<p><img src="https://i.loli.net/2019/12/12/6sUfZtz4C9NDaFJ.jpg" alt="011.jpg"></p>
+<p>尝试<code>X-Forwarded-For</code>  注入，</p>
+<p>在请求头里面加一行<code>X-Forwarded-For:*</code> 并构造</p>
+<p> <code>X-Forwarded-For:&#39;AND(SELECT 05 FROM (SELECT(5)))sqlpayload) -- +</code></p>
+<p> <a href="https://imgse.com/i/Q6O3QI" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/12/Q6O3QI.md.png" alt="Q6O3QI.md.png"></a></p>
+<p>然后就使用sqlmap跑就行了，<code>sqlmap.py -r 1.txt --level 4 -v 4 --batch</code> </p>
+<p><img src="https://i.loli.net/2019/12/12/M2xfwSDLVC9ZONr.png" alt="27.png"></p>
+<p>随便一提kali最新版是真的香，为何这么说呢！？直接上图</p>
+<p><img src="https://i.loli.net/2019/12/12/mRJZlWSNLHYACr8.png" alt="18.png"></p>
+<p>接下去就是常规操作，大佬们也都懂，查看数据库，表，字段最终获取账号密码。</p>
+<p><img src="https://i.loli.net/2019/12/12/3tA9W7eopsNnQ4R.png" alt="13.png"></p>
+<p>数据量有点吓人，我靠居然有这么多傻子！</p>
+<p><img src="https://i.loli.net/2019/12/12/yhumqxi369BeOvE.jpg" alt="06.jpg"><br><img src="https://i.loli.net/2019/12/12/OUFGDxy3RvsXLeI.png" alt="在这里插入图片描述"></p>
+<p>后台登录框存在POST注入 ，且用户名处 ‘ 报路径配合DBA可以getshell。<br>PS: 可惜 站点都不是DBA。</p>
+<p><img src="https://i.loli.net/2019/12/12/LY5aMzDf7ZuWbVv.png" alt="image.png"></p>
+<p>![T5QB_`R__NV_9UEWDYZ~WSH.png](<a href="https://i.loli.net/2019/12/12/Z3QzBTtKqYfRpGs.png" target="_blank" rel="noopener">https://i.loli.net/2019/12/12/Z3QzBTtKqYfRpGs.png</a>)</p>
+<hr>
+<h1 id="意外剧情"><a href="#意外剧情" class="headerlink" title="意外剧情"></a>意外剧情</h1><p><img src="https://i.loli.net/2019/12/12/PcXoCTv3mNpRGKM.png" alt="07.jpg"></p>
+<p>你不会真的以为故事就这么简单的结束了吧？<br><img src="https://i.loli.net/2019/12/12/h3ZLBq9XJjwHTIN.jpg" alt></p>
+<p>在注入成功之后，另一个激情满满的群友，发来另一种图。是另一个使用相同模板的站点，经过测试发现这个漏洞是通杀。</p>
+<p><img src="https://i.loli.net/2019/12/12/LP8ZQkOEo4zmIbF.png" alt="26.png"></p>
+<hr>
+<h1 id="番外篇"><a href="#番外篇" class="headerlink" title="番外篇"></a>番外篇</h1><p>意外的是我今天看了一眼土司论坛，发现一篇文章<a href="https://www.t00ls.net/viewthread.php?tid=54187&extra=&page=1" target="_blank" rel="noopener">文章链接</a>也是日钓鱼网站的，打开一看页面完全一样呀。<br><img src="https://i.loli.net/2019/12/12/mtBKsHrQ9xzCgXp.jpg" alt="09.jpg"><br>我看完之后，我又发现新的操作。</p>
+<p>主要大概意思如下：</p>
+<ol>
+<li>找到后台地址，注入登录框。</li>
+<li>使用长注释绕过云锁waf。</li>
+</ol>
+<p><img src="https://i.loli.net/2019/12/12/jEBOnMgyulp2Ttk.png" alt="28.png"></p>
+<hr>
+<h1 id="测试中小技巧"><a href="#测试中小技巧" class="headerlink" title="测试中小技巧"></a>测试中小技巧</h1><p>使用分块传输解码插件。<br><img src="https://i.loli.net/2019/12/12/vT87oa2VPhnYHQM.png" alt="16.png"></p>
+<p>使用sqlmap插件</p>
+<p><img src="https://i.loli.net/2019/12/12/hUy4W7bdQBMiulJ.png" alt="22.png"></p>
+<p><img src="https://i.loli.net/2019/12/12/PcXoCTv3mNpRGKM.png" alt="07.jpg"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/5146554.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/qq/001faIUs4M2zna.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#故事起源"><span class="toc-number">2.</span> <span class="toc-text">故事起源</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#故事开始"><span class="toc-number">3.</span> <span class="toc-text">故事开始</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#故事高潮"><span class="toc-number">4.</span> <span class="toc-text">故事高潮</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#意外剧情"><span class="toc-number">5.</span> <span class="toc-text">意外剧情</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#番外篇"><span class="toc-number">6.</span> <span class="toc-text">番外篇</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#测试中小技巧"><span class="toc-number">7.</span> <span class="toc-text">测试中小技巧</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
