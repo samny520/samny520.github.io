@@ -44,17 +44,11 @@
             <div class="main">
                 <div class="content">
                     <div class="timeline">
-                      <h2 class="timeline-title">归档: 23篇</h2>
+                      <h2 class="timeline-title">归档: 21篇</h2>
                       
                       
                         
                           <h3 class="timeline-subtitle">2019</h3>
-                        
-                        <div class="timeline-item">
-                          <time>2019-12-13</time>
-                          <a target="_self" href="/2019/12/13/baidu_verify_iYOhvh4o9z/">baidu_verify_iYOhvh4o9z</a>
-                        </div>
-                      
                         
                         <div class="timeline-item">
                           <time>2019-12-13</time>
@@ -65,12 +59,6 @@
                         <div class="timeline-item">
                           <time>2019-12-13</time>
                           <a target="_self" href="/2019/12/13/%E5%8E%9F-%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0-%E9%92%93%E9%B1%BC%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F/">[原]记一次渗透学习||钓鱼网站渗透</a>
-                        </div>
-                      
-                        
-                        <div class="timeline-item">
-                          <time>2019-12-12</time>
-                          <a target="_self" href="/2019/12/12/hello-world/">Hello World</a>
                         </div>
                       
                         
@@ -202,6 +190,7 @@
 <script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
 <script src="/js/plugin.js"></script>
 <script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
 
 
 <link rel="stylesheet" href="/photoswipe/photoswipe.css">
@@ -261,6 +250,48 @@
 </div>
 
 <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+<!--富强民主点击特效-->
+<script type="text/javascript"> 
+    /* 鼠标特效 */ 
+    var a_idx = 0; 
+    var b_idx = 0; 
+    /*   文字和颜色数组 */
+    var a = new Array("清水", "Samny", "我爱你","小哥哥","小姐姐","大神","太帅了！","NB","英俊","潇洒","可爱" ); 
+    var b = new Array("#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF","#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF");
+    jQuery(document).ready(function($) { 
+        $("body").click(function(e) { 
+           
+            var $i = $("<span/>").text(a[a_idx]); 
+              a_idx=parseInt(11*Math.random()); //文字随机数
+              b_idx=parseInt(10*Math.random()); //颜色随机数
+            var x = e.pageX, 
+            y = e.pageY; 
+            $i.css({ 
+                "z-index": 999, 
+                "font-size":"1.3em",            //字体大小
+                "top": y - 20, 
+                "left": x, 
+                "position": "absolute", 
+                "font-weight": "bold", 
+                "color": b[b_idx] 
+            }); 
+            $("body").append($i); 
+            $i.animate({ 
+                "top": y - 180, 
+                "opacity": 0 
+            }, 
+            1500, 
+            function() { 
+                $i.remove(); 
+            }); 
+        }); 
+    }); 
+    </script>
+    <!--富强民主点击特效-->
+
+
+
+
 
 
 </html>

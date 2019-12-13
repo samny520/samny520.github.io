@@ -99,12 +99,12 @@
         
     <div id='gitalk-container' class="comment link"
         data-ae='true'
-        data-ci=''
-        data-cs=''
-        data-r=''
-        data-o=''
-        data-a=''
-        data-d='false'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
     >查看评论</div>
 
 
@@ -130,6 +130,7 @@
 <script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
 <script src="/js/plugin.js"></script>
 <script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
 
 
 <link rel="stylesheet" href="/photoswipe/photoswipe.css">
@@ -189,6 +190,48 @@
 </div>
 
 <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+<!--富强民主点击特效-->
+<script type="text/javascript"> 
+    /* 鼠标特效 */ 
+    var a_idx = 0; 
+    var b_idx = 0; 
+    /*   文字和颜色数组 */
+    var a = new Array("清水", "Samny", "我爱你","小哥哥","小姐姐","大神","太帅了！","NB","英俊","潇洒","可爱" ); 
+    var b = new Array("#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF","#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF");
+    jQuery(document).ready(function($) { 
+        $("body").click(function(e) { 
+           
+            var $i = $("<span/>").text(a[a_idx]); 
+              a_idx=parseInt(11*Math.random()); //文字随机数
+              b_idx=parseInt(10*Math.random()); //颜色随机数
+            var x = e.pageX, 
+            y = e.pageY; 
+            $i.css({ 
+                "z-index": 999, 
+                "font-size":"1.3em",            //字体大小
+                "top": y - 20, 
+                "left": x, 
+                "position": "absolute", 
+                "font-weight": "bold", 
+                "color": b[b_idx] 
+            }); 
+            $("body").append($i); 
+            $i.animate({ 
+                "top": y - 180, 
+                "opacity": 0 
+            }, 
+            1500, 
+            function() { 
+                $i.remove(); 
+            }); 
+        }); 
+    }); 
+    </script>
+    <!--富强民主点击特效-->
+
+
+
+
 
 
 </html>

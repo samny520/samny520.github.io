@@ -47,7 +47,23 @@
         </li>
         
         <li class="  menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="https://twitter.com/FechinLi" title="Twitter" target="_blank" rel="noopener">Twitter</a>
+            <a href="https://blog.csdn.net/sun1318578251" title="CSDN" target="_blank" rel="noopener">CSDN</a>
+        </li>
+        
+        <li class="  menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="https://www.cnblogs.com/samny" title="博客园" target="_blank" rel="noopener">博客园</a>
+        </li>
+        
+        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/categories/" title="分类" target="_blank" rel="noopener">分类</a>
+        </li>
+        
+        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/archives/" title="归档" target="_blank" rel="noopener">归档</a>
+        </li>
+        
+        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/tags/" title="标签云" target="_blank" rel="noopener">标签云</a>
         </li>
         
     </ul>
@@ -66,6 +82,44 @@
         <div class="layer" data-depth="0.4">
             <img src="/img/welcome-cover.jpg" id="cover" crossorigin="anonymous" width="1920" height="1080">
         </div>
+        <!--富强民主点击特效-->
+<script type="text/javascript"> 
+    /* 鼠标特效 */ 
+    var a_idx = 0; 
+    var b_idx = 0; 
+    /*   文字和颜色数组 */
+    var a = new Array("清水", "Samny", "我爱你","小哥哥","小姐姐","大神","太帅了！","NB","英俊","潇洒","可爱" ); 
+    var b = new Array("#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF","#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF");
+    jQuery(document).ready(function($) { 
+        $("body").click(function(e) { 
+           
+            var $i = $("<span/>").text(a[a_idx]); 
+              a_idx=parseInt(11*Math.random()); //文字随机数
+              b_idx=parseInt(10*Math.random()); //颜色随机数
+            var x = e.pageX, 
+            y = e.pageY; 
+            $i.css({ 
+                "z-index": 999, 
+                "font-size":"1.3em",            //字体大小
+                "top": y - 20, 
+                "left": x, 
+                "position": "absolute", 
+                "font-weight": "bold", 
+                "color": b[b_idx] 
+            }); 
+            $("body").append($i); 
+            $i.animate({ 
+                "top": y - 180, 
+                "opacity": 0 
+            }, 
+            1500, 
+            function() { 
+                $i.remove(); 
+            }); 
+        }); 
+    }); 
+    </script>
+    <!--富强民主点击特效-->
     </div>
     <div id="vibrant">
         <svg viewBox="0 0 2880 1620" height="100%" preserveAspectRatio="xMaxYMax slice">
@@ -81,40 +135,17 @@
     </div>
     
     <div id="post0">
-        <p>十月 26, 2019</p>
-        <h2><a href="/2019/10/26/%E5%8E%9F-%E3%80%90%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E3%80%91%E6%B3%9B%E5%BE%AEecology-OA%E7%B3%BB%E7%BB%9F%E6%9F%90%E6%8E%A5%E5%8F%A3%E5%AD%98%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E/" title="[原]【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞" class="posttitle">[原]【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞</a></h2>
-        <p class="summary">泛微ecology OA系统某接口存在数据库配置信息泄露漏洞,复现的时候踩到的那些坑！经验分享与总结。      ...</p>
+        <p>十月 22, 2019</p>
+        <h2><a href="/2019/10/22/%E5%8E%9F-%E3%80%90%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7%E3%80%91sqlmap%E4%B8%8D%E4%B8%BA%E4%BA%BA%E7%9F%A5%E7%9A%84%E9%AA%9A%E6%93%8D%E4%BD%9C/" title="[原]【实战技巧】sqlmap不为人知的骚操作" class="posttitle">[原]【实战技巧】sqlmap不为人知的骚操作</a></h2>
+        <p class="summary">前言
+如果有不知道这个漏洞，可以先看看下面的文章https://xz.aliyun.com/t/6531
+0x01...</p>
     </div>
     
 </div>
 
     <div id="primary">
         
-<div class="post">
-    <a href="/2019/10/26/%E5%8E%9F-%E3%80%90%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E3%80%91%E6%B3%9B%E5%BE%AEecology-OA%E7%B3%BB%E7%BB%9F%E6%9F%90%E6%8E%A5%E5%8F%A3%E5%AD%98%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E/" title="[原]【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞">
-        <img src="/img/cover.jpg" class="cover" width="680" height="440">
-    </a>
-    <div class="else">
-        <p>十月 26, 2019</p>
-        <h3><a href="/2019/10/26/%E5%8E%9F-%E3%80%90%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E3%80%91%E6%B3%9B%E5%BE%AEecology-OA%E7%B3%BB%E7%BB%9F%E6%9F%90%E6%8E%A5%E5%8F%A3%E5%AD%98%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E/" title="[原]【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞" class="posttitle">[原]【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞</a></h3>
-        <p>泛微ecology OA系统某接口存在数据库配置信息泄露漏洞,复现的时候踩到的那些坑！经验分享与总结。                          ...</p>
-    </div>
-</div>
-
-
-<div class="post">
-    <a href="/2019/10/24/%E5%8E%9F-About-Me-%E5%85%B3%E4%BA%8E%E6%88%91/" title="[原]About Me 关于我">
-        <img src="/img/cover.jpg" class="cover" width="680" height="440">
-    </a>
-    <div class="else">
-        <p>十月 24, 2019</p>
-        <h3><a href="/2019/10/24/%E5%8E%9F-About-Me-%E5%85%B3%E4%BA%8E%E6%88%91/" title="[原]About Me 关于我" class="posttitle">[原]About Me 关于我</a></h3>
-        <p>每一个评论我都会回复的，每一个评论我都会认真去看。
-如果你觉得我这个菜逼弟弟文笔还不错的话可以点赞支持，你的一个赞就是我继续更新下去的动力和理由。如果可以...</p>
-    </div>
-</div>
-
-
 <div class="post">
     <a href="/2019/10/22/%E5%8E%9F-%E3%80%90%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7%E3%80%91sqlmap%E4%B8%8D%E4%B8%BA%E4%BA%BA%E7%9F%A5%E7%9A%84%E9%AA%9A%E6%93%8D%E4%BD%9C/" title="[原]【实战技巧】sqlmap不为人知的骚操作">
         <img src="/img/cover.jpg" class="cover" width="680" height="440">
@@ -238,6 +269,33 @@ CVE-2019-0708这个漏洞最早在今年5月份被...</p>
 </div>
 
 
+<div class="post">
+    <a href="/2019/08/13/%E5%8E%9F-%E8%AE%B0%E4%B8%80%E6%AC%A1Nessus%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98-Corrupt-Database/" title="[原]记一次Nessus无法启动问题--Corrupt Database">
+        <img src="/img/cover.jpg" class="cover" width="680" height="440">
+    </a>
+    <div class="else">
+        <p>八月 13, 2019</p>
+        <h3><a href="/2019/08/13/%E5%8E%9F-%E8%AE%B0%E4%B8%80%E6%AC%A1Nessus%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98-Corrupt-Database/" title="[原]记一次Nessus无法启动问题--Corrupt Database" class="posttitle">[原]记一次Nessus无法启动问题--Corrupt Database</a></h3>
+        <p>昨天在做项目的时候，打开Nessus的时候突然发现Nessus无法启动了。
+报出一堆的七七八八的鸟文。
+根据鸟文的说法的是：
+第一步：停止的Nessus服...</p>
+    </div>
+</div>
+
+
+<div class="post">
+    <a href="/2019/08/12/%E5%8E%9F-python%E8%84%9A%E6%9C%AC%E4%B9%8B%E6%89%B9%E9%87%8F%E6%9F%A5%E8%AF%A2%E7%BD%91%E7%AB%99%E6%9D%83%E9%87%8D/" title="[原]python脚本之批量查询网站权重">
+        <img src="/img/cover.jpg" class="cover" width="680" height="440">
+    </a>
+    <div class="else">
+        <p>八月 12, 2019</p>
+        <h3><a href="/2019/08/12/%E5%8E%9F-python%E8%84%9A%E6%9C%AC%E4%B9%8B%E6%89%B9%E9%87%8F%E6%9F%A5%E8%AF%A2%E7%BD%91%E7%AB%99%E6%9D%83%E9%87%8D/" title="[原]python脚本之批量查询网站权重" class="posttitle">[原]python脚本之批量查询网站权重</a></h3>
+        <p>爱站批量查询网站权重blog: https://blog.csdn.net/sun1318578251如果在cmd运行中得先转脚本对应的绝对路径下运行。不...</p>
+    </div>
+</div>
+
+
     </div>
     
     <div id="pager"><a href="/page/3/" class="more">加载更多</a></div>
@@ -253,6 +311,7 @@ CVE-2019-0708这个漏洞最早在今年5月份被...</p>
 <script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
 <script src="/js/plugin.js"></script>
 <script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
 
 
 <link rel="stylesheet" href="/photoswipe/photoswipe.css">
@@ -312,6 +371,48 @@ CVE-2019-0708这个漏洞最早在今年5月份被...</p>
 </div>
 
 <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+<!--富强民主点击特效-->
+<script type="text/javascript"> 
+    /* 鼠标特效 */ 
+    var a_idx = 0; 
+    var b_idx = 0; 
+    /*   文字和颜色数组 */
+    var a = new Array("清水", "Samny", "我爱你","小哥哥","小姐姐","大神","太帅了！","NB","英俊","潇洒","可爱" ); 
+    var b = new Array("#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF","#FF0000","#FF7F00"," #FFFF00","#00FF00","#00FFFF","#0000FF","#8B00FF");
+    jQuery(document).ready(function($) { 
+        $("body").click(function(e) { 
+           
+            var $i = $("<span/>").text(a[a_idx]); 
+              a_idx=parseInt(11*Math.random()); //文字随机数
+              b_idx=parseInt(10*Math.random()); //颜色随机数
+            var x = e.pageX, 
+            y = e.pageY; 
+            $i.css({ 
+                "z-index": 999, 
+                "font-size":"1.3em",            //字体大小
+                "top": y - 20, 
+                "left": x, 
+                "position": "absolute", 
+                "font-weight": "bold", 
+                "color": b[b_idx] 
+            }); 
+            $("body").append($i); 
+            $i.animate({ 
+                "top": y - 180, 
+                "opacity": 0 
+            }, 
+            1500, 
+            function() { 
+                $i.remove(); 
+            }); 
+        }); 
+    }); 
+    </script>
+    <!--富强民主点击特效-->
+
+
+
+
 
 
 </html>
