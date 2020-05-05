@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-03-24T07:39:13.367Z</updated>
+  <updated>2020-05-05T12:31:26.636Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Skipped breakpoint because it happened inside debugger evaluation</title>
+    <link href="http://yoursite.com/2020/05/05/Skipped%20breakpoint%20because%20it%20happened%20inside%20debugger%20evaluation/"/>
+    <id>http://yoursite.com/2020/05/05/Skipped%20breakpoint%20because%20it%20happened%20inside%20debugger%20evaluation/</id>
+    <published>2020-05-05T04:42:16.000Z</published>
+    <updated>2020-05-05T12:31:26.636Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp; 解决Skipped breakpoint at %code reference% because it happened inside debugger evaluation的通用方法。<br><img src="https://img-blog.csdnimg.cn/20200505201706460.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200505201642976.png" alt="在这里插入图片描述"></p><ol><li>先尝试去掉勾选 <code>Enable &#39;tostring0&#39; object view</code><blockquote><p>因为idea的debugger是默认会在内部将方法执行一次，然后回显提示数据，本意是很好，但有时候会干扰影响结果。</p></blockquote></li></ol><p><img src="https://img-blog.csdnimg.cn/20200505201349162.png" alt="在这里插入图片描述"></p><ol start="3"><li>如果还是不行就再去掉勾选<code>Enable alternative view for Collections classes</code>一定是可以的。<blockquote><p>idea默认在用户调试之前先执行<code>toString</code>方法，然后回显数据，也就是<code>“预知”</code>功能。但有时候会影响判断，但可以设置那些类中<code>toString</code>方法是是可以做<code>“预知”</code>。</p></blockquote></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&amp;emsp;&amp;emsp; 解决Skipped breakpoint at %code reference% because it happened inside debugger evaluation的通用方法。&lt;br&gt;&lt;img src=&quot;https://img-blog.
+      
+    
+    </summary>
+    
+    
+      <category term="代码审计" scheme="http://yoursite.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+      <category term="Java debugger" scheme="http://yoursite.com/tags/Java-debugger/"/>
+    
+  </entry>
   
   <entry>
     <title>白头搔更短，SSTI惹人心！</title>
@@ -489,28 +515,6 @@
       
         &lt;p&gt;前言&lt;/p&gt;
 &lt;p&gt;如果有不知道这个漏洞，可以先看看下面的文章&lt;br&gt;&lt;a href=&quot;https://xz.aliyun.com/t/6531&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://xz.aliyun.com/t/6531&lt;/a&gt;
-      
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>[原]【墨者学院 】uWSGI 漏洞复现（CVE-2018-7490）</title>
-    <link href="http://yoursite.com/2019/10/20/%E5%8E%9F-%E3%80%90%E5%A2%A8%E8%80%85%E5%AD%A6%E9%99%A2-%E3%80%91uWSGI-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%EF%BC%88CVE-2018-7490%EF%BC%89/"/>
-    <id>http://yoursite.com/2019/10/20/%E5%8E%9F-%E3%80%90%E5%A2%A8%E8%80%85%E5%AD%A6%E9%99%A2-%E3%80%91uWSGI-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%EF%BC%88CVE-2018-7490%EF%BC%89/</id>
-    <published>2019-10-20T13:16:40.000Z</published>
-    <updated>2019-12-14T04:40:36.197Z</updated>
-    
-    <content type="html"><![CDATA[<p>0x01 漏洞详情<br>uWSGI是一款Web应用程序服务器，它实现了WSGI、uwsgi和http等协议。 uWSGI 2.0.17之前版本中存在路径遍历漏洞，该漏洞源于程序没有正确的处理DOCUMENT_ROOT检测。攻击者可通过发送带有‘…’序列的特制URL请求利用该漏洞查看系统上的任意文件。<br>uWSGI 2.0.17之前版本中存在路径遍历漏洞，该漏洞源于程序没有正确的处理DOCUMENT_RO…                    <div><br>                        作者：sun1318578251 发表于 2019/10/20 21:16:40 <a href="https://blog.csdn.net/sun1318578251/article/details/102653765" target="_blank" rel="noopener">原文链接</a> <a href="https://blog.csdn.net/sun1318578251/article/details/102653765" target="_blank" rel="noopener">https://blog.csdn.net/sun1318578251/article/details/102653765</a>                    </div><br>                    <div><br>                        阅读：224                     </div></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;0x01 漏洞详情&lt;br&gt;uWSGI是一款Web应用程序服务器，它实现了WSGI、uwsgi和http等协议。 uWSGI 2.0.17之前版本中存在路径遍历漏洞，该漏洞源于程序没有正确的处理DOCUMENT_ROOT检测。攻击者可通过发送带有‘…’序列的特制URL请求利用
       
     
     </summary>
