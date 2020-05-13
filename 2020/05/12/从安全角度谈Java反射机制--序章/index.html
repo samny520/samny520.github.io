@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>从安全角度谈Java反射机制--序章 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="前言首发：https://www.sec-in.com/article/307&amp;emsp;&amp;emsp; 众所周知，Java目前影响最大的是反序列化漏洞，换一句话说Java安全是从反序列化漏洞开始，但,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">从安全角度谈Java反射机制--序章</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">从安全角度谈Java反射机制--序章</h1>
+        <div class="stuff">
+            <span>五月 12, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java%E5%8F%8D%E5%B0%84/" rel="tag">Java反射</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>首发：<a href="https://www.sec-in.com/article/307" target="_blank" rel="noopener">https://www.sec-in.com/article/307</a><br>&emsp;&emsp; 众所周知，Java目前影响最大的是反序列化漏洞，换一句话说Java安全是从反序列化漏洞开始，但反序列化漏洞又可以基于反射，这次笔者带你走进Java安全的大门。<br>&emsp;&emsp; Java反序列化的payload大多与反射机制密切相关，但仅仅是因为这个吗？答案肯定是片面的。反射作为大多数编程语言里必不可缺的组成部分，对象可以通过反射获取其他的类，类可以通过反射拿到所有的方法（包括私有方法），获取到方法可以调用。一句话，反射给Java等类似的静态语言赋予了<code>“灵魂”</code>。</p>
+<p>ps: 本文实验代码都上传<a href="https://github.com/samny520/JavaLearnVulnerability" target="_blank" rel="noopener">JavaLearnVulnerability</a>项目，为了让更多人知道，麻烦动动小手star一下。</p>
+<hr>
+<h1 id="反射基础"><a href="#反射基础" class="headerlink" title="反射基础"></a>反射基础</h1><p>&emsp;&emsp; Java反射操作的对象是<code>java.lang.Class</code>对象，如果想要使用Java反射，首先得获取Class对象。下面我们看一段代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	Class cls = Class.forName(className);</span><br><span class="line">	cls.getMethod(methodName).invoke(cls.newInstance());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>示例代码中，笔者演示几个比较重要的方法：</p>
+<ul>
+<li>获取类对象的方法<code>forName</code></li>
+<li>从获取类对象中获取方法 <code>getMethod</code></li>
+<li>执行得到获取的方法的方法<code>invoke</code></li>
+<li>实例化对象<code>newInstance</code></li>
+</ul>
+<p>ps：当然反射不可能仅仅只是这些方法，下面中笔者有提及其他的方法，当然不可能是全部都一一道来，正所谓<code>授之与鱼，不如授之于渔</code>。更多方法建议大家去看JDK文档，在线的文档百度一搜就有。</p>
+<hr>
+<h2 id="类源码"><a href="#类源码" class="headerlink" title="类源码"></a>类源码</h2><p>&emsp;&emsp; 首先笔者构造了两个类<code>students</code>和<code>classdemo1</code>。</p>
+<hr>
+<h3 id="实体类students源码："><a href="#实体类students源码：" class="headerlink" title="实体类students源码："></a>实体类<code>students</code>源码：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Students</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer age = <span class="number">18</span>;</span><br><span class="line">    <span class="keyword">private</span> String name = <span class="string">"samny"</span>;</span><br><span class="line">    <span class="keyword">private</span> Integer CardId = <span class="number">332323223</span>;</span><br><span class="line">    <span class="keyword">private</span> Integer id = <span class="number">10012</span>;</span><br><span class="line">    <span class="keyword">private</span> String hello = <span class="string">"hello world"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Students</span><span class="params">(Integer age, String name, Integer cardId, Integer id, String hello)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.CardId = cardId;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.hello = hello;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Students&#123;"</span> +</span><br><span class="line">                <span class="string">"age="</span> + age +</span><br><span class="line">                <span class="string">", name='"</span> + name + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", CardId="</span> + CardId +</span><br><span class="line">                <span class="string">", id="</span> + id +</span><br><span class="line">                <span class="string">", ags='"</span> + hello + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Students</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 以下省略set，get以及toString方法。</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="实体类classdemo1的源码："><a href="#实体类classdemo1的源码：" class="headerlink" title="实体类classdemo1的源码："></a>实体类<code>classdemo1</code>的源码：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">classdemo1</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span>  String  name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"parameterlessMethod：hello"</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print2</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        System.out.println( <span class="string">"parameterMethod: hello"</span> + name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="反射方法获取Students类。"><a href="#反射方法获取Students类。" class="headerlink" title="反射方法获取Students类。"></a>反射方法获取Students类。</h3><blockquote>
+<p>实例化所需要的类集合  Class[] classes = new Class[]{Integer.class,String.class,Integer.class,Integer.class,String.class};<br>通过构造器构造类Constructor constructor = cls.getDeclaredConstructor(classes);<br>通过调用有参构造器实例化类Object str = constructor.newInstance(18, “samny”, 32326663, 10021, “hello!!”);</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reflectmethod1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 获取对象</span></span><br><span class="line"></span><br><span class="line">            Class cls = Class.forName(<span class="string">"samny.reflection.Students"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//            // 获取构造器方法</span></span><br><span class="line">            Class[] classes = <span class="keyword">new</span> Class[]&#123;Integer<span class="class">.<span class="keyword">class</span>,<span class="title">String</span>.<span class="title">class</span>,</span></span><br><span class="line"><span class="class">                    <span class="title">Integer</span>.<span class="title">class</span>,<span class="title">Integer</span>.<span class="title">class</span>,<span class="title">String</span>.<span class="title">class</span>&#125;</span>;</span><br><span class="line">            Constructor constructor = cls.getDeclaredConstructor(classes);</span><br><span class="line"></span><br><span class="line">            Object str = constructor.newInstance(<span class="number">18</span>, <span class="string">"samny"</span>, <span class="number">32326663</span>, <span class="number">10021</span>, <span class="string">"hello!!"</span>);</span><br><span class="line">            System.out.println(str);</span><br><span class="line">            <span class="comment">// 或者下面这样子输出</span></span><br><span class="line"><span class="comment">//            System.out.println(constructor.newInstance(18, "samny", 32326663, 10021, "hello!!"));</span></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException | NoSuchMethodException |</span><br><span class="line">                IllegalAccessException | InstantiationException | InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="常规开发人员实例化类构造类demo"><a href="#常规开发人员实例化类构造类demo" class="headerlink" title="常规开发人员实例化类构造类demo"></a>常规开发人员实例化类构造类demo</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Sts</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Students students = <span class="keyword">new</span> Students();</span><br><span class="line">        students.setAge(<span class="number">18</span>);</span><br><span class="line">        students.setName(<span class="string">"samny"</span>);</span><br><span class="line">        students.setCardId(<span class="number">32336666</span>);</span><br><span class="line">        students.setId(<span class="number">1001</span>);</span><br><span class="line">        students.setAgs(<span class="string">"helloooo!!"</span>);</span><br><span class="line">        System.out.println(students.toString());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>对比一下效果是没有任何的区别，但反射操作只需要知道类名就可以完全操作类甚至是类中的私有方法之后文章会详细说明，本文不做说明。<br><img src="https://img-blog.csdnimg.cn/20200428161706305.png" alt="在这里插入图片描述"></p>
+<hr>
+<h3 id="反射调用类中的无参和有参方法。"><a href="#反射调用类中的无参和有参方法。" class="headerlink" title="反射调用类中的无参和有参方法。"></a>反射调用类中的无参和有参方法。</h3><blockquote>
+<p>之前说过的知识就不在说明<br>开头就说了，invoke是执行获取类得到方法的方法<br>但调用有参方法和无参方法有点细微的差别<br><code>getMethod</code>方法的第一个参数是类方法名称，第二个是类对象。这里先留个疑问，如果是多个类对象呢？<br><code>invoke</code>函数的第一个参数是<code>实例化</code>的类对象，第二个是参数值<br>常规方法的调用，直接<code>Class.method()</code>即可</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reflectmethod2</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class  cls = Class.forName(<span class="string">"samny.reflection.classdemo1"</span>);</span><br><span class="line">            <span class="comment">// 无参方法调用</span></span><br><span class="line">            Object ob = cls.newInstance();</span><br><span class="line"><span class="comment">//            Method mt = cls.getMethod("print"); 有没有null均可</span></span><br><span class="line">            Method mt = cls.getMethod(<span class="string">"print"</span>,<span class="keyword">null</span>);</span><br><span class="line">            mt.invoke(ob,<span class="keyword">null</span>);</span><br><span class="line">            <span class="comment">// 有参方法调用</span></span><br><span class="line">            Method mt2 = cls.getMethod(<span class="string">"print2"</span>, String<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">            mt2.invoke(ob,<span class="string">"world"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200428162508475.png" alt="在这里插入图片描述"></p>
+<hr>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>P神-Java安全漫谈-反射篇</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反射基础"><span class="toc-number">2.</span> <span class="toc-text">反射基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#类源码"><span class="toc-number">2.1.</span> <span class="toc-text">类源码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实体类students源码："><span class="toc-number">2.1.1.</span> <span class="toc-text">实体类students源码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实体类classdemo1的源码："><span class="toc-number">2.1.2.</span> <span class="toc-text">实体类classdemo1的源码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#反射方法获取Students类。"><span class="toc-number">2.1.3.</span> <span class="toc-text">反射方法获取Students类。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常规开发人员实例化类构造类demo"><span class="toc-number">2.1.4.</span> <span class="toc-text">常规开发人员实例化类构造类demo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#反射调用类中的无参和有参方法。"><span class="toc-number">2.1.5.</span> <span class="toc-text">反射调用类中的无参和有参方法。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

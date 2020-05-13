@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>从安全角度谈Java反射机制--前章 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="前言首发：https://www.sec-in.com/article/307&amp;emsp;&amp;emsp; 欢迎回来，上回说到Java反射机制基础知识，并用简单代码做了一个简单的Demo。&amp;emsp;&amp;,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">从安全角度谈Java反射机制--前章</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">从安全角度谈Java反射机制--前章</h1>
+        <div class="stuff">
+            <span>五月 12, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java%E5%8F%8D%E5%B0%84/" rel="tag">Java反射</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>首发：<a href="https://www.sec-in.com/article/307" target="_blank" rel="noopener">https://www.sec-in.com/article/307</a><br>&emsp;&emsp; 欢迎回来，上回说到Java反射机制基础知识，并用简单代码做了一个简单的Demo。<br>&emsp;&emsp;笔者从执行命令的角度来展开话题，看这篇文章大部分都是网络安全的从业者亦或者是安全规范的学习者，众所周知执行命令获取权限是安全人员追求，也是黑客最终追求。所以从执行命令的角度来展开，无疑是激发你们读者最大阅读兴趣。</p>
+<p> ps: 本文实验代码都上传<a href="https://github.com/samny520/JavaLearnVulnerability" target="_blank" rel="noopener">JavaLearnVulnerability</a>项目，为了让更多人知道，麻烦动动小手star一下。</p>
+<hr>
+<h1 id="知识补充"><a href="#知识补充" class="headerlink" title="知识补充"></a>知识补充</h1><p>&emsp;&emsp; 这里稍微补充一点小知识，对于一些0基础的读者的一些知识补充，老司机可以忽视。Java执行命令常见的有两个类<code>java.lang.Runtime</code>和<code>java.lang.ProcessBuilder</code>，通常情况下使用<code>java.lang.Runtime</code>类，个人觉得Runtime类是比ProcessBuilder好使用些。</p>
+<h2 id="windows下执行命令的几种方式"><a href="#windows下执行命令的几种方式" class="headerlink" title="windows下执行命令的几种方式"></a>windows下执行命令的几种方式</h2><ol>
+<li>Windows下调用程序 <blockquote>
+<p>Process proc =Runtime.getRuntime().exec(“exefile”);</p>
+<ol start="2">
+<li>Windows下调用系统命令<br>String [] cmd={“cmd”,”/C”,”copy exe1 exe2”};<br>Process proc =Runtime.getRuntime().exec(cmd);</li>
+<li>Windows下调用系统命令并弹出命令行窗口<br>String [] cmd={“cmd”,”/C”,”start copy exe1 exe2”};<br>Process proc =Runtime.getRuntime().exec(cmd);</li>
+</ol>
+</blockquote>
+<h2 id="Linux下执行命令的几种方式"><a href="#Linux下执行命令的几种方式" class="headerlink" title="Linux下执行命令的几种方式"></a>Linux下执行命令的几种方式</h2><ol>
+<li>Linux下调用程序<blockquote>
+<p>Process proc =Runtime.getRuntime().exec(“./exefile”);</p>
+</blockquote>
+</li>
+<li>Linux下调用系统命令<blockquote>
+<p>String [] cmd={“/bin/sh”,”-c”,”ln -s exe1 exe2”};<br>Process proc =Runtime.getRuntime().exec(cmd);</p>
+</blockquote>
+</li>
+<li>Linux下调用系统命令并弹出命令行窗口<blockquote>
+<p>String [] cmd={“/bin/sh”,”-c”,”xterm -e ln -s exe1 exe2”};<br>Process proc =Runtime.getRuntime().exec(cmd);</p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<h1 id="反射之Runtime"><a href="#反射之Runtime" class="headerlink" title="反射之Runtime"></a>反射之Runtime</h1><p><img src="https://img-blog.csdnimg.cn/20200428212414156.gif" alt="在这里插入图片描述"></p>
+<h2 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h2><blockquote>
+<p>Object ob = cls.getMethod(“getRuntime”,null).invoke(null,null);<br>返回的是一个Runtime类对象<br>前文说过，invoke第一个参数是一个<code>Object类对象</code><br>你可能好奇为什么我不直接使用<code>newInstance()</code>呢？<br>因为Runtime类中的无参构造方法是private权限，无法访问。ps：其实是有办法的，下文会说道。<br><code>getRuntime</code>方法返回的是Runtime类对象，这就是为什么有些payload会使用此方法了，而不是直接newInstanc()</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20200428204852586.png" alt="在这里插入图片描述"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Method1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//获取对象</span></span><br><span class="line">            Class cls = Class.forName(<span class="string">"java.lang.Runtime"</span>);</span><br><span class="line">            <span class="comment">//实例化对象</span></span><br><span class="line">            Object ob = cls.getMethod(<span class="string">"getRuntime"</span>,<span class="keyword">null</span>).invoke(<span class="keyword">null</span>,<span class="keyword">null</span>);</span><br><span class="line">            <span class="comment">// 反射调用执行命令</span></span><br><span class="line">            cls.getMethod("exec", String.class).invoke(ob,"calc");</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><blockquote>
+<p>前文说过java.lang.Runtime类无参构造方法是private权限无法直接调用<br>setAccessible通过反射修改方法的访问权限，强制可以访问<br> Constructor constructor = cls.getDeclaredConstructor();是获取类构造器方法的方法</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Method2</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">// 获取对象</span></span><br><span class="line">           Class cls = Class.forName(<span class="string">"java.lang.Runtime"</span>);</span><br><span class="line">           <span class="comment">// 获取构造方法</span></span><br><span class="line">           Constructor constructor = cls.getDeclaredConstructor();</span><br><span class="line">           </span><br><span class="line">           constructor.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">           <span class="comment">// 实例化对象</span></span><br><span class="line">           Object ob = constructor.newInstance();</span><br><span class="line">           Method mt = cls.getMethod(<span class="string">"exec"</span>, String<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">           mt.invoke(ob,<span class="string">"calc"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       &#125; <span class="keyword">catch</span> (ClassNotFoundException | NoSuchMethodException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="反射之ProcessBuilder"><a href="#反射之ProcessBuilder" class="headerlink" title="反射之ProcessBuilder"></a>反射之ProcessBuilder</h1><p><img src="https://img-blog.csdnimg.cn/20200428212703809.gif" alt="在这里插入图片描述"></p>
+<p>通过看JDK文档，ProcessBuilder类有两个构造方法。<br><img src="https://img-blog.csdnimg.cn/20200428204717485.png" alt="在这里插入图片描述"><br>如果分别使用反射构造方法获取实例化语句如下：</p>
+<ul>
+<li><code>Class.forName(&quot;java.lang.ProcessBuilder&quot;).getDeclaredConstructor(List.class).newInstance(Arrays.asList(&quot;calc&quot;)))</code></li>
+<li><code>Class.forName(&quot;java.lang.ProcessBuilder&quot;).getDeclaredConstructor(String.class).newInstance(&quot;calc&quot;))</code></li>
+</ul>
+<h2 id="方法一-1"><a href="#方法一-1" class="headerlink" title="方法一"></a>方法一</h2><p>&emsp;&emsp; 方法一笔者在此就提一点，<code>newInstance()</code>实例化时把所需要执行命令参数直接一并进行了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Method1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取对象</span></span><br><span class="line">            Class cls = Class.forName(<span class="string">"java.lang.ProcessBuilder"</span>);</span><br><span class="line">            <span class="comment">// 实例化对象</span></span><br><span class="line">            Object ob = cls.getDeclaredConstructor(List<span class="class">.<span class="keyword">class</span></span></span><br><span class="line">            ).newInstance(Arrays.asList("calc"));</span><br><span class="line">            <span class="comment">// 执行命令</span></span><br><span class="line">            cls.getMethod(<span class="string">"start"</span>).invoke(ob,<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException | NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="方法二-1"><a href="#方法二-1" class="headerlink" title="方法二"></a>方法二</h2><p>&emsp;&emsp; 方法二使用第二种构造方法，可变长参数(<code>String...</code>表示参数长度不确定)。那么对于反射来说，如果要获取目标函数里包含的可变长参数，可直接视为数组。因此只需要将<code>String [].class</code>传给构造方法即可，但在调用<code>newInstance()</code>实例化方法时，不能直接传一个一维数组<code>String[]{“calc&quot;}</code>，而是应该传入一个二维数组<code>String[][]calc</code>。因为<code>newInstance()</code>函数本身接收的是一个可变长参数，我们传给<code>ProcessBuilder</code>的也是一个可变长参数，二者叠加由一维数组变成了二维数组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Method2</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取对象</span></span><br><span class="line">            Class cls = Class.forName(<span class="string">"java.lang.ProcessBuilder"</span>);</span><br><span class="line">            <span class="comment">// 实例化对象</span></span><br><span class="line">            </span><br><span class="line">            String[][] cls2 = <span class="keyword">new</span> String[][]&#123;&#123;<span class="string">"calc"</span>&#125;&#125;;</span><br><span class="line">            Object ob = cls.getConstructor(String[]<span class="class">.<span class="keyword">class</span>).<span class="title">newInstance</span>(<span class="title">cls2</span>)</span>;</span><br><span class="line">            <span class="comment">//执行命令</span></span><br><span class="line">            cls.getMethod(<span class="string">"start"</span>).invoke(ob,<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException | NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://xz.aliyun.com/t/7029#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/7029#toc-3</a><br><a href="https://javasec.org/javase/Reflection/Reflection.html" target="_blank" rel="noopener">https://javasec.org/javase/Reflection/Reflection.html</a><br>JDK文档<br>Java安全漫谈-反射篇 –P牛著。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#知识补充"><span class="toc-number">2.</span> <span class="toc-text">知识补充</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#windows下执行命令的几种方式"><span class="toc-number">2.1.</span> <span class="toc-text">windows下执行命令的几种方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux下执行命令的几种方式"><span class="toc-number">2.2.</span> <span class="toc-text">Linux下执行命令的几种方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反射之Runtime"><span class="toc-number">3.</span> <span class="toc-text">反射之Runtime</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#方法一"><span class="toc-number">3.1.</span> <span class="toc-text">方法一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法二"><span class="toc-number">3.2.</span> <span class="toc-text">方法二</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反射之ProcessBuilder"><span class="toc-number">4.</span> <span class="toc-text">反射之ProcessBuilder</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#方法一-1"><span class="toc-number">4.1.</span> <span class="toc-text">方法一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法二-1"><span class="toc-number">4.2.</span> <span class="toc-text">方法二</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
