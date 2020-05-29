@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>漫谈Java反序列化 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="前言&amp;emsp;&amp;emsp; Java的反序列化漏洞探索出了Java安全的新纪元。开发人员为什么要反序列化呢？众所周知，用户和服务器进行交互时，会传输一下数据，数据传输前需要格式化，将数据转化成服务,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">漫谈Java反序列化</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">漫谈Java反序列化</h1>
+        <div class="stuff">
+            <span>五月 20, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">反序列化</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp; Java的反序列化漏洞探索出了Java安全的新纪元。开发人员为什么要反序列化呢？众所周知，用户和服务器进行交互时，会传输一下数据，数据传输前需要格式化，将数据转化成服务器认可的格式。比例：<code>JSON</code>、<code>XML</code>。<br>&emsp;&emsp; <code>JSON</code>和<code>XML</code>的优点是兼容性比较强，是通用的数据交互格式。缺点是不支持复杂的数据类型。故开发人员面对需要复杂的数据类型是将数据反序列化，以来达数据交互的目的。<br>&emsp;&emsp;  Java程序在运行时，会产生大量的数据。有些时候，我们需要将内存中的对象信息存储到磁盘或者通过网络发送给第三者，此时，就需要对对象进行序列化操作。当我们需要从磁盘或网络读取存储的信息时，即为反序列化。简单理解，序列化即将内存中的对象信息转换为字节流并存储在磁盘或通过网络发送。反序列化，即从磁盘或网络读取信息，直接转换为内存对象。</p>
+<p>PS: 为避免代码太长而导致的阅读效果，故将完整的实验代码全部已经上传至 <a href="https://github.com/SummerSec/JavaLearnVulnerability" target="_blank" rel="noopener">https://github.com/SummerSec/JavaLearnVulnerability</a></p>
+<hr>
+<h1 id="反序列化demo"><a href="#反序列化demo" class="headerlink" title="反序列化demo"></a>反序列化demo</h1><h2 id="知识补充"><a href="#知识补充" class="headerlink" title="知识补充"></a>知识补充</h2><p><strong>反序列化漏洞基本条件</strong></p>
+<ol>
+<li>Java反序列化类一定要实现<code>Serializabe</code>接口</li>
+<li>所有的Java反序列化漏洞都是用通过<code>readObject()</code>实现</li>
+<li>所有反序列化数据都是要通过<code>writeObject()</code>函数实现<br><img src="https://img-blog.csdnimg.cn/20200517185517421.png" alt="在这里插入图片描述"></li>
+</ol>
+<hr>
+<p><strong>SerialVersionUID</strong><br>&emsp;&emsp; Java的序列化的机制通过判断serialVersionUID来验证版本的一致性。在反序列化的时候与本地的类的serialVersionUID进行比较，一致则可以进行反序列化，不一致则会抛出异常InvalidCastException。IDEA是可以自动生成一个serialVersionUID，需要设置如下。<br><img src="https://img-blog.csdnimg.cn/20200514152044147.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200514153405922.png" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="案例DEMO"><a href="#案例DEMO" class="headerlink" title="案例DEMO"></a>案例DEMO</h2><p><code>javaSerializableDemo1</code>源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">javaSerializableDemo1</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 序列版本ID</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">1877568378649280904L</span>;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> Integer IdCard;</span><br><span class="line">    <span class="keyword">private</span> Date time;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">javaSerializableDemo1</span><span class="params">(String username, String password, Integer age, Integer idCard, Date time)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.password = password;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">        IdCard = idCard;</span><br><span class="line">        <span class="keyword">this</span>.time = time;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 省略一部分set、get方法。</span></span><br><span class="line">   </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"javaSerializableDemo&#123;"</span> +</span><br><span class="line">                <span class="string">"username='"</span> + username + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", password='"</span> + password + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", age="</span> + age +</span><br><span class="line">                <span class="string">", IdCard="</span> + IdCard +</span><br><span class="line">                <span class="string">", time="</span> + time +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>javaUnSerizableDemo1</code>源码，一般情况下<code>对象写入流writerObject()</code>和<code>对象的输出流readObject</code>是分开实现的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">javaUnSerializableDemo1</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        javaSerializableDemo1 demo = <span class="keyword">new</span> javaSerializableDemo1(<span class="string">"Summer"</span>,<span class="string">"6666888"</span>,<span class="number">18</span>,<span class="number">666666</span>,<span class="keyword">new</span> Date());</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"serializable: "</span> + demo);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将对象写入文件中</span></span><br><span class="line">        ObjectOutputStream oos = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(<span class="string">"tempFile.txt"</span>);</span><br><span class="line">            oos = <span class="keyword">new</span> ObjectOutputStream(fileOutputStream);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 序列化</span></span><br><span class="line">            oos.writeObject(demo);</span><br><span class="line"></span><br><span class="line">            oos.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 读文件</span></span><br><span class="line">        File file = <span class="keyword">new</span> File(<span class="string">"tempFile.txt"</span>);</span><br><span class="line">        ObjectInputStream ois = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">            ois = <span class="keyword">new</span> ObjectInputStream(fileInputStream);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 反序列化</span></span><br><span class="line">            javaSerializableDemo1 newdemo = (javaSerializableDemo1) ois.readObject();</span><br><span class="line">            System.out.println(<span class="string">"unserializable: "</span> + newdemo);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/2020051416583311.png" alt="在这里插入图片描述"><br>由于是字节码，直接打开是乱码。<br><img src="https://img-blog.csdnimg.cn/20200514165909506.png" alt="在这里插入图片描述"><br>用vscode插件<code>hexdump</code>查看生成的文件。<br><img src="https://img-blog.csdnimg.cn/20200514170059910.png" alt="在这里插入图片描述"><br>或者使用<code>SerializationDumper.jar</code>工具，效果如下部分截图。<br>下载地址：<a href="https://github.com/NickstaDB/SerializationDumper" target="_blank" rel="noopener">https://github.com/NickstaDB/SerializationDumper</a><br><img src="https://img-blog.csdnimg.cn/2020051417045964.png" alt="在这里插入图片描述"></p>
+<p>&emsp;&emsp; 这个DEMO中实现了笔者前文所提及到的三要素，但似乎你还看不出来漏洞的存在的地方。</p>
+<hr>
+<h2 id="漏洞DEMO"><a href="#漏洞DEMO" class="headerlink" title="漏洞DEMO"></a>漏洞DEMO</h2><p>&emsp;&emsp; 下面会以一个存在的漏洞demo，带你更进一步理解Java反序列化的危害。<br><strong>漏洞源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VulnerabilityClass</span> <span class="keyword">implements</span> <span class="title">summer</span>.<span class="title">serializable</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">5550839108669505813L</span>;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    <span class="keyword">private</span> Date date;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream ois)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">        ois.defaultReadObject();</span><br><span class="line">        <span class="comment">// 加入执行命令代码</span></span><br><span class="line">        Runtime.getRuntime().exec(<span class="string">"calc"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">VulnerabilityClass</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 省略set、get方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"VulnerabilityClass&#123;"</span> +</span><br><span class="line">                <span class="string">"username='"</span> + username + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", password='"</span> + password + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", date="</span> + date +</span><br><span class="line">                <span class="string">", id="</span> + id +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">VulnerabilityClass</span><span class="params">(String username, String password, Date date, Integer id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.password = password;</span><br><span class="line">        <span class="keyword">this</span>.date = date;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>漏洞利用</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       <span class="comment">// 调用序列化方法</span></span><br><span class="line">        Serilizable();</span><br><span class="line">        <span class="comment">// 反序列化方法</span></span><br><span class="line">        UnSerializable();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Serilizable</span><span class="params">()</span></span>&#123;</span><br><span class="line">        VulnerabilityClass clazz = <span class="keyword">new</span> VulnerabilityClass();</span><br><span class="line">        clazz.setDate(<span class="keyword">new</span> Date());</span><br><span class="line">        clazz.setId(<span class="number">1314520</span>);</span><br><span class="line">        clazz.setPassword(<span class="string">"summer6666"</span>);</span><br><span class="line">        clazz.setUsername(<span class="string">"summer"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 写文件</span></span><br><span class="line">        File file = <span class="keyword">new</span> File(<span class="string">"tempFile3"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(<span class="keyword">new</span> FileOutputStream(file));</span><br><span class="line">            oos.writeObject(clazz);</span><br><span class="line">            System.out.println(<span class="string">"serilizable: "</span> + clazz);</span><br><span class="line">            oos.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">UnSerializable</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        File file = <span class="keyword">new</span> File(<span class="string">"tempFile3"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> FileInputStream(file));</span><br><span class="line">            VulnerabilityClass clazz = (VulnerabilityClass) ois.readObject();</span><br><span class="line">            System.out.println(<span class="string">"unserializable: "</span> + clazz);</span><br><span class="line">            ois.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> VulnerabilityClass;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200516145552671.gif" alt="在这里插入图片描述"></p>
+<p><strong>漏洞成因分析</strong></p>
+<p>&emsp;&emsp; 在漏洞源码中的<code>readObject()</code>方法，第一行是默认的反序列化方法<code>defaultReadObject()</code>，但是下面一行是添加了<code>Runtime.getRuntime().exec(&quot;calc&quot;)</code>，虽然这里简单粗暴的将执行命令的代码写入了方法。实际的情况下，开发人员是不会这么做，笔者这里简单展示一下漏洞原理。实际情况都是攻击者通过各种伪造方法、修改、重定义等方法最后到达执行命令。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream ois)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">        ois.defaultReadObject();</span><br><span class="line">        <span class="comment">// 加入执行命令代码</span></span><br><span class="line">        Runtime.getRuntime().exec(<span class="string">"calc"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>&emsp;&emsp; 反序列化漏洞三要素实现<code>Serializabe</code>接口、<code>readObject()</code>、<code>writeObject()</code>方法，缺一不可。但试想一下，如果用户控制了<code>readObject</code>亦或者是<code>writeObject</code>方法，那么是不是可以造成反序列化漏洞呢？其实也有一个问题控制不了<code>writeObject</code>方法，因为其在服务器内，或者是Java应用内，我们不可能去修改内部代码。所以说只能通过控制<code>readObject</code>方法，这里的控制得打双引号。问题来了，前人大佬们已经研究出来许多控制方法，经典<code>AnnotationInvocationHandler</code>和<code>BadAttributeValueExpException</code>类均满足条件，下篇文章带你分析。<br>&emsp;&emsp; 如果要深入理解反序列化漏洞可以去学习反序列化利用工具<code>ysoserial</code>。网上很多反序列化文章基本上都是研究<code>commons-collection</code>反序列化，但其实<code>commons-colection</code>反序列化链是很复杂，不建议新手小白学习。<code>ysoserial-Gadget-URLDNS</code>这条反序列化链建议新手小白学习，比较简单。推荐文章<a href="https://samny.blog.csdn.net/article/details/105790987" target="_blank" rel="noopener">小楼昨夜又春风，你知ysoserial-Gadget-URLDNS多少？</a>，这篇文章全方位的解释<code>URLDNS</code>这条链的利用、成因，相对其他作者写的文章分析更加全面，基本上你知道或者不知道都在文章里面。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反序列化demo"><span class="toc-number">2.</span> <span class="toc-text">反序列化demo</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#知识补充"><span class="toc-number">2.1.</span> <span class="toc-text">知识补充</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#案例DEMO"><span class="toc-number">2.2.</span> <span class="toc-text">案例DEMO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞DEMO"><span class="toc-number">2.3.</span> <span class="toc-text">漏洞DEMO</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
