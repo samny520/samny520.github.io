@@ -157,9 +157,30 @@
 
 <hr>
 <h1 id="知识补充"><a href="#知识补充" class="headerlink" title="知识补充"></a>知识补充</h1><p>&emsp;&emsp; 写到这，其实是对shiro一些知识的补充。前期对shiro了解较少，后期做了大量知识补充。官方给的是jar包，反编译之后改成自己的踩了 一些坑。顺便记录一下，只想看题目分析的可以Pass。</p>
+<ol>
+<li><p>下面是自己不仔细导致错误，其实都知道，但是忘记了</p>
+<ul>
+<li>User没有实现<code>Serializable接口</code>导致报错，不能反序列化</li>
+<li>User类没有<code>serialVersionUID</code>导致报错，版本不一致</li>
+</ul>
+</li>
+<li><p>Tools类没有判断操作系统的版本，导致执行命令不成功<br><img src="https://img-blog.csdnimg.cn/20210105161235551.png" alt="在这里插入图片描述"></p>
+</li>
+<li><p>tail命令在windows系统是没有的，导致无法生成acessLog.txt文件</p>
+</li>
+<li><p>tail加了-f参数导致服务器一直读取文件，导致长时间不回显</p>
+</li>
+<li><p>注释掉<code>MyFilter</code>中<code>Component</code>就是shiro原本的CVE-2020-13933漏洞<br><img src="https://img-blog.csdnimg.cn/20210105162144633.png" alt="在这里插入图片描述"></p>
+</li>
+<li><p>学习了b站关于shiro内容<a href="https://www.bilibili.com/video/BV1NE411i7S8" target="_blank" rel="noopener">【狂神说Java】SpringBoot整合Shiro框架</a></p>
+</li>
+</ol>
 <hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><hr>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">*              Gadget：</span><br><span class="line">*                  Tools.base64Decode()</span><br><span class="line">*                      Tools.deserialize()</span><br><span class="line">*                          ObjectInputStream.readObject()</span><br><span class="line">*                              BadAttributeValueExpException.readObject()</span><br><span class="line">*                                  LogHandler.toSting()</span><br><span class="line">*                                      Tools.exeCmd()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 当时写这个题目的时候已经无限接近答案了，只是当时不确定怎么封装类。不得不说CC链还是不熟悉，没有完全吃透，不得不说CC永远的神！</p>
+<hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://github.com/SummerSec/JavaLearnVulnerability" target="_blank" rel="noopener">https://github.com/SummerSec/JavaLearnVulnerability</a><br><a href="https://www.bilibili.com/video/BV1NE411i7S8" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1NE411i7S8</a></p>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
                 <source type="audio/mpeg" src="">
