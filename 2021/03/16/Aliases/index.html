@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Type - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="Aliases¶An alias is an alternative name for an existing QL entity.
+
+别名是现有QL实体的替代名称。
+
+Once you’ve de,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Type</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Type</h1>
+        <div class="stuff">
+            <span>三月 16, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/codeql/" rel="tag">codeql</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Aliases¶"><a href="#Aliases¶" class="headerlink" title="Aliases¶"></a>Aliases<a href="https://codeql.github.com/docs/ql-language-reference/aliases/#aliases" target="_blank" rel="noopener">¶</a></h2><p>An alias is an alternative name for an existing QL entity.</p>
+<blockquote>
+<p>别名是现有QL实体的替代名称。</p>
+</blockquote>
+<p>Once you’ve defined an alias, you can use that new name to refer to the entity in the current module’s <a href="https://codeql.github.com/docs/ql-language-reference/name-resolution/#namespaces" target="_blank" rel="noopener">namespace</a>.</p>
+<blockquote>
+<p>一旦你定义了一个别名，你就可以使用这个新名字来引用当前模块命名空间中的实体。</p>
+</blockquote>
+<hr>
+<h3 id="Defining-an-alias¶定义别名"><a href="#Defining-an-alias¶定义别名" class="headerlink" title="Defining an alias¶定义别名"></a>Defining an alias<a href="https://codeql.github.com/docs/ql-language-reference/aliases/#defining-an-alias" target="_blank" rel="noopener">¶</a>定义别名</h3><p>You can define an alias in the body of any <a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">module</a>. To do this, you should specify:</p>
+<blockquote>
+<p>您可以在任何<a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">模块</a>的主体中定义别名。要做到这一点，您应该指定：</p>
+</blockquote>
+<ol>
+<li><p>The keyword <code>module</code>, <code>class</code>, or <code>predicate</code> to define an alias for a <a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">module</a>, <a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">type</a>, or <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#non-member-predicates" target="_blank" rel="noopener">non-member predicate</a> respectively.</p>
+<blockquote>
+<p>关键字，或分别定义<a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">模块</a>、<a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">类型</a>或<a href="https://codeql.github.com/docs/ql-language-reference/predicates/#non-member-predicates" target="_blank" rel="noopener">非成员谓词的</a>别名。<code>module``class``predicate</code></p>
+</blockquote>
+</li>
+<li><p>The name of the alias. This should be a valid name for that kind of entity. For example, a valid predicate alias starts with a lowercase letter.</p>
+<blockquote>
+<p>别名的名字。这应该是此类实体的有效名称。例如，有效的谓词别名以小写字母开头。</p>
+</blockquote>
+</li>
+<li><p>A reference to the QL entity. This includes the original name of the entity and, for predicates, the arity of the predicate.</p>
+<blockquote>
+<p>对QL实体的引用。这包括实体的原始名称，对于谓词，包括谓词的原名。</p>
+</blockquote>
+</li>
+</ol>
+<p>You can also annotate an alias. See the list of <a href="https://codeql.github.com/docs/ql-language-reference/annotations/#annotations-overview" target="_blank" rel="noopener">annotations</a> available for aliases.</p>
+<blockquote>
+<p>您还可以注释别名。请参阅可用于别名的<a href="https://codeql.github.com/docs/ql-language-reference/annotations/#annotations-overview" target="_blank" rel="noopener">注释</a>列表。</p>
+</blockquote>
+<p>Note that these annotations apply to the name introduced by the alias (and not the underlying QL entity itself). For example, an alias can have different visibility to the name that it aliases.</p>
+<blockquote>
+<p>请注意，这些注释适用于别名引入的名称（而不是基础 QL 实体本身）。例如，别名可以与它所别名的名称具有不同的可见性。</p>
+</blockquote>
+<hr>
+<h3 id="Module-aliases¶模块别名"><a href="#Module-aliases¶模块别名" class="headerlink" title="Module aliases¶模块别名"></a>Module aliases<a href="https://codeql.github.com/docs/ql-language-reference/aliases/#module-aliases" target="_blank" rel="noopener">¶</a>模块别名</h3><p>Use the following syntax to define an alias for a <a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">module</a>:</p>
+<blockquote>
+<p>使用以下语法定义<a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">模块</a>的别名：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">module ModAlias &#x3D; ModuleName;</span><br></pre></td></tr></table></figure>
+
+<p>For example, if you create a new module <code>NewVersion</code> that is an updated version of <code>OldVersion</code>, you could deprecate the name <code>OldVersion</code> as follows:</p>
+<blockquote>
+<p>例如，如果您创建了更新版本的新模块，则可以将名称弃用如下：<code>NewVersion``OldVersion``OldVersion</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deprecated module OldVersion &#x3D; NewVersion;</span><br></pre></td></tr></table></figure>
+
+<p>That way both names resolve to the same module, but if you use the name <code>OldVersion</code>, a deprecation warning is displayed.</p>
+<blockquote>
+<p>这样，两个名称都会解决到同一模块，但如果您使用该名称，将显示弃用警告。<code>OldVersion</code></p>
+</blockquote>
+<hr>
+<h3 id="Type-aliases¶类型别名"><a href="#Type-aliases¶类型别名" class="headerlink" title="Type aliases¶类型别名"></a>Type aliases<a href="https://codeql.github.com/docs/ql-language-reference/aliases/#type-aliases" target="_blank" rel="noopener">¶</a>类型别名</h3><p>Use the following syntax to define an alias for a <a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">type</a>:</p>
+<blockquote>
+<p>使用以下语法定义<a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">一种类型的</a>别名：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class TypeAlias &#x3D; TypeName;</span><br></pre></td></tr></table></figure>
+
+<p>Note that <code>class</code> is just a keyword. You can define an alias for any type—namely, <a href="https://codeql.github.com/docs/ql-language-reference/types/#primitive-types" target="_blank" rel="noopener">primitive types</a>, <a href="https://codeql.github.com/docs/ql-language-reference/types/#database-types" target="_blank" rel="noopener">database types</a> and user-defined <a href="https://codeql.github.com/docs/ql-language-reference/types/#classes" target="_blank" rel="noopener">classes</a>.</p>
+<blockquote>
+<p>请注意，这只是一个关键字。您可以为任何类型定义别名，即<a href="https://codeql.github.com/docs/ql-language-reference/types/#primitive-types" target="_blank" rel="noopener">原始类型</a>、<a href="https://codeql.github.com/docs/ql-language-reference/types/#database-types" target="_blank" rel="noopener">数据库类型</a>和用户定义<a href="https://codeql.github.com/docs/ql-language-reference/types/#classes" target="_blank" rel="noopener">的类</a>。<code>class</code></p>
+</blockquote>
+<p>For example, you can use an alias to abbreviate the name of the primitive type <code>boolean</code> to <code>bool</code>:</p>
+<blockquote>
+<p>例如，可以使用别名将基元类型<code>boolean</code>的名称缩写为<code>bool</code>。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class bool &#x3D; boolean;</span><br></pre></td></tr></table></figure>
+
+<p>Or, to use a class <code>OneTwo</code> defined in a <a href="https://codeql.github.com/docs/ql-language-reference/modules/#explicit-modules" target="_blank" rel="noopener">module</a> <code>M</code> in <code>OneTwoThreeLib.qll</code>, you could create an alias to use the shorter name <code>OT</code> instead:</p>
+<blockquote>
+<p>或者，如果要使用OneTwoThreeLib.qll中M模块中定义的OneTwo类，你可以创建一个别名，使用更短的名字OT来代替。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import OneTwoThreeLib</span><br><span class="line"></span><br><span class="line">class OT &#x3D; M::OneTwo;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">from OT ot</span><br><span class="line">select ot</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/0u06er0ec/0u06er0ec.png" alt="image-20210316160600475"></p>
+<hr>
+<h3 id="Predicate-aliases¶谓词别名"><a href="#Predicate-aliases¶谓词别名" class="headerlink" title="Predicate aliases¶谓词别名"></a>Predicate aliases<a href="https://codeql.github.com/docs/ql-language-reference/aliases/#predicate-aliases" target="_blank" rel="noopener">¶</a>谓词别名</h3><p>Use the following syntax to define an alias for a <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#non-member-predicates" target="_blank" rel="noopener">non-member predicate</a>:</p>
+<blockquote>
+<p>使用以下语法来定义<a href="https://codeql.github.com/docs/ql-language-reference/predicates/#non-member-predicates" target="_blank" rel="noopener">非成员谓词</a>的别名：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predicate PredAlias &#x3D; PredicateName&#x2F;Arity;</span><br></pre></td></tr></table></figure>
+
+<p>This works for predicates <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates-with-result" target="_blank" rel="noopener">with</a> or <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates-without-result" target="_blank" rel="noopener">without</a> result.</p>
+<blockquote>
+<p>这适用于有结果或无结果的谓词。</p>
+</blockquote>
+<p>For example, suppose you frequently use the following predicate, which calculates the successor of a positive integer less than ten:</p>
+<blockquote>
+<p>例如，假设你经常使用下面的谓词，它计算一个小于10的正整数getSuccessor:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int getSuccessor(int i) &#123;</span><br><span class="line">  result &#x3D; i + 1 and</span><br><span class="line">  i in [1 .. 9]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You can use an alias to abbreviate the name to <code>succ</code>:</p>
+<blockquote>
+<p>你可以用别名来缩写名字<code>succ</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predicate succ &#x3D; getSuccessor&#x2F;1;</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int getSuccessor(int i) &#123;</span><br><span class="line">    result &#x3D; i + 1 and</span><br><span class="line">    i in [1 .. 9]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">predicate succ &#x3D; getSuccessor&#x2F;1;</span><br><span class="line"></span><br><span class="line">from int i</span><br><span class="line">select succ(i)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/29u10er29ec/29u10er29ec.png" alt="image-20210316161029513"></p>
+<p>As an example of a predicate without result, suppose you have a predicate that holds for any positive integer less than ten:</p>
+<blockquote>
+<p>另一个没有结果的谓词的例子，假设你有一个对任何小于10的正整数都成立的谓词。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">predicate isSmall(int i) &#123;</span><br><span class="line">  i in [1 .. 9]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You could give the predicate a more descriptive name as follows:</p>
+<blockquote>
+<p>您可以给谓词一个更描述性的名称如下：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predicate lessThanTen &#x3D; isSmall&#x2F;1;</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">predicate isSmall(int i) &#123;</span><br><span class="line">    i in [1 .. 9]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">predicate lessThanTen &#x3D; isSmall&#x2F;1;</span><br><span class="line"></span><br><span class="line">from int i</span><br><span class="line">where lessThanTen(i)</span><br><span class="line">select i</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://gitee.com/samny/images/raw/master/8u20er8ec/8u20er8ec.png" alt="image-20210316162008023"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Aliases¶"><span class="toc-number">1.</span> <span class="toc-text">Aliases¶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Defining-an-alias¶定义别名"><span class="toc-number">1.1.</span> <span class="toc-text">Defining an alias¶定义别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Module-aliases¶模块别名"><span class="toc-number">1.2.</span> <span class="toc-text">Module aliases¶模块别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-aliases¶类型别名"><span class="toc-number">1.3.</span> <span class="toc-text">Type aliases¶类型别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Predicate-aliases¶谓词别名"><span class="toc-number">1.4.</span> <span class="toc-text">Predicate aliases¶谓词别名</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

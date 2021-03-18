@@ -1,0 +1,890 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expression - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="Expressions¶表达式An expression evaluates to a set of values and has a type.
+
+表达式对一组值进行评估，并有一个类型。
+
+For,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Expression</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Expression</h1>
+        <div class="stuff">
+            <span>三月 16, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/codeql/" rel="tag">codeql</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Expressions¶表达式"><a href="#Expressions¶表达式" class="headerlink" title="Expressions¶表达式"></a>Expressions<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#expressions" target="_blank" rel="noopener">¶</a>表达式</h1><p>An expression evaluates to a set of values and has a type.</p>
+<blockquote>
+<p>表达式对一组值进行评估，并有一个类型。</p>
+</blockquote>
+<p>For example, the expression <code>1 + 2</code> evaluates to the integer <code>3</code> and the expression <code>&quot;QL&quot;</code> evaluates to the string <code>&quot;QL&quot;</code>. <code>1 + 2</code> has <a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">type</a> <code>int</code> and <code>&quot;QL&quot;</code> has type <code>string</code>.</p>
+<blockquote>
+<p>例如，表达式1 + 2的值是整数3，表达式 “QL “的值是字符串 “QL”。1 + 2 的类型是 int，”QL “的类型是字符串。</p>
+</blockquote>
+<p>The following sections describe the expressions that are available in QL.</p>
+<blockquote>
+<p>下面的章节将描述QL中可用的表达式。</p>
+</blockquote>
+<h2 id="Variable-references¶变量引用"><a href="#Variable-references¶变量引用" class="headerlink" title="Variable references¶变量引用"></a>Variable references<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#variable-references" target="_blank" rel="noopener">¶</a>变量引用</h2><p>A variable reference is the name of a declared <a href="https://codeql.github.com/docs/ql-language-reference/variables/#variables" target="_blank" rel="noopener">variable</a>. This kind of expression has the same type as the variable it refers to.</p>
+<blockquote>
+<p>变量引用是一个声明变量的名称。这种表达式的类型与它所引用的变量的类型相同。</p>
+</blockquote>
+<p>For example, if you have <a href="https://codeql.github.com/docs/ql-language-reference/variables/#variable-declarations" target="_blank" rel="noopener">declared</a> the variables <code>int i</code> and <code>LocalScopeVariable lsv</code>, then the expressions <code>i</code> and <code>lsv</code> have types <code>int</code> and <code>LocalScopeVariable</code> respectively.</p>
+<blockquote>
+<p>例如，如果你声明了变量int i和LocalScopeVariable lsv，那么表达式i和lsv的类型分别为int和LocalScopeVariable。</p>
+</blockquote>
+<p>You can also refer to the variables <code>this</code> and <code>result</code>. These are used in <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates" target="_blank" rel="noopener">predicate</a> definitions and act in the same way as other variable references.</p>
+<blockquote>
+<p>您还可以引用变量this和result。这些变量在谓词定义中使用，其作用与其他变量引用相同。</p>
+</blockquote>
+<h2 id="Literals¶字符"><a href="#Literals¶字符" class="headerlink" title="Literals¶字符"></a>Literals<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#literals" target="_blank" rel="noopener">¶</a>字符</h2><p>You can express certain values directly in QL, such as numbers, booleans, and strings.</p>
+<blockquote>
+<p>你可以直接在QL中表达某些值，如数字、布尔和字符串。</p>
+</blockquote>
+<ul>
+<li><p><a href="https://codeql.github.com/docs/ql-language-reference/types/#boolean" target="_blank" rel="noopener">Boolean</a> literals: These are the values <code>true</code> and <code>false</code>.</p>
+</li>
+<li><blockquote>
+<p>布尔值：真和假。</p>
+</blockquote>
+</li>
+<li><p><a href="https://codeql.github.com/docs/ql-language-reference/types/#int" target="_blank" rel="noopener">Integer</a> literals: These are sequences of decimal digits (<code>0</code> through <code>9</code>), possibly starting with a minus sign (<code>-</code>). For example:</p>
+</li>
+<li><blockquote>
+<p>整数字面意义：这些是十进制数字（0到9）的序列，可能以减号（-）开始</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0</span><br><span class="line">42</span><br><span class="line">-2048</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://codeql.github.com/docs/ql-language-reference/types/#float" target="_blank" rel="noopener">Float</a> literals: These are sequences of decimal digits separated by a dot (<code>.</code>), possibly starting with a minus sign (<code>-</code>). For example:</p>
+</li>
+<li><blockquote>
+<p>浮点数。这些是由点（…）分隔的十进制数字序列，可能以减号（-）开头。例如：</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2.0</span><br><span class="line">123.456</span><br><span class="line">-100.5</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://codeql.github.com/docs/ql-language-reference/types/#string" target="_blank" rel="noopener">String</a> literals: These are finite strings of 16-bit characters. You can define a string literal by enclosing characters in quotation marks (<code>&quot;...&quot;</code>). Most characters represent themselves, but there are a few characters that you need to “escape” with a backslash. The following are examples of string literals:</p>
+</li>
+<li><blockquote>
+<p>字符串。这些是16位字符的有限字符串。你可以通过用引号(“…”)括起字符来定义一个字符串字面意义。大多数字符代表自己，但也有一些字符需要用反斜杠 “转义”。下面是字符串文字的例子:</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;hello&quot;</span><br><span class="line">&quot;They said, \&quot;Please escape quotation marks!\&quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>  See <a href="https://codeql.github.com/docs/ql-language-reference/ql-language-specification/#string-literals-string" target="_blank" rel="noopener">String literals</a> in the QL language specification for more details.</p>
+<blockquote>
+<p>更多细节请参见QL语言规范中的字符串</p>
+</blockquote>
+<p>  Note: there is no “date literal” in QL. Instead, to specify a <a href="https://codeql.github.com/docs/ql-language-reference/types/#date" target="_blank" rel="noopener">date</a>, you should convert a string to the date that it represents using the <code>toDate()</code> predicate. For example, <code>&quot;2016-04-03&quot;.toDate()</code> is the date April 3, 2016, and <code>&quot;2000-01-01 00:00:01&quot;.toDate()</code> is the point in time one second after New Year 2000.</p>
+<blockquote>
+<p>注意：QL中没有 “日期文字”。相反，要指定一个日期，应该使用toDate()谓词将一个字符串转换为它所代表的日期。例如，”2016-04-03”.toDate()是2016年4月3日的日期，”2000-01-01 00:00:01”.toDate()是2000年新年后一秒钟的时间点。</p>
+</blockquote>
+<ul>
+<li><p>The following string formats are recognized as dates:</p>
+</li>
+<li><blockquote>
+<p>以下的字符串格式可以识别为日期。</p>
+</blockquote>
+<p>  <strong>ISO dates</strong>, such as <code>&quot;2016-04-03 17:00:24&quot;</code>. The seconds part is optional (assumed to be <code>&quot;00&quot;</code> if it’s missing), and the entire time part can also be missing (in which case it’s assumed to be <code>&quot;00:00:00&quot;</code>).<strong>Short-hand ISO dates</strong>, such as <code>&quot;20160403&quot;</code>.<strong>UK-style dates</strong>, such as <code>&quot;03/04/2016&quot;</code>.<strong>Verbose dates</strong>, such as <code>&quot;03 April 2016&quot;</code>.</p>
+<blockquote>
+<p>ISO日期，如 “2016-04-03 17:00:24”。秒的部分是可选的（如果缺失，则假定为 “00”），整个时间部分也可以缺失（在这种情况下，假定为 “00:00:00”）。<br>短手ISO日期，如 “20160403”。<br>英国式日期，如 “03/04/2016”。<br>啰嗦的日期，如 “03 April 2016”。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Parenthesized-expressions¶括号表达式"><a href="#Parenthesized-expressions¶括号表达式" class="headerlink" title="Parenthesized expressions¶括号表达式"></a>Parenthesized expressions<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#parenthesized-expressions" target="_blank" rel="noopener">¶</a>括号表达式</h2><p>A parenthesized expression is an expression surrounded by parentheses, <code>(</code> and <code>)</code>. This expression has exactly the same type and values as the original expression. Parentheses are useful for grouping expressions together to remove ambiguity and improve readability.</p>
+<blockquote>
+<p>小括号表达式是指用括号,（和）包围的表达式。该表达式的类型和值与原始表达式完全相同。圆括号对于将表达式分组以消除歧义和提高可读性非常有用。</p>
+</blockquote>
+<h2 id="Ranges¶范围"><a href="#Ranges¶范围" class="headerlink" title="Ranges¶范围"></a>Ranges<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#ranges" target="_blank" rel="noopener">¶</a>范围</h2><p>A range expression denotes a range of values ordered between two expressions. It consists of two expressions separated by <code>..</code> and enclosed in brackets (<code>[</code> and <code>]</code>). For example, <code>[3 .. 7]</code> is a valid range expression. Its values are any integers between <code>3</code> and <code>7</code> (including <code>3</code> and <code>7</code> themselves).</p>
+<blockquote>
+<p>范围表达式表示两个表达式之间排序的数值范围。它由两个表达式组成，用…隔开，并用括号（[和]）括起来。例如，[3 … 7]是一个有效的范围表达式。它的值是3和7之间的任何整数（包括3和7本身）。</p>
+</blockquote>
+<p>In a valid range, the start and end expression are integers, floats, or dates. If one of them is a date, then both must be dates. If one of them is an integer and the other a float, then both are treated as floats.</p>
+<blockquote>
+<p>在一个有效的范围中，开始和结束表达式是整数、浮点数或日期。如果其中一个是日期，那么两个都必须是日期。如果其中一个是整数，另一个是浮点数，那么两者都被视为浮点数。</p>
+</blockquote>
+<hr>
+<h2 id="Set-literal-expressions¶设置文本表达式"><a href="#Set-literal-expressions¶设置文本表达式" class="headerlink" title="Set literal expressions¶设置文本表达式"></a>Set literal expressions<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#set-literal-expressions" target="_blank" rel="noopener">¶</a>设置文本表达式</h2><p>A set literal expression allows the explicit listing of a choice between several values. It consists of a comma-separated collection of expressions that are enclosed in brackets (<code>[</code> and <code>]</code>). For example, <code>[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]</code> is a valid set literal expression. Its values are the first ten prime numbers.</p>
+<blockquote>
+<p>set-literal 表达式允许明确地列出几个值之间的选择。它由一个逗号分隔的表达式集合组成，这些表达式用括号（[ 和 ]）括起来。例如，[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]是一个有效的集合文字表达式。它的值是前十个质数。</p>
+</blockquote>
+<p>The values of the contained expressions need to be of <a href="https://codeql.github.com/docs/ql-language-reference/types/#type-compatibility" target="_blank" rel="noopener">compatible types</a> for a valid set literal expression. Furthermore, at least one of the set elements has to be of a type that is a supertype of the types of all the other contained expressions.</p>
+<blockquote>
+<p>对于一个有效的set-literal 表达式来说，所包含的表达式的值必须是兼容类型。此外，至少有一个集合元素的类型必须是所有其他包含的表达式类型的超类型。</p>
+</blockquote>
+<p>Set literals are supported from release 2.1.0 of the CodeQL CLI, and release 1.24 of LGTM Enterprise.</p>
+<blockquote>
+<p>从CodeQL CLI的2.1.0版本和LGTM Enterprise的1.24版本开始，就支持集合文字表达式。</p>
+</blockquote>
+<h2 id="Super-expressions¶超级表达式"><a href="#Super-expressions¶超级表达式" class="headerlink" title="Super expressions¶超级表达式"></a>Super expressions<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#super-expressions" target="_blank" rel="noopener">¶</a>超级表达式</h2><p>Super expressions in QL are similar to super expressions in other programming languages, such as Java. You can use them in predicate calls, when you want to use the predicate definition from a supertype. In practice, this is useful when a predicate inherits two definitions from its supertypes. In that case, the predicate must <a href="https://codeql.github.com/docs/ql-language-reference/types/#overriding-member-predicates" target="_blank" rel="noopener">override</a> those definitions to avoid ambiguity. However, if you want to use the definition from a particular supertype instead of writing a new definition, you can use a super expression.</p>
+<blockquote>
+<p>QL中的超级表达式类似于其他编程语言中的超级表达式，例如Java。当你想使用来自超级类型的谓词定义时，你可以在谓词调用中使用它们。在实践中，当一个谓词从其超类型中继承了两个定义时，这很有用。在这种情况下，谓词必须覆盖这些定义以避免歧义。然而，如果你想使用来自特定超类型的定义，而不是编写一个新的定义，你可以使用超级表达式。</p>
+</blockquote>
+<p>In the following example, the class <code>C</code> inherits two definitions of the predicate <code>getANumber()</code>—one from <code>A</code> and one from <code>B</code>. Instead of overriding both definitions, it uses the definition from <code>B</code>.</p>
+<blockquote>
+<p>在下面的示例中，类C继承了谓词getANumber()的两个定义–一个来自于A，一个来自于B，它没有覆盖这两个定义，而是使用了B的定义。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class A extends int &#123;</span><br><span class="line">    A() &#123; this &#x3D; 1 &#125;</span><br><span class="line">    int getANumber() &#123; result &#x3D; 2 &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class B extends int &#123;</span><br><span class="line">    B() &#123; this &#x3D; 1 &#125;</span><br><span class="line">    int getANumber() &#123; result &#x3D; 3 &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class C extends A, B &#123;</span><br><span class="line">  &#x2F;&#x2F; Need to define &#96;int getANumber()&#96;; otherwise it would be ambiguous</span><br><span class="line">    override int getANumber() &#123; &#x2F;&#x2F; 最新版必须加override关键字</span><br><span class="line">        result &#x3D; B.super.getANumber()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from C c</span><br><span class="line">select c, c.getANumber()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/3u59er3ec/3u59er3ec.png" alt="image-20210316195903686"></p>
+<h2 id="Calls-to-predicates-with-result-¶谓词调用-带结果"><a href="#Calls-to-predicates-with-result-¶谓词调用-带结果" class="headerlink" title="Calls to predicates (with result)¶谓词调用(带结果)"></a>Calls to predicates (with result)<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#calls-to-predicates-with-result" target="_blank" rel="noopener">¶</a>谓词调用(带结果)</h2><p>Calls to <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates-with-result" target="_blank" rel="noopener">predicates with results</a> are themselves expressions, unlike calls to <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates-without-result" target="_blank" rel="noopener">predicates without results</a> which are formulas. For more information, see “<a href="https://codeql.github.com/docs/ql-language-reference/formulas/#calls" target="_blank" rel="noopener">Calls to predicates</a>.”</p>
+<blockquote>
+<p>对有结果的谓词的调用本身就是表达式，不像对没有结果的谓词的调用是公式。更多信息，请参见 “对谓词的调用”。</p>
+</blockquote>
+<p>A call to a predicate with result evaluates to the values of the <code>result</code> variable of the called predicate.</p>
+<blockquote>
+<p>对带结果的谓词的调用会评估到被调用的谓词的结果变量的值。</p>
+</blockquote>
+<p>For example <code>a.getAChild()</code> is a call to a predicate <code>getAChild()</code> on a variable <code>a</code>. This call evaluates to the set of children of <code>a</code>.</p>
+<blockquote>
+<p>例如，a.getAChild()是对变量a的谓词getAChild()的调用，该调用的值是a的子集。</p>
+</blockquote>
+<h2 id="Aggregations¶聚合"><a href="#Aggregations¶聚合" class="headerlink" title="Aggregations¶聚合"></a>Aggregations<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#aggregations" target="_blank" rel="noopener">¶</a>聚合</h2><p>An aggregation is a mapping that computes a result value from a set of input values that are specified by a formula.</p>
+<blockquote>
+<p>聚合是一种映射，它从一组由公式指定的输入值中计算出一个结果值。</p>
+</blockquote>
+<p>The general syntax is:</p>
+<blockquote>
+<p>一般语法：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;aggregate&gt;(&lt;variable declarations&gt; | &lt;formula&gt; | &lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>The variables <a href="https://codeql.github.com/docs/ql-language-reference/variables/#variable-declarations" target="_blank" rel="noopener">declared</a> in <code>&lt;variable declarations&gt;</code> are called the <strong>aggregation variables</strong>.</p>
+<blockquote>
+<p>在&lt;变量声明&gt;中声明的变量称为聚合变量。</p>
+</blockquote>
+<p>Ordered aggregates (namely <code>min</code>, <code>max</code>, <code>rank</code>, <code>concat</code>, and <code>strictconcat</code>) are ordered by their <code>&lt;expression&gt;</code> values by default. The ordering is either numeric (for integers and floating point numbers) or lexicographic (for strings). Lexicographic ordering is based on the <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters#Basic_Latin" target="_blank" rel="noopener">Unicode value</a> of each character.</p>
+<blockquote>
+<p>有序聚合（即min、max、rank、concat和strictconcat）默认按照它们的<expression>值排序。排序方式可以是数字排序（对于整数和浮点数），也可以是词法排序（对于字符串）。词法排序是基于每个字符的Unicode值。</expression></p>
+</blockquote>
+<p>To specify a different order, follow <code>&lt;expression&gt;</code> with the keywords <code>order by</code>, then the expression that specifies the order, and optionally the keyword <code>asc</code> or <code>desc</code> (to determine whether to order the expression in ascending or descending order). If you don’t specify an ordering, it defaults to <code>asc</code>.</p>
+<blockquote>
+<p>要指定不同的顺序，请在<expression>后面加上关键字order by，然后是指定顺序的表达式，以及可选的关键字asc或desc（用于确定表达式是按升序还是降序排列）。如果你没有指定排序，它默认为升序。</expression></p>
+</blockquote>
+<p>The following aggregates are available in QL:</p>
+<blockquote>
+<p>QL中提供了以下聚合。</p>
+</blockquote>
+<ul>
+<li><p><code>count</code>: This aggregate determines the number of distinct values of <code>&lt;expression&gt;</code> for each possible assignment of the aggregation variables.</p>
+</li>
+<li><blockquote>
+<p>count。该聚合确定了<expression>的每个可能的聚合变量赋值的不同值的数量。</expression></p>
+</blockquote>
+<p>  For example, the following aggregation returns the number of files that have more than <code>500</code> lines:</p>
+<blockquote>
+<p>例如，下面的聚合返回的是超过500行的文件数。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">count(File f | f.getTotalNumberOfLines() &gt; 500 | f)</span><br></pre></td></tr></table></figure>
+
+<p>  If there are no possible assignments to the aggregation variables that satisfy the formula, as in <code>count(int i | i = 1 and i = 2 | i)</code>, then <code>count</code> defaults to the value <code>0</code>.</p>
+<blockquote>
+<p>count(File f | f.getTotalNumberOfLines() &gt; 500 | f)<br>如果没有满足公式的聚合变量的可能赋值，如count(int i | i = 1 and i = 2 | i)，那么count默认为值0。</p>
+</blockquote>
+</li>
+<li><p><code>min</code> and <code>max</code>: These aggregates determine the smallest (<code>min</code>) or largest (<code>max</code>) value of <code>&lt;expression&gt;</code> among the possible assignments to the aggregation variables. In this case, <code>&lt;expression&gt;</code> must be of numeric type or of type <code>string</code>.</p>
+</li>
+<li><blockquote>
+<p>min和max。这些聚合变量决定了<expression>在可能的聚合变量赋值中的最小（最小）或最大（最大）值。在这种情况下，<expression>必须是数字类型或字符串类型。</expression></expression></p>
+</blockquote>
+<p>For example, the following aggregation returns the name of the <code>.js</code> file (or files) with the largest number of lines:</p>
+<blockquote>
+<p>例如，以下聚合返回行数最多的.js文件（或文件）的名称</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max(File f | f.getExtension() &#x3D; &quot;js&quot; | f.getBaseName() order by f.getTotalNumberOfLines())</span><br></pre></td></tr></table></figure>
+
+<p>The following aggregation returns the minimum string <code>s</code> out of the three strings mentioned below, that is, the string that comes first in the lexicographic ordering of all the possible values of <code>s</code>. (In this case, it returns <code>&quot;De Morgan&quot;</code>.)</p>
+<blockquote>
+<p>下面的聚合返回下面提到的三个字符串中最小的字符串s，即在所有可能的s值的词法排序中排在第一位的字符串（在本例中，它返回 “德摩根”）。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">min(string s | s &#x3D; &quot;Tarski&quot; or s &#x3D; &quot;Dedekind&quot; or s &#x3D; &quot;De Morgan&quot; | s)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>avg</code>: This aggregate determines the average value of <code>&lt;expression&gt;</code> for all possible assignments to the aggregation variables. The type of <code>&lt;expression&gt;</code> must be numeric. If there are no possible assignments to the aggregation variables that satisfy the formula, the aggregation fails and returns no values. In other words, it evaluates to the empty set.</p>
+<blockquote>
+<p>avg：该集合确定<expression>对所有可能的集合变量分配的平均值。<expression>的类型必须是数字型。如果聚合变量没有满足公式的可能赋值，则聚合失败，不返回任何值。换句话说，它评估为空集。</expression></expression></p>
+</blockquote>
+<p>  For example, the following aggregation returns the average of the integers <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code>:</p>
+<blockquote>
+<p>例如，下面的聚合返回的是整数0、1、2和3的平均值。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">avg(int i | i &#x3D; [0 .. 3] | i)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>sum</code>: This aggregate determines the sum of the values of <code>&lt;expression&gt;</code> over all possible assignments to the aggregation variables. The type of <code>&lt;expression&gt;</code> must be numeric. If there are no possible assignments to the aggregation variables that satisfy the formula, then the sum is <code>0</code>.</p>
+</li>
+<li><blockquote>
+<p>sum:该集合确定<expression>值在所有可能的集合变量分配中的总和。<expression>的类型必须是数字型。如果没有满足公式的聚合变量的可能赋值，那么总和为0。</expression></expression></p>
+</blockquote>
+<p>  For example, the following aggregation returns the sum of <code>i * j</code> for all possible values of <code>i</code> and <code>j</code>:</p>
+<blockquote>
+<p>例如，下面的聚合返回i*j的所有可能的i和j的值之和。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum(int i, int j | i &#x3D; [0 .. 2] and j &#x3D; [3 .. 5] | i * j)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>concat</code>: This aggregate concatenates the values of <code>&lt;expression&gt;</code> over all possible assignments to the aggregation variables. Note that <code>&lt;expression&gt;</code> must be of type <code>string</code>. If there are no possible assignments to the aggregation variables that satisfy the formula, then <code>concat</code> defaults to the empty string.</p>
+</li>
+<li><blockquote>
+<p>concat:该聚合将<expression>的值与所有可能的聚合变量分配相连接。注意<expression>必须是字符串类型。如果聚合变量没有满足公式的可能赋值，那么concat默认为空字符串。</expression></expression></p>
+</blockquote>
+<p>  For example, the following aggregation returns the string <code>&quot;3210&quot;</code>, that is, the concatenation of the strings <code>&quot;0&quot;</code>, <code>&quot;1&quot;</code>, <code>&quot;2&quot;</code>, and <code>&quot;3&quot;</code> in descending order:</p>
+<blockquote>
+<p>例如，下面的聚合返回字符串 “3210”，也就是字符串 “0”、”1”、”2 “和 “3 “的降序连接</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">concat(int i | i &#x3D; [0 .. 3] | i.toString() order by i desc)</span><br></pre></td></tr></table></figure>
+
+<p>  The <code>concat</code> aggregate can also take a second expression, separated from the first one by a comma. This second expression is inserted as a separator between each concatenated value.</p>
+<blockquote>
+<p>concat aggregate也可以使用第二个表达式，用逗号与第一个表达式隔开。这第二个表达式被插入作为每个连接值之间的分隔符。</p>
+</blockquote>
+<p>  For example, the following aggregation returns <code>&quot;0|1|2|3&quot;</code>:</p>
+<blockquote>
+<p>例如，下面的聚合返回 “0|1|2|3”。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">concat(int i | i &#x3D; [0 .. 3] | i.toString(), &quot;|&quot;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>rank</code>: This aggregate takes the possible values of <code>&lt;expression&gt;</code> and ranks them. In this case, <code>&lt;expression&gt;</code> must be of numeric type or of type <code>string</code>. The aggregation returns the value that is ranked in the position specified by the <strong>rank expression</strong>. You must include this rank expression in brackets after the keyword <code>rank</code>.</p>
+</li>
+<li><blockquote>
+<p>rank: 这个集合将<expression>的可能值进行排序。在这种情况下，<expression>必须是数字类型或字符串类型。聚合将返回排名在rank表达式指定位置的值。您必须在关键字 rank 后面的括号中包含这个 rank 表达式。</expression></expression></p>
+</blockquote>
+<p>  For example, the following aggregation returns the value that is ranked 4th out of all the possible values. In this case, <code>8</code> is the 4th integer in the range from <code>5</code> through <code>15</code>:</p>
+<blockquote>
+<p>例如，以下聚合返回在所有可能的值中排名第4的值。在这种情况下，8是5到15范围内的第4个整数。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rank[4](int i | i &#x3D; [5 .. 15] | i)</span><br></pre></td></tr></table></figure>
+
+<p>  Note that the rank indices start at <code>1</code>, so <code>rank[0](...)</code> returns no results.</p>
+<blockquote>
+<p>请注意，rank指数从1开始，所以rank[0](…)不返回结果。</p>
+</blockquote>
+</li>
+<li><p><code>strictconcat</code>, <code>strictcount</code>, and <code>strictsum</code>: These aggregates work like <code>concat</code>, <code>count</code>, and <code>sum</code> respectively, except that they are <em>strict</em>. That is, if there are no possible assignments to the aggregation variables that satisfy the formula, then the entire aggregation fails and evaluates to the empty set (instead of defaulting to <code>0</code> or the empty string). This is useful if you’re only interested in results where the aggregation body is non-trivial.</p>
+</li>
+<li><blockquote>
+<p>strictconcat、strictcount和stictsum。这些聚合的工作原理分别和concat, count, sum一样, 除了它们是严格的. 也就是说，如果聚合变量没有满足公式的可能赋值，那么整个聚合就会失败，并评估为空集（而不是默认为0或空字符串）。如果你只对聚合体是非平凡的结果感兴趣，这很有用。</p>
+</blockquote>
+</li>
+<li><p><code>unique</code>: This aggregate depends on the values of <code>&lt;expression&gt;</code> over all possible assignments to the aggregation variables. If there is a unique value of <code>&lt;expression&gt;</code> over the aggregation variables, then the aggregate evaluates to that value. Otherwise, the aggregate has no value.</p>
+</li>
+<li><blockquote>
+<p><code>unique</code>: 取决于<expression>在所有可能的聚合变量赋值上的值。如果<expression>在聚合变量上有一个唯一的值，那么聚合体就会评估为该值。否则，聚合就没有值。</expression></expression></p>
+</blockquote>
+<p>  For example, the following query returns the positive integers <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>. For negative integers <code>x</code>, the expressions <code>x</code> and <code>x.abs()</code> have different values, so the value for <code>y</code> in the aggregate expression is not uniquely determined.</p>
+<blockquote>
+<p>例如，下面的查询返回正整数1，2，3，4，5。对于负整数x，表达式x和x.abs()具有不同的值，因此聚合表达式中y的值不是唯一确定的。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">    from int x</span><br><span class="line">    where x in [-5 .. 5] and x !&#x3D; 0</span><br><span class="line">select unique(int y | y &#x3D; x or y &#x3D; x.abs() | y)</span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://gitee.com/samny/images/raw/master/13u33er13ec/13u33er13ec.png" alt="image-20210316203313463"></p>
+<p>  The <code>unique</code> aggregate is supported from release 2.1.0 of the CodeQL CLI, and release 1.24 of LGTM Enterprise.</p>
+<blockquote>
+<p>从CodeQL CLI的2.1.0版本和LGTM Enterprise的1.24版本开始支持<code>unique</code> 的聚合。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Evaluation-of-aggregates¶聚合合计"><a href="#Evaluation-of-aggregates¶聚合合计" class="headerlink" title="Evaluation of aggregates¶聚合合计"></a>Evaluation of aggregates<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#evaluation-of-aggregates" target="_blank" rel="noopener">¶</a>聚合合计</h3><p>In general, aggregate evaluation involves the following steps:</p>
+<blockquote>
+<p>一般来说，集合评价包括以下步骤:</p>
+</blockquote>
+<ol>
+<li><p>Determine the input variables: these are the aggregation variables declared in <code>&lt;variable declarations&gt;</code> and also the variables declared outside of the aggregate that are used in some component of the aggregate.</p>
+<blockquote>
+<p>确定输入变量：这些变量是在&lt;变量声明&gt;中声明的集合变量，也是在集合之外声明的、用于集合的某些组成部分的变量。</p>
+</blockquote>
+</li>
+<li><p>Generate all possible distinct tuples (combinations) of the values of input variables such that the <code>&lt;formula&gt;</code> holds true. Note that the same value of an aggregate variable may appear in multiple distinct tuples. All such occurrences of the same value are treated as distinct occurrences when processing tuples.</p>
+<blockquote>
+<p>生成所有可能的输入变量值的不同元组（组合），使&lt;公式&gt;成立。请注意，一个集合变量的同一个值可能出现在多个不同的元组中。当处理元组时，所有这些相同值的出现都被视为不同的出现。</p>
+</blockquote>
+</li>
+<li><p>Apply <code>&lt;expression&gt;</code> on each tuple and collect the generated (distinct) values. The application of <code>&lt;expression&gt;</code> on a tuple may result in generating more than one value.</p>
+<blockquote>
+<p>在每个元组上应用<expression>并收集生成的（不同的）值。在一个元组上应用<expression>可能会导致生成一个以上的值。</expression></expression></p>
+</blockquote>
+</li>
+<li><p>Apply the aggregation function on the values generated in step 3 to compute the final result.</p>
+<blockquote>
+<p>在步骤3中生成的值上应用聚合函数来计算最终结果。</p>
+</blockquote>
+</li>
+</ol>
+<p>Let us apply these steps to the <code>sum</code> aggregate in the following query:</p>
+<blockquote>
+<p>让我们在下面的查询中把这些步骤应用到sum聚合中:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select sum(int i, int j |</span><br><span class="line">    exists(string s | s &#x3D; &quot;hello&quot;.charAt(i)) and exists(string s | s &#x3D; &quot;world!&quot;.charAt(j)) | i)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/27u54er27ec/27u54er27ec.png" alt="image-20210316205427265"></p>
+<ol>
+<li><p>Input variables: <code>i</code>, <code>j</code>.</p>
+<blockquote>
+<p>输入变量：i，j。</p>
+</blockquote>
+</li>
+<li><p>All possible tuples <code>(&lt;value of i&gt;, &lt;value of j&gt;)</code> satisfying the given condition: <code>(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 0), (1, 1), ..., (4, 5)</code>.</p>
+<blockquote>
+<p>满足给定条件的所有可能的元组（&lt;i的值&gt;，&lt;j的值&gt;）。(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 0), (1, 1), …, (4, 5).</p>
+</blockquote>
+<p> 30 tuples are generated in this step.</p>
+<blockquote>
+<p>在这一步骤中会生成30个元组。</p>
+</blockquote>
+</li>
+<li><p>Apply the <code>&lt;expression&gt; i</code> on all tuples. This means selecting all values of <code>i</code> from all tuples: <code>0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4.</code></p>
+<blockquote>
+<p>在所有元组上应用&lt;表达式&gt;i。这意味着从所有元组中选择i的所有值。0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4.</p>
+</blockquote>
+</li>
+<li><p>Apply the aggregation function <code>sum</code> on the above values to get the final result <code>60</code>.</p>
+<blockquote>
+<p>在上述数值上应用聚合函数sum，得到最终结果60。</p>
+</blockquote>
+</li>
+</ol>
+<p>If we change <code>&lt;expression&gt;</code> to <code>i + j</code> in the above query, the query result is <code>135</code> since applying <code>i + j</code> on all tuples results in following values: <code>0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7, 3, 4, 5, 6, 7, 8, 4, 5, 6, 7, 8, 9</code>.</p>
+<blockquote>
+<p>如果我们将上述查询中的<expression>改为i+j，则查询结果为135，因为将i+j应用于所有元组上的结果如下。0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7, 3, 4, 5, 6, 7, 8, 4, 5, 6, 7, 8, 9.</expression></p>
+</blockquote>
+<p>Next, consider the following query:</p>
+<blockquote>
+<p>接下来，考虑下面的查询: </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count(string s | s &#x3D; &quot;hello&quot; | s.charAt(_))</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><code>s</code> is the input variable of the aggregate.</p>
+<blockquote>
+<p>s是集合的输入变量。</p>
+</blockquote>
+</li>
+<li><p>A single tuple <code>&quot;hello&quot;</code> is generated in this step.</p>
+<blockquote>
+<p>在这一步骤中会生成一个单一元组 “hello”。</p>
+</blockquote>
+</li>
+<li><p>The <code>&lt;expression&gt; charAt(_)</code> is applied on this tuple. The underscore <code>_</code> in <code>charAt(_)</code> is a <a href="https://codeql.github.com/docs/ql-language-reference/expressions/#don-t-care-expressions" target="_blank" rel="noopener">don’t-care expression</a>, which represents any value. <code>s.charAt(_)</code> generates four distinct values <code>h, e, l, o</code>.</p>
+<blockquote>
+<p>&lt;表达式&gt; charAt(<em>)被应用在这个元组上。s.charAt(</em>)中的下划线<em>是一个无所谓的表达式，它代表任何值。s.charAt(</em>)生成四个不同的值h、e、l、o。</p>
+</blockquote>
+</li>
+<li><p>Finally, <code>count</code> is applied on these values, and the query returns <code>4</code>.</p>
+<blockquote>
+<p>最后，对这些值应用count，查询返回4。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="Omitting-parts-of-an-aggregation¶省略聚会的部分内容"><a href="#Omitting-parts-of-an-aggregation¶省略聚会的部分内容" class="headerlink" title="Omitting parts of an aggregation¶省略聚会的部分内容"></a>Omitting parts of an aggregation<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#omitting-parts-of-an-aggregation" target="_blank" rel="noopener">¶</a>省略聚会的部分内容</h3><p>The three parts of an aggregation are not always required, so you can often write the aggregation in a simpler form:</p>
+<blockquote>
+<p>聚合的三个部分并不总是必需的，所以你通常可以用更简单的形式来写聚合。</p>
+</blockquote>
+<ol>
+<li><p>If you want to write an aggregation of the form <code>&lt;aggregate&gt;(&lt;type&gt; v | &lt;expression&gt; = v | v)</code>, then you can omit the <code>&lt;variable declarations&gt;</code> and <code>&lt;formula&gt;</code> parts and write it as follows:</p>
+<blockquote>
+<p>如果你想写一个<aggregate>(<type> v | <expression> = v | v)这种形式的聚合，那么你可以省略&lt;变量声明&gt;和&lt;公式&gt;部分，写成如下:</expression></type></aggregate></p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;aggregate&gt;(&lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+<p> For example, the following aggregations determine how many times the letter <code>l</code> occurs in string <code>&quot;hello&quot;</code>. These forms are equivalent:</p>
+<blockquote>
+<p>例如，下面的聚合确定了字母l在字符串 “hello “中出现的次数。这些形式是等价的。</p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">count(int i | i &#x3D; &quot;hello&quot;.indexOf(&quot;l&quot;) | i)</span><br><span class="line">count(&quot;hello&quot;.indexOf(&quot;l&quot;))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>If there is only one aggregation variable, you can omit the <code>&lt;expression&gt;</code> part instead. In this case, the expression is considered to be the aggregation variable itself. For example, the following aggregations are equivalent:</p>
+<blockquote>
+<p>如果只有一个聚合变量，你可以省略<expression>部分。在这种情况下，表达式被认为是聚合变量本身。例如，下面的聚合变量是等价的。</expression></p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">avg(int i | i &#x3D; [0 .. 3] | i)</span><br><span class="line">avg(int i | i &#x3D; [0 .. 3])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>As a special case, you can omit the <code>&lt;expression&gt;</code> part from <code>count</code> even if there is more than one aggregation variable. In such a case, it counts the number of distinct tuples of aggregation variables that satisfy the formula. In other words, the expression part is considered to be the constant <code>1</code>. For example, the following aggregations are equivalent:</p>
+<blockquote>
+<p>作为一种特殊情况，您可以省略 count 中的 <expression> 部分，即使有一个以上的聚合变量。在这种情况下，它计算满足公式的聚合变量的不同元组的数量。换句话说，表达式部分被认为是常数1。例如，下面的聚合是等价的。</expression></p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">count(int i, int j | i in [1 .. 3] and j in [1 .. 3] | 1)</span><br><span class="line">count(int i, int j | i in [1 .. 3] and j in [1 .. 3])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>You can omit the <code>&lt;formula&gt;</code> part, but in that case you should include two vertical bars:</p>
+<blockquote>
+<p>你可以省略&lt;公式&gt;部分，但在这种情况下，你应该包括两个竖条。</p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;aggregate&gt;(&lt;variable declarations&gt; | | &lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+<p> This is useful if you don’t want to restrict the aggregation variables any further. For example, the following aggregation returns the maximum number of lines across all files:</p>
+<blockquote>
+<p>如果你不想进一步限制聚合变量，这很有用。例如，下面的聚合返回所有文件的最大行数。</p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max(File f | | f.getTotalNumberOfLines())</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Finally, you can also omit both the <code>&lt;formula&gt;</code> and <code>&lt;expression&gt;</code> parts. For example, the following aggregations are equivalent ways to count the number of files in a database:</p>
+<blockquote>
+<p>最后，你也可以省略&lt;公式&gt;和&lt;表达式&gt;两部分。例如，下面的聚合是计算数据库中文件数量的等价方法。</p>
+</blockquote>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">count(File f | any() | 1)</span><br><span class="line">count(File f | | 1)</span><br><span class="line">count(File f)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h3 id="Monotonic-aggregates¶单调聚合"><a href="#Monotonic-aggregates¶单调聚合" class="headerlink" title="Monotonic aggregates¶单调聚合"></a>Monotonic aggregates<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#monotonic-aggregates" target="_blank" rel="noopener">¶</a>单调聚合</h3><p>In addition to standard aggregates, QL also supports monotonic aggregates. Monotonic aggregates differ from standard aggregates in the way that they deal with the values generated by the <code>&lt;expression&gt;</code> part of the formula:</p>
+<blockquote>
+<p>除了标准聚合，QL还支持单调聚合。单调聚合与标准聚合的不同之处在于它们处理公式中<expression>部分产生的值。</expression></p>
+</blockquote>
+<ul>
+<li><p>Standard aggregates take the <code>&lt;expression&gt;</code> values for each <code>&lt;formula&gt;</code> value and flatten them into a list. A single aggregation function is applied to all the values.</p>
+</li>
+<li><blockquote>
+<p>标准聚合是将每个&lt;公式&gt;值的<expression>值扁平化为一个列表。一个单一的聚合函数被应用于所有的值。</expression></p>
+</blockquote>
+</li>
+<li><p>Monotonic aggregates take an <code>&lt;expression&gt;</code> for each value given by the <code>&lt;formula&gt;</code>, and create combinations of all the possible values. The aggregation function is applied to each of the resulting combinations.</p>
+</li>
+<li><blockquote>
+<p>单调聚合对&lt;公式&gt;给出的每个值取一个<expression>，并创建所有可能的值的组合。聚合函数被应用于每个产生的组合。</expression></p>
+</blockquote>
+</li>
+</ul>
+<p>In general, if the <code>&lt;expression&gt;</code> is total and functional, then monotonic aggregates are equivalent to standard aggregates. Results differ when there is not precisely one <code>&lt;expression&gt;</code> value for each value generated by the <code>&lt;formula&gt;</code>:</p>
+<blockquote>
+<p>一般来说，如果&lt;表达式&gt;是总的和函数的，那么单调聚合相当于标准聚合。当&lt;公式&gt;生成的每一个值没有精确的一个<expression>值时，结果就会有所不同:</expression></p>
+</blockquote>
+<ul>
+<li><p>If there are missing <code>&lt;expression&gt;</code> values (that is, there is no <code>&lt;expression&gt;</code> value for a value generated by the <code>&lt;formula&gt;</code>), monotonic aggregates won’t compute a result, as you cannot create combinations of values including exactly one <code>&lt;expression&gt;</code> value for each value generated by the <code>&lt;formula&gt;</code>.</p>
+</li>
+<li><blockquote>
+<p>如果缺少<expression>值（也就是说，<formula>生成的值中没有<expression>值），单调聚合不会计算结果，因为你不能为<formula>生成的每个值创建包括一个<expression>值的组合。</expression></formula></expression></formula></expression></p>
+</blockquote>
+</li>
+<li><p>If there is more than one <code>&lt;expression&gt;</code> per <code>&lt;formula&gt;</code> result, you can create multiple combinations of values including exactly one <code>&lt;expression&gt;</code> value for each value generated by the <code>&lt;formula&gt;</code>. Here, the aggregation function is applied to each of the resulting combinations.</p>
+</li>
+<li><blockquote>
+<p>如果每个<formula>结果有一个以上的<expression>，您可以为<formula>生成的每个值创建多个值的组合，包括正好一个<expression>值。在这里，聚合函数被应用到每个结果组合中。</expression></formula></expression></formula></p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h4 id="Recursive-monotonic-aggregates¶递归单调聚合"><a href="#Recursive-monotonic-aggregates¶递归单调聚合" class="headerlink" title="Recursive monotonic aggregates¶递归单调聚合"></a>Recursive monotonic aggregates<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#recursive-monotonic-aggregates" target="_blank" rel="noopener">¶</a>递归单调聚合</h4><p>Monotonic aggregates may be used <a href="https://codeql.github.com/docs/ql-language-reference/recursion/#recursion" target="_blank" rel="noopener">recursively</a>, but the recursive call may only appear in the expression, and not in the range. The recursive semantics for aggregates are the same as the recursive semantics for the rest of QL. For example, we might define a predicate to calculate the distance of a node in a graph from the leaves as follows:</p>
+<blockquote>
+<p>单调聚合可以递归使用，但递归调用只能出现在表达式中，而不能出现在范围内。聚合体的递归语义与QL其他部分的递归语义相同。例如，我们可以定义一个谓词来计算图中一个节点与叶子的距离，如下所示: </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int depth(Node n) &#123;</span><br><span class="line">  if not exists(n.getAChild())</span><br><span class="line">  then result &#x3D; 0</span><br><span class="line">  else result &#x3D; 1 + max(Node child | child &#x3D; n.getAChild() | depth(child))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here the recursive call is in the expression, which is legal. The recursive semantics for aggregates are the same as the recursive semantics for the rest of QL. If you understand how aggregates work in the non-recursive case then you should not find it difficult to use them recursively. However, it is worth seeing how the evaluation of a recursive aggregation proceeds.</p>
+<blockquote>
+<p>这里的递归调用是在表达式中，这是合法的。聚合体的递归语义与QL的其他递归语义是一样的。如果你理解了聚合体在非递归情况下的工作原理，那么你应该不会觉得递归地使用聚合体有什么困难。然而，值得看看递归聚合的评估是如何进行的。</p>
+</blockquote>
+<p>Consider the depth example we just saw with the following graph as input (arrows point from children to parents):</p>
+<blockquote>
+<p>考虑一下我们刚刚看到的深度例子，以下面的图作为输入（箭头从子代指向父代）。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/0u33er0ec/0u33er0ec.png" alt="image0"></p>
+<p>Then the evaluation of the <code>depth</code> predicate proceeds as follows:</p>
+<blockquote>
+<p>那么谓词的<code>depth</code>计算过程如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Stage</strong></th>
+<th align="left"><strong>depth</strong></th>
+<th align="left"><strong>Comments</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">0</td>
+<td align="left"></td>
+<td align="left">We always begin with the empty set.                                        从空集开始。</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left"><code>(0, b),             (0, d), (0, e)</code></td>
+<td align="left">The nodes with no children have depth 0. The recursive step for <strong>a</strong> and <strong>c</strong> fails to produce a value, since some of their children do not have values for <code>depth</code>.                                                     没有子节点的节点的深度为0.a和c的递归步骤没有产生一个值，因为它们的一些子节点没有深度值。</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left"><code>(0, b), (0, d), (0, e), (1, c)</code></td>
+<td align="left">The recursive step for <strong>c</strong> succeeds, since <code>depth</code> now has a value for all its children (<strong>d</strong> and <strong>e</strong>). The recursive step for <strong>a</strong> still fails.                                                                    c的递归步骤成功，因为深度现在对所有子节点（d和e）都有一个值。a的递归步骤仍然失败。</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><code>(0, b), (0, d), (0, e), (1, c), (2, a)</code></td>
+<td align="left">The recursive step for <strong>a</strong> succeeds, since <code>depth</code> now has a value for all its children (<strong>b</strong> and <strong>c</strong>).a的递归步骤成功，因为深度现在对所有的子代（b和c）都有一个值。</td>
+</tr>
+</tbody></table>
+<p>Here, we can see that at the intermediate stages it is very important for the aggregate to fail if some of the children lack a value - this prevents erroneous values being added.</p>
+<blockquote>
+<p>在这里，我们可以看到，在中间阶段，如果一些子代缺少一个值，那么聚合失败是非常重要的–这可以防止错误的值被添加。</p>
+</blockquote>
+<h2 id="Any¶"><a href="#Any¶" class="headerlink" title="Any¶"></a>Any<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#any" target="_blank" rel="noopener">¶</a></h2><p>The general syntax of an <code>any</code> expression is similar to the syntax of an <a href="https://codeql.github.com/docs/ql-language-reference/expressions/#aggregations" target="_blank" rel="noopener">aggregation</a>, namely:</p>
+<blockquote>
+<p>Any表达式的一般语法与聚合的语法相似，即: </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">any(&lt;variable declarations&gt; | &lt;formula&gt; | &lt;expression&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>You should always include the <a href="https://codeql.github.com/docs/ql-language-reference/variables/#variable-declarations" target="_blank" rel="noopener">variable declarations</a>, but the <a href="https://codeql.github.com/docs/ql-language-reference/formulas/#formulas" target="_blank" rel="noopener">formula</a> and <a href="https://codeql.github.com/docs/ql-language-reference/expressions/#expressions" target="_blank" rel="noopener">expression</a> parts are optional.</p>
+<blockquote>
+<p>你应该始终包含变量声明，但公式和表达式部分是可选的。</p>
+</blockquote>
+<p>The <code>any</code> expression denotes any values that are of a particular form and that satisfy a particular condition. More precisely, the <code>any</code> expression:</p>
+<blockquote>
+<p>Any表达式表示任何具有特定形式并满足特定条件的值。更准确地说，任何表达式。</p>
+</blockquote>
+<ol>
+<li><p>Introduces temporary variables. 引入临时变量</p>
+</li>
+<li><p>Restricts their values to those that satisfy the <code>&lt;formula&gt;</code> part (if it’s present). 将它们的值限制为满足&lt;公式&gt;部分的值（如果有的话）。</p>
+</li>
+<li><p>Returns <code>&lt;expression&gt;</code> for each of those variables. If there is no <code>&lt;expression&gt;</code> part, then it returns the variables themselves.</p>
+<blockquote>
+<p>返回这些变量中每个变量的<expression>。如果没有<expression>部分，则返回变量本身。</expression></expression></p>
+</blockquote>
+</li>
+</ol>
+<p>The following table lists some examples of different forms of <code>any</code> expressions:</p>
+<blockquote>
+<p>下表列出了一些不同形式的任意表达式的例子:</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Expression</th>
+<th align="left">Values</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>any(File f)</code></td>
+<td align="left">all <code>File</code>s in the database</td>
+</tr>
+<tr>
+<td align="left">`any(Element e</td>
+<td align="left">e.getName())`</td>
+</tr>
+<tr>
+<td align="left">`any(int i</td>
+<td align="left">i = [0 .. 3])`</td>
+</tr>
+<tr>
+<td align="left">`any(int i</td>
+<td align="left">i = [0 .. 3]</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Note</p>
+<p>There is also a <a href="https://codeql.github.com/docs/ql-language-reference/ql-language-specification/#non-member-built-ins" target="_blank" rel="noopener">built-in predicate</a> <code>any()</code>. This is a predicate that always holds.</p>
+<p>还有一个内置的谓词any()。这是一个始终保持的谓词。</p>
+</blockquote>
+<h2 id="Unary-operations¶一元操作"><a href="#Unary-operations¶一元操作" class="headerlink" title="Unary operations¶一元操作"></a>Unary operations<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#unary-operations" target="_blank" rel="noopener">¶</a>一元操作</h2><p>A unary operation is a minus sign (<code>-</code>) or a plus sign (<code>+</code>) followed by an expression of type <code>int</code> or <code>float</code>. For example:</p>
+<blockquote>
+<p>单元运算是指一个减号(-)或加号(+)，后面跟着一个int或float类型的表达式。例如：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-6.28</span><br><span class="line">+(10 - 4)</span><br><span class="line">+avg(float f | f &#x3D; 3.4 or f &#x3D; -9.8)</span><br><span class="line">-sum(int i | i in [0 .. 9] | i * i)</span><br></pre></td></tr></table></figure>
+
+<p>A plus sign leaves the values of the expression unchanged, while a minus sign takes the arithmetic negations of the values.</p>
+<blockquote>
+<p>加号使表达式的值保持不变，而负号则对值进行算术求反。</p>
+</blockquote>
+<h2 id="Binary-operations¶二元操作"><a href="#Binary-operations¶二元操作" class="headerlink" title="Binary operations¶二元操作"></a>Binary operations<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#binary-operations" target="_blank" rel="noopener">¶</a>二元操作</h2><p>A binary operation consists of an expression, followed by a binary operator, followed by another expression. For example:</p>
+<blockquote>
+<p>二进制运算由一个表达式、一个二进制运算符和另一个表达式组成。例如：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">5 % 2</span><br><span class="line">(9 + 1) &#x2F; (-2)</span><br><span class="line">&quot;Q&quot; + &quot;L&quot;</span><br><span class="line">2 * min(float f | f in [-3 .. 3])</span><br></pre></td></tr></table></figure>
+
+<p>You can use the following binary operators in QL:</p>
+<blockquote>
+<p>可以在 QL 中使用以下二进制运算符：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Symbol</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Addition/concatenation加法/串联</td>
+<td align="left"><code>+</code></td>
+</tr>
+<tr>
+<td align="left">Multiplication乘法</td>
+<td align="left"><code>*</code></td>
+</tr>
+<tr>
+<td align="left">Division除法</td>
+<td align="left"><code>/</code></td>
+</tr>
+<tr>
+<td align="left">Subtraction减法</td>
+<td align="left"><code>-</code></td>
+</tr>
+<tr>
+<td align="left">Modulo取模</td>
+<td align="left"><code>%</code></td>
+</tr>
+</tbody></table>
+<p>If both expressions are numbers, these operators act as standard arithmetic operators. For example, <code>10.6 - 3.2</code> has value <code>7.4</code>, <code>123.456 * 0</code> has value <code>0</code>, and <code>9 % 4</code> has value <code>1</code> (the remainder after dividing <code>9</code> by <code>4</code>). If both operands are integers, then the result is an integer. Otherwise the result is a floating-point number.</p>
+<blockquote>
+<p>如果两个表达式都是数字，这些运算符的作用就是标准的算术运算符。例如，10.6 - 3.2 的值是 7.4，123.456 * 0 的值是 0，9 % 4 的值是 1（9 除以 4 后的余数）。如果两个操作数都是整数，那么结果就是一个整数。否则结果是一个浮点数。</p>
+</blockquote>
+<p>You can also use <code>+</code> as a string concatenation operator. In this case, at least one of the expressions must be a string—the other expression is implicitly converted to a string using the <code>toString()</code> predicate. The two expressions are concatenated, and the result is a string. For example, the expression <code>221 + &quot;B&quot;</code> has value <code>&quot;221B&quot;</code>.</p>
+<blockquote>
+<p>你也可以使用+作为一个字符串连接操作符。在这种情况下，至少有一个表达式必须是字符串–另一个表达式使用toString()谓词隐式转换为字符串。这两个表达式被连接起来，结果是一个字符串。例如，表达式221 + “B “的值是 “221B”。</p>
+</blockquote>
+<hr>
+<h2 id="Casts¶类型转化"><a href="#Casts¶类型转化" class="headerlink" title="Casts¶类型转化"></a>Casts<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#casts" target="_blank" rel="noopener">¶</a>类型转化</h2><p>A cast allows you to constrain the <a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">type</a> of an expression. This is similar to casting in other languages, for example in Java.</p>
+<blockquote>
+<p>强制转换允许您约束表达式的类型。这与其他语言中的强制转换类似，例如在 Java 中。</p>
+</blockquote>
+<p>You can write a cast in two ways:</p>
+<blockquote>
+<p>两种方式写一个类型转化</p>
+</blockquote>
+<ul>
+<li><p>As a “postfix” cast: A dot followed by the name of a type in parentheses. For example, <code>x.(Foo)</code> restricts the type of <code>x</code> to <code>Foo</code>.</p>
+<blockquote>
+<p>作为一个 “后缀 “类型: 一个圆点后面是括号里的类型名称。例如，x.(Foo)将x的类型限制为Foo。</p>
+</blockquote>
+</li>
+<li><p>As a “prefix” cast: A type in parentheses followed by another expression. For example, <code>(Foo)x</code> also restricts the type of <code>x</code> to <code>Foo</code>.</p>
+<blockquote>
+<p>作为一个 “前缀 “投递。在括号里的类型后面跟着另一个表达式. 例如，(Foo)x 也将 x 的类型限制为 Foo。</p>
+</blockquote>
+</li>
+</ul>
+<p>Note that a postfix cast is equivalent to a prefix cast surrounded by parentheses—<code>x.(Foo)</code> is exactly equivalent to <code>((Foo)x)</code>.</p>
+<blockquote>
+<p>请注意，后缀式等同于被括号包围的前缀式-x。(Foo)完全等同于((Foo)x)。</p>
+</blockquote>
+<p>Casts are useful if you want to call a <a href="https://codeql.github.com/docs/ql-language-reference/types/#member-predicates" target="_blank" rel="noopener">member predicate</a> that is only defined for a more specific type. For example, the following query selects Java <a href="https://codeql.github.com/codeql-standard-libraries/java/semmle/code/java/Type.qll/type.Type$Class.html" target="_blank" rel="noopener">classes</a> that have a direct supertype called “List”:</p>
+<blockquote>
+<p>如果你想调用一个只为特定类型定义的成员谓词，那么转置是很有用的。例如，下面的查询选择了具有直接超类型 “List “的Java类。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Type t</span><br><span class="line">where t.(Class).getASupertype().hasName(&quot;List&quot;)</span><br><span class="line">select t</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/19u17er19ec/19u17er19ec.png" alt="image-20210316221719485"></p>
+<p>Since the predicate <code>getASupertype()</code> is defined for <code>Class</code>, but not for <code>Type</code>, you can’t call <code>t.getASupertype()</code> directly. The cast <code>t.(Class)</code> ensures that <code>t</code> is of type <code>Class</code>, so it has access to the desired predicate.</p>
+<blockquote>
+<p>由于谓词getASupertype()是为Class定义的，而不是为Type定义的，所以不能直接调用t.getASupertype()。浇铸 t.(Class) 确保 t 是 Class 类型的，所以它可以访问所需的谓词。</p>
+</blockquote>
+<p>If you prefer to use a prefix cast, you can rewrite the <code>where</code> part as:</p>
+<blockquote>
+<p>如果你更喜欢使用前缀转码，你可以将where部分重写为。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">where ((Class)t).getASupertype().hasName(&quot;List&quot;)</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="Don’t-care-expressions"><a href="#Don’t-care-expressions" class="headerlink" title="Don’t-care expressions"></a>Don’t-care expressions</h2><p>This is an expression written as a single underscore <code>_</code>. It represents any value. (You “don’t care” what the value is.)</p>
+<blockquote>
+<p>这是一个写成下划线_的表达式。它代表任何值。(你 “不关心 “这个值是什么。)</p>
+</blockquote>
+<p>Unlike other expressions, a don’t-care expression does not have a type. In practice, this means that <code>_</code> doesn’t have any <a href="https://codeql.github.com/docs/ql-language-reference/types/#member-predicates" target="_blank" rel="noopener">member predicates</a>, so you can’t call <code>_.somePredicate()</code>.</p>
+<blockquote>
+<p>与其他表达式不同，don’t-care表达式没有类型。在实践中，这意味着<em>没有任何成员谓词，所以你不能调用</em>.somePredicate()。</p>
+</blockquote>
+<p>For example, the following query selects all the characters in the string <code>&quot;hello&quot;</code>:</p>
+<blockquote>
+<p>例如，下面的查询选择了字符串 “hello “中的所有字符。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from string s</span><br><span class="line">where s &#x3D; &quot;hello&quot;.charAt(_)</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
+
+<p>The <code>charAt(int i)</code> predicate is defined on strings and usually takes an <code>int</code> argument. Here the don’t care expression <code>_</code> is used to tell the query to select characters at every possible index. The query returns the values <code>h</code>, <code>e</code>, <code>l</code>, and <code>o</code>.</p>
+<blockquote>
+<p>charAt(int i) 谓词定义在字符串上，通常取一个int参数。这里使用了don’t care表达式_来告诉查询在每个可能的索引中选择字符。查询返回的值是h、e、l和o。</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Expressions¶表达式"><span class="toc-number">1.</span> <span class="toc-text">Expressions¶表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Variable-references¶变量引用"><span class="toc-number">1.1.</span> <span class="toc-text">Variable references¶变量引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Literals¶字符"><span class="toc-number">1.2.</span> <span class="toc-text">Literals¶字符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Parenthesized-expressions¶括号表达式"><span class="toc-number">1.3.</span> <span class="toc-text">Parenthesized expressions¶括号表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ranges¶范围"><span class="toc-number">1.4.</span> <span class="toc-text">Ranges¶范围</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Set-literal-expressions¶设置文本表达式"><span class="toc-number">1.5.</span> <span class="toc-text">Set literal expressions¶设置文本表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Super-expressions¶超级表达式"><span class="toc-number">1.6.</span> <span class="toc-text">Super expressions¶超级表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Calls-to-predicates-with-result-¶谓词调用-带结果"><span class="toc-number">1.7.</span> <span class="toc-text">Calls to predicates (with result)¶谓词调用(带结果)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Aggregations¶聚合"><span class="toc-number">1.8.</span> <span class="toc-text">Aggregations¶聚合</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Evaluation-of-aggregates¶聚合合计"><span class="toc-number">1.8.1.</span> <span class="toc-text">Evaluation of aggregates¶聚合合计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Omitting-parts-of-an-aggregation¶省略聚会的部分内容"><span class="toc-number">1.8.2.</span> <span class="toc-text">Omitting parts of an aggregation¶省略聚会的部分内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Monotonic-aggregates¶单调聚合"><span class="toc-number">1.8.3.</span> <span class="toc-text">Monotonic aggregates¶单调聚合</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Recursive-monotonic-aggregates¶递归单调聚合"><span class="toc-number">1.8.3.1.</span> <span class="toc-text">Recursive monotonic aggregates¶递归单调聚合</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Any¶"><span class="toc-number">1.9.</span> <span class="toc-text">Any¶</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unary-operations¶一元操作"><span class="toc-number">1.10.</span> <span class="toc-text">Unary operations¶一元操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Binary-operations¶二元操作"><span class="toc-number">1.11.</span> <span class="toc-text">Binary operations¶二元操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Casts¶类型转化"><span class="toc-number">1.12.</span> <span class="toc-text">Casts¶类型转化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Don’t-care-expressions"><span class="toc-number">1.13.</span> <span class="toc-text">Don’t-care expressions</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

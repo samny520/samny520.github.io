@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Queries - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="Queries – 查询Queries are the output of a QL program. They evaluate to sets of results.
+
+Queries是QL程序,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Queries</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Queries</h1>
+        <div class="stuff">
+            <span>三月 14, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/codeql/" rel="tag">codeql</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Queries-–-查询"><a href="#Queries-–-查询" class="headerlink" title="Queries – 查询"></a>Queries – 查询</h2><p>Queries are the output of a QL program. They evaluate to sets of results.</p>
+<blockquote>
+<p>Queries是QL程序的输出，执行的结果集合。</p>
+</blockquote>
+<p>There are two kinds of queries. For a given <a href="https://codeql.github.com/docs/ql-language-reference/modules/#query-modules" target="_blank" rel="noopener">query module</a>, the queries in that module are:</p>
+<blockquote>
+<p>有两种Queries。对于给定的<a href="https://codeql.github.com/docs/ql-language-reference/modules/#query-modules" target="_blank" rel="noopener">查询模块</a>，该模块中的查询是</p>
+</blockquote>
+<ul>
+<li><p>The <a href="https://codeql.github.com/docs/ql-language-reference/queries/#select-clauses" target="_blank" rel="noopener">select clause</a>, if any, defined in that module.</p>
+</li>
+<li><blockquote>
+<p>select 子句（如果有的话）在该模块中定义。</p>
+</blockquote>
+</li>
+<li><p>Any <a href="https://codeql.github.com/docs/ql-language-reference/queries/#query-predicates" target="_blank" rel="noopener">query predicates</a> in that module’s predicate <a href="https://codeql.github.com/docs/ql-language-reference/name-resolution/#namespaces" target="_blank" rel="noopener">namespace</a>. That is, they can be defined in the module itself, or imported from a different module.</p>
+</li>
+<li><blockquote>
+<p>在该模块的谓词空间中的任何查询谓词，也就是说，它们可以在模块本身定义，也可以从其他模块导入</p>
+</blockquote>
+</li>
+</ul>
+<p>We often also refer to the whole QL program as a query.</p>
+<blockquote>
+<p>通常也把整个QL程序称为查询。</p>
+</blockquote>
+<hr>
+<h3 id="Select-clauses"><a href="#Select-clauses" class="headerlink" title="Select clauses"></a>Select clauses</h3><p>When writing a query module, you can include a <strong>select clause</strong> (usually at the end of the file) of the following form:</p>
+<blockquote>
+<p>在编写查询模块时，你可以包含一个<strong>选择子句</strong>（通常在文件的末尾），其形式如下:</p>
+<p>(from 和 where 部分可以省略)</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from &#x2F;* ... variable declarations ... *&#x2F;</span><br><span class="line">where &#x2F;* ... logical formula ... *&#x2F;</span><br><span class="line">select &#x2F;* ... expressions ... *&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>Apart from the expressions described in “<a href="https://codeql.github.com/docs/ql-language-reference/expressions/#expressions" target="_blank" rel="noopener">Expressions</a>,” you can also include:</p>
+<blockquote>
+<p>除了 “表达式 “中描述的表达式外，你还可以包括:</p>
+</blockquote>
+<ul>
+<li><p>The <code>as</code> keyword, followed by a name. This gives a “label” to a column of results, and allows you to use them in subsequent select expressions.</p>
+</li>
+<li><blockquote>
+<p><code>as</code>关键字，后面跟着一个名字。这给一列结果打上了 “标签”，并允许你在随后的选择表达式中使用它们。</p>
+</blockquote>
+</li>
+<li><p>The <code>order by</code> keywords, followed by the name of a result column, and optionally the keyword <code>asc</code> or <code>desc</code>. This determines the order in which to display the results.</p>
+</li>
+<li><blockquote>
+<p>ORDER BY关键字，后跟结果列的名称，还可以选择关键字<code>asc</code>或<code>desc</code> 。这决定了显示结果的顺序。</p>
+</blockquote>
+</li>
+</ul>
+<p><a href="./Queries.ql">Queries.ql</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from int x, int y</span><br><span class="line">where x &#x3D; 3 and y in [0 .. 2]</span><br><span class="line">select x, y, x * y as product, &quot;product: &quot; + product</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//33u44er33ec/33u44er33ec.png" alt="image-20210314144433274"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from int x, int y</span><br><span class="line">where x &#x3D; 3 and y in [0 .. 2]</span><br><span class="line">select x, y, x * y as product, &quot;product: &quot; + product</span><br><span class="line">as res order by  res desc</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//34u47er34ec/34u47er34ec.png" alt="image-20210314144734388"></p>
+<hr>
+<h3 id="Query-predicates-–-查询谓词"><a href="#Query-predicates-–-查询谓词" class="headerlink" title="Query predicates – 查询谓词"></a>Query predicates – 查询谓词</h3><p> A query predicate is a <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#non-member-predicates" target="_blank" rel="noopener">non-member predicate</a> with a <code>query</code> annotation. It returns all the tuples that the predicate evaluates to.</p>
+<blockquote>
+<p>查询谓词是具有查询注释的非成员谓词。 它返回谓词求值的所有元组。</p>
+<p>个人理解。再非成员谓词前面加上一个 <code>query</code>注释就代表这个非成员谓词是要被查询的，如果不加<code>query</code> 注释就会报错</p>
+</blockquote>
+<p><a href="./Queries1.ql">Queries1.ql</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">query int getProduct(int x, int y) &#123;</span><br><span class="line">  x &#x3D; 3 and</span><br><span class="line">  y in [0 .. 2] and</span><br><span class="line">  result &#x3D; x * y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//30u51er30ec/30u51er30ec.png" alt="image-20210314145130939"></p>
+<p>A benefit of writing a query predicate instead of a select clause is that you can call the predicate in other parts of the code too. For example, you can call <code>getProduct</code> inside the body of a <a href="https://codeql.github.com/docs/ql-language-reference/types/#classes" target="_blank" rel="noopener">class</a>:</p>
+<blockquote>
+<p>编写查询谓词而不是选择子句(select clause)的一个好处是，你也可以在代码的其他部分调用该谓词。</p>
+</blockquote>
+<p><a href="./Queries2.ql">Queries2.ql</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">query int getProduct(int x, int y) &#123;</span><br><span class="line">    x &#x3D; 4 and</span><br><span class="line">    y in [0 .. 3] and</span><br><span class="line">    result &#x3D; x * y</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">class MultipleOfThree extends int &#123;</span><br><span class="line">    MultipleOfThree() &#123; this &#x3D; getProduct(_, _) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//49u57er49ec/49u57er49ec.png" alt="image-20210314145749808"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Queries-–-查询"><span class="toc-number">1.</span> <span class="toc-text">Queries – 查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Select-clauses"><span class="toc-number">1.1.</span> <span class="toc-text">Select clauses</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Query-predicates-–-查询谓词"><span class="toc-number">1.2.</span> <span class="toc-text">Query predicates – 查询谓词</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

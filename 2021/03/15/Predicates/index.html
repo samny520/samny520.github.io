@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Predicates - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="Predicates–谓词定义官方给出的定义
+
+Predicates are used to describe the logical relations that make up a QL pro,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Predicates</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Predicates</h1>
+        <div class="stuff">
+            <span>三月 15, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/codeql/" rel="tag">codeql</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Predicates–谓词"><a href="#Predicates–谓词" class="headerlink" title="Predicates–谓词"></a>Predicates–谓词</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><a href="https://codeql.github.com/docs/ql-language-reference/predicates/" target="_blank" rel="noopener">官方</a>给出的定义</p>
+<blockquote>
+<p><code>Predicates are used to describe the logical relations that make up a QL program.</code></p>
+</blockquote>
+<blockquote>
+<p>谓词用于描述组成QL程序的逻辑关系。</p>
+</blockquote>
+<hr>
+<h3 id="定义谓词"><a href="#定义谓词" class="headerlink" title="定义谓词"></a>定义谓词</h3><p>在定义谓词时，官方要求：</p>
+<ol>
+<li>关键字（用于<a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates-without-result" target="_blank" rel="noopener">无结果的谓词</a>）或结果类型（用于<a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates-with-result" target="_blank" rel="noopener">结果的谓词</a>）。<code>predicate</code></li>
+<li>谓词的名称。这是一个<a href="https://codeql.github.com/docs/ql-language-reference/ql-language-specification/#identifiers" target="_blank" rel="noopener">标识符</a>，以小写字母开始。</li>
+<li>谓词的参数（如果有的话）被逗号隔开。对于每个参数，指定参数类型和参数变量的标识符。</li>
+<li>谓词体本身。这是一个逻辑公式，封闭在括号中。</li>
+</ol>
+<blockquote>
+<p>个人理解其实就是Java、C等语言中的方法或者函数（初步来看，但可以有其特殊性）</p>
+</blockquote>
+<p>注意（之后在看）</p>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/annotations/#abstract" target="_blank" rel="noopener">抽象</a>或<a href="https://codeql.github.com/docs/ql-language-reference/annotations/#external" target="_blank" rel="noopener">外部</a>谓词没有身体。要定义这样的谓词，则用分号 （） 结束谓词定义。<code>;</code></p>
+<hr>
+<h3 id="Predicates-without-result–没有结果谓词"><a href="#Predicates-without-result–没有结果谓词" class="headerlink" title="Predicates without result–没有结果谓词"></a>Predicates without result–没有结果谓词</h3><p>以关键字<code>predicate</code>开头，如果传入的值满足条件就拥有该值。</p>
+<p><a href="Predicates.ql">Predicates.ql</a>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">predicate isSmall(int i) &#123;</span><br><span class="line">    i in [1 .. 9]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from int x</span><br><span class="line">where x &#x3D; 2 and isSmall(x) &#x2F;&#x2F; x &#x3D; 40</span><br><span class="line">select x</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;2</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//18u38er18ec/18u38er18ec.png" alt="image-20210311163818016"></p>
+<hr>
+<h3 id="Predicates-with-result-–-结果谓词"><a href="#Predicates-with-result-–-结果谓词" class="headerlink" title="Predicates with result – 结果谓词"></a>Predicates with result – 结果谓词</h3><p>You can define a predicate with result by replacing the keyword with the type of the result. This introduces the special variable .<code>predicateresult</code></p>
+<p>通过将关键字替换为结果类型来定义结果的谓词。这里引入特殊的变量<code>predicateresult</code>。</p>
+<p><a href="Predicates1.ql">Predicates1.ql</a>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">int getSuccessor(int i) &#123;</span><br><span class="line">    result &#x3D; i + 1 and &#x2F;&#x2F; i&#x3D;3</span><br><span class="line">    i in [1 .. 9] &#x2F;&#x2F; i&#x3D;2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from int x</span><br><span class="line">where x &#x3D; 2 </span><br><span class="line">select getSuccessor(x) &#x2F;&#x2F;x &#x3D;3</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; 3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//11u53er11ec/11u53er11ec.png" alt="image-20210311165311442"></p>
+<p>结果谓词可以定义一个或多个值</p>
+<p>官方文档:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">string getANeighbor(string country) &#123;</span><br><span class="line">  country &#x3D; &quot;France&quot; and result &#x3D; &quot;Belgium&quot;</span><br><span class="line">  or</span><br><span class="line">  country &#x3D; &quot;France&quot; and result &#x3D; &quot;Germany&quot;</span><br><span class="line">  or</span><br><span class="line">  country &#x3D; &quot;Germany&quot; and result &#x3D; &quot;Austria&quot;</span><br><span class="line">  or</span><br><span class="line">  country &#x3D; &quot;Germany&quot; and result &#x3D; &quot;Belgium&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这种情况下：</p>
+<ul>
+<li>谓词调用返回两个结果：和.<code>getANeighbor(&quot;Germany&quot;)``&quot;Austria&quot;``&quot;Belgium&quot;</code></li>
+<li>谓词调用不返回任何结果，因为没有定义一个。<code>.getANeighbor(&quot;Belgium&quot;)``getANeighbor``result``&quot;Belgium&quot;</code></li>
+</ul>
+<hr>
+<h3 id="Recursive-predicates–递归谓词"><a href="#Recursive-predicates–递归谓词" class="headerlink" title="Recursive predicates–递归谓词"></a>Recursive predicates–递归谓词</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">string getANeighbor(string country) &#123;</span><br><span class="line">    country &#x3D; &quot;France&quot; and result &#x3D; &quot;Belgium&quot; </span><br><span class="line">    or</span><br><span class="line">    country &#x3D; &quot;France&quot; and result &#x3D; &quot;Germany&quot;</span><br><span class="line">    or</span><br><span class="line">    country &#x3D; &quot;Germany&quot; and result &#x3D; &quot;Austria&quot;</span><br><span class="line">    or</span><br><span class="line">    country &#x3D; &quot;Germany&quot; and result &#x3D; &quot;Belgium&quot;</span><br><span class="line">    or</span><br><span class="line">    country &#x3D; getANeighbor(result)</span><br><span class="line">&#125;</span><br><span class="line">select getANeighbor(&quot;Belgium&quot;)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;大致流程（个人推断）14（country&#x3D;Belgium）-&gt;4（country&#x3D;Belgium）-&gt;6（country&#x3D;Belgium）-&gt;8（country&#x3D;Belgium）-&gt;10（country&#x3D;Belgium）-&gt;12（country&#x3D;Belgium）-&gt;4（country&#x3D;France）输出-&gt;6（country&#x3D;Germany）输出</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//44u18er44ec/44u18er44ec.png" alt="image-20210312171843940"></p>
+<p>更多解释可以参考<a href="https://codeql.github.com/docs/ql-language-reference/recursion/#recursion" target="_blank" rel="noopener">递归</a></p>
+<hr>
+<h2 id="Kinds-of-predicates-—谓词的种类"><a href="#Kinds-of-predicates-—谓词的种类" class="headerlink" title="Kinds of predicates —谓词的种类"></a>Kinds of predicates —谓词的种类</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">int getSuccessor(int i) &#123;  &#x2F;&#x2F; 1. Non-member predicate 非成员谓词</span><br><span class="line">  result &#x3D; i + 1 and</span><br><span class="line">  i in [1 .. 9]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class FavoriteNumbers extends int &#123;</span><br><span class="line">  FavoriteNumbers() &#123;  &#x2F;&#x2F; 2. Characteristic predicate 特征谓词</span><br><span class="line">    this &#x3D; 1 or</span><br><span class="line">    this &#x3D; 4 or</span><br><span class="line">    this &#x3D; 9</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  string getName() &#123;   &#x2F;&#x2F; 3. Member predicate for the class FavoriteNumbers 成员谓词</span><br><span class="line">    this &#x3D; 1 and result &#x3D; &quot;one&quot;</span><br><span class="line">    or</span><br><span class="line">    this &#x3D; 4 and result &#x3D; &quot;four&quot;</span><br><span class="line">    or</span><br><span class="line">    this &#x3D; 9 and result &#x3D; &quot;nine&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Predicates–谓词"><span class="toc-number">1.</span> <span class="toc-text">Predicates–谓词</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义谓词"><span class="toc-number">1.2.</span> <span class="toc-text">定义谓词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Predicates-without-result–没有结果谓词"><span class="toc-number">1.3.</span> <span class="toc-text">Predicates without result–没有结果谓词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Predicates-with-result-–-结果谓词"><span class="toc-number">1.4.</span> <span class="toc-text">Predicates with result – 结果谓词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Recursive-predicates–递归谓词"><span class="toc-number">1.5.</span> <span class="toc-text">Recursive predicates–递归谓词</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kinds-of-predicates-—谓词的种类"><span class="toc-number">2.</span> <span class="toc-text">Kinds of predicates —谓词的种类</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

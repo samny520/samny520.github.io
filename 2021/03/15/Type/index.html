@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Type - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="TypeQL is a statically typed language, so each variable must have a declared type.
+
+QL是一种静态类型的语言，因此,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Type</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Type</h1>
+        <div class="stuff">
+            <span>三月 15, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/codeql/" rel="tag">codeql</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h2><p>QL is a statically typed language, so each variable must have a declared type.</p>
+<blockquote>
+<p>QL是一种静态类型的语言，因此每个变量必须具有声明的类型。</p>
+</blockquote>
+<p>A type is a set of values. For example, the type int is the set of integers. Note that a value can belong to more than one of these sets, which means that it can have more than one type.</p>
+<blockquote>
+<p>类型是一组值。例如，int类型是整数的集合。请注意，一个值可以属于这些集合中的一个以上，这意味着它可以有多个类型。</p>
+</blockquote>
+<p>The kinds of types in QL are primitive types, classes, character types, class domain types, algebraic datatypes, type unions, and database types.</p>
+<blockquote>
+<p>QL类型基本种类有 classes, character types, class domain types, algebraic datatypes, type unions, and database types.</p>
+</blockquote>
+<hr>
+<h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><p>定义一个类：</p>
+<ol>
+<li>class关键字</li>
+<li>类名，大写字母开头</li>
+<li>extends 继承的类（至少一个基本类型）</li>
+<li>主体，大括号</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class OneTwoThree extends int &#123;</span><br><span class="line">  OneTwoThree() &#123; &#x2F;&#x2F; characteristic predicate</span><br><span class="line">    this &#x3D; 1 or this &#x3D; 2 or this &#x3D; 3</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  string getAString() &#123; &#x2F;&#x2F; member predicate</span><br><span class="line">    result &#x3D; &quot;One, two or three: &quot; + this.toString()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  predicate isEven() &#123; &#x2F;&#x2F; member predicate</span><br><span class="line">    this &#x3D; 2</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义了一个类OneTwoThree，它包含了值1、2和3。特征谓词（this）代表 “整数1、2、3中的一个 “这一逻辑属性。</p>
+<p>一个有效类：</p>
+<ul>
+<li>不能继承自己</li>
+<li>不能继承final class（类比Java final关键词修饰的类）</li>
+<li>不得继承不兼容的类型。更多信息，请参见 <a href="https://codeql.github.com/docs/ql-language-reference/types/#type-compatibility" target="_blank" rel="noopener">类型兼容性</a>。</li>
+</ul>
+<hr>
+<h4 id="类主体"><a href="#类主体" class="headerlink" title="类主体"></a>类主体</h4><p>类主体可以包含：</p>
+<ul>
+<li><p>特征谓词声明</p>
+</li>
+<li><p>任意数量的成员谓词声明</p>
+</li>
+<li><p>任何数量的字段声明</p>
+</li>
+</ul>
+<h4 id="特征谓词"><a href="#特征谓词" class="headerlink" title="特征谓词"></a>特征谓词</h4><p>它们是在类的主体中定义的谓词。它们是使用变量 this 限制类中可能的值的逻辑属性。</p>
+<h4 id="成员谓词"><a href="#成员谓词" class="headerlink" title="成员谓词"></a>成员谓词</h4><p>这些谓词只适用于特定类的成员。可以对值调用成员谓词。</p>
+<p>例如，可以使用上 述类中的成员谓词： </p>
+<blockquote>
+<p> 1.(OneTwoThree).getAString()</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master//57u29er57ec/57u29er57ec.png" alt="image-20210315172957232"></p>
+<p>此调用返回结果”One, two or three: 1”。 </p>
+<p>表达式(OneTwoThree) 是一个类型转换(cast)。它确保 1 的类型是 OneTwoThree，而不仅仅是 int。因此，它可以访问成员谓词 getAString(). 成员谓词特别有用，因为可以将它们链接在一起。</p>
+<p>例如，可以使用 toUpperCase()，它是为字符串定义的内置函数：</p>
+<blockquote>
+<p>1.(OneTwoThree).getAString().toUpperCase()</p>
+</blockquote>
+<p><img src="/.io//C:%5CUsers%5CSamny%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210315181050594.png" alt="image-20210315181050594"></p>
+<p>此调用返回 “ONE, TWO OR THREE: 1”. 注意 特征谓词和成员谓词通常使用变量 this。这个变量总是引用类的一个成员，在 这种情况下是属于类 OneTwoThree 的值。类中的特征值是该类中的特征值。 在成员谓词中，这与谓词的任何其他参数的作用方式相同。 Fields 这些是在类的主体中声明的变量。一个类的主体中可以有任意数量的字段声明。</p>
+<hr>
+<blockquote>
+<p>注</p>
+</blockquote>
+<blockquote>
+<p>特性谓词和成员谓词经常使用变量this。这个变量总是指类的成员–本例中是属于类OneTwoThree的值。在特性谓词中，变量this约束了类中的值。在成员谓词中，this的作用与谓词的任何其他参数相同。</p>
+</blockquote>
+<hr>
+<h3 id="Field-字段"><a href="#Field-字段" class="headerlink" title="Field 字段"></a>Field 字段</h3><p>These are variables declared in the body of a class. A class can have any number of field declarations (that is, variable declarations) within its body. You can use these variables in predicate declarations inside the class. Much like the variable this, fields must be constrained in the characteristic predicate.</p>
+<blockquote>
+<p>这些是在类的主体中声明的变量。一个类的主体中可以有任意数量的字段声明（也就是变量声明）。你可以在类内部的谓词声明中使用这些变量。和变量this一样，字段必须在特性谓词中受到约束。</p>
+</blockquote>
+<p><a href="Type1.ql">Type1.ql</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class SmallInt extends int &#123;</span><br><span class="line">  SmallInt() &#123; this &#x3D; [1 .. 10] &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class DivisibleInt extends SmallInt &#123;</span><br><span class="line">  SmallInt divisor;   &#x2F;&#x2F; declaration of the field &#96;divisor&#96;</span><br><span class="line">  DivisibleInt() &#123; this % divisor &#x3D; 0 &#125;</span><br><span class="line"></span><br><span class="line">  SmallInt getADivisor() &#123; result &#x3D; divisor &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from DivisibleInt i</span><br><span class="line">select  i.getADivisor(),i</span><br><span class="line">&#x2F;&#x2F; 一时半会儿没想到怎么解释</span><br><span class="line">&#x2F;&#x2F; 大致意思就是</span><br><span class="line">&#x2F;&#x2F; 求1-10每一个数的因数</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//34u15er34ec/34u15er34ec.png" alt="image-20210315201534294"></p>
+<hr>
+<h3 id="Overriding-member-predicates重写成员谓词"><a href="#Overriding-member-predicates重写成员谓词" class="headerlink" title="Overriding member predicates重写成员谓词"></a>Overriding member predicates重写成员谓词</h3><p>If a class inherits a member predicate from a supertype, you can <strong>override</strong> the inherited definition. You do this by defining a member predicate with the same name and arity as the inherited predicate, and by adding the <code>override</code> <a href="https://codeql.github.com/docs/ql-language-reference/annotations/#override" target="_blank" rel="noopener">annotation</a>. This is useful if you want to refine the predicate to give a more specific result for the values in the subclass.</p>
+<blockquote>
+<p>如果一个类从一个超类型继承了一个成员谓词，您可以覆盖继承的定义。您可以通过定义一个与继承的谓词具有相同名称和奇偶性的成员谓词，并添加覆盖注解来实现。如果您想完善谓词，以便为子类中的值提供一个更具体的结果，这很有用。</p>
+</blockquote>
+<p><a href="Type2.ql">Type2.ql</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">class OneTwo extends OneTwoThree &#123;</span><br><span class="line">    OneTwo() &#123;</span><br><span class="line">    this &#x3D; 1 or this &#x3D; 2</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    override string getAString() &#123;</span><br><span class="line">        result &#x3D; &quot;One or two: &quot; + this.toString()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class OneTwoThree extends int &#123;</span><br><span class="line">    OneTwoThree() &#123;</span><br><span class="line">    &#x2F;&#x2F; characteristic predicate</span><br><span class="line">        this &#x3D; 1 or this &#x3D; 2 or this &#x3D; 3</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string getAString() &#123;</span><br><span class="line">    &#x2F;&#x2F; member predicate</span><br><span class="line">        result &#x3D; &quot;One, two or three: &quot; + this.toString()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    predicate isEven() &#123;</span><br><span class="line">    &#x2F;&#x2F; member predicate</span><br><span class="line">        this &#x3D; 1</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from OneTwoThree o</span><br><span class="line">select o, o.getAString()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//18u48er18ec/18u48er18ec.png" alt="image-20210315204818741"></p>
+<hr>
+<p>In QL, unlike other object-oriented languages, different subtypes of the same types don’t need to be disjoint. For example, you could define another subclass of <code>OneTwoThree</code>, which overlaps with <code>OneTwo</code>:</p>
+<blockquote>
+<p>在QL中，与其他面向对象的语言不同，同一类型的不同子类型不需要是不相干的。例如，你可以定义OneTwoThree的另一个子类，它与OneTwo重合。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class OneTwo extends OneTwoThree &#123;</span><br><span class="line">    OneTwo() &#123;</span><br><span class="line">    this &#x3D; 1 or this &#x3D; 2</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    override string getAString() &#123;</span><br><span class="line">        result &#x3D; &quot;One or two: &quot; + this.toString()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class OneTwoThree extends int &#123;</span><br><span class="line">    OneTwoThree() &#123;</span><br><span class="line">    &#x2F;&#x2F; characteristic predicate</span><br><span class="line">        this &#x3D; 1 or this &#x3D; 2 or this &#x3D; 3 or this &#x3D; 4</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string getAString() &#123;</span><br><span class="line">    &#x2F;&#x2F; member predicate</span><br><span class="line">        result &#x3D; &quot;One, two or three: &quot; + this.toString()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    predicate isEven() &#123;</span><br><span class="line">    &#x2F;&#x2F; member predicate</span><br><span class="line">        this &#x3D; 1</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">class TwoThree extends OneTwoThree &#123;</span><br><span class="line">    TwoThree() &#123;</span><br><span class="line">        this &#x3D; 2 or this &#x3D; 3</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    override string getAString() &#123;</span><br><span class="line">        result &#x3D; &quot;Two or three: &quot; + this.toString()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from OneTwoThree x</span><br><span class="line">select x, x.getAString()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master//36u50er36ec/36u50er36ec.png" alt="image-20210315205036789"></p>
+<hr>
+<h3 id="Multiple-inheritance¶多重继承"><a href="#Multiple-inheritance¶多重继承" class="headerlink" title="Multiple inheritance¶多重继承"></a>Multiple inheritance<a href="https://codeql.github.com/docs/ql-language-reference/types/#multiple-inheritance" target="_blank" rel="noopener">¶</a>多重继承</h3><p>A class can extend multiple types. In that case, it inherits from all those types.</p>
+<blockquote>
+<p>类可以扩展多种类型。在这种情况下，它继承了所有这些类型。</p>
+</blockquote>
+<p>For example, using the definitions from the above section:</p>
+<blockquote>
+<p>例如，使用上面的定义。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Two extends OneTwo, TwoThree &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>Any value in the class <code>Two</code> must satisfy the logical property represented by <code>OneTwo</code>, <strong>and</strong> the logical property represented by <code>TwoThree</code>. Here the class <code>Two</code> contains one value, namely 2.</p>
+<blockquote>
+<p>类 Two 中的任何值都必须满足 OneTwo 表示的逻辑属性和 TwoThree 表示的逻<br>辑属性。这里，类 Two 包含一个值，即 2。</p>
+</blockquote>
+<p>It inherits member predicates from <code>OneTwo</code> and <code>TwoThree</code>. It also (indirectly) inherits from <code>OneTwoThree</code> and <code>int</code>.</p>
+<blockquote>
+<p>它从 OneTwo 和 TwoThree 继承成员谓词。它还(间接)继承了 OneTwoThree 和<br>int。</p>
+</blockquote>
+<blockquote>
+<p>注意<br>如果一个子类继承了同一谓词名称的多个定义，那么它必须重写这些定义以避<br>免歧义。在这种情况下，超级表达式通常很有用。</p>
+</blockquote>
+<hr>
+<p>参考：<a href="https://codeql.github.com/docs/ql-language-reference/types/" target="_blank" rel="noopener">https://codeql.github.com/docs/ql-language-reference/types/</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Type"><span class="toc-number">1.</span> <span class="toc-text">Type</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#类"><span class="toc-number">1.1.</span> <span class="toc-text">类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#类主体"><span class="toc-number">1.1.1.</span> <span class="toc-text">类主体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#特征谓词"><span class="toc-number">1.1.2.</span> <span class="toc-text">特征谓词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#成员谓词"><span class="toc-number">1.1.3.</span> <span class="toc-text">成员谓词</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Field-字段"><span class="toc-number">1.2.</span> <span class="toc-text">Field 字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Overriding-member-predicates重写成员谓词"><span class="toc-number">1.3.</span> <span class="toc-text">Overriding member predicates重写成员谓词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Multiple-inheritance¶多重继承"><span class="toc-number">1.4.</span> <span class="toc-text">Multiple inheritance¶多重继承</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

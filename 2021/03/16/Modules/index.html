@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Modules - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Summersec,"> 
+    <meta name="description" content="Modules¶模块Modules provide a way of organizing QL code by grouping together related types, predicate,"> 
+    <meta name="author" content="Samny"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Modules</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Modules</h1>
+        <div class="stuff">
+            <span>三月 16, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/codeql/" rel="tag">codeql</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Modules¶模块"><a href="#Modules¶模块" class="headerlink" title="Modules¶模块"></a>Modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#modules" target="_blank" rel="noopener">¶</a>模块</h2><p>Modules provide a way of organizing QL code by grouping together related types, predicates, and other modules.</p>
+<blockquote>
+<p>模块提供了一种组织QL代码的方式，将相关的类型、谓词和其他模块组合在一起。</p>
+</blockquote>
+<p>You can import modules into other files, which avoids duplication, and helps structure your code into more manageable pieces.</p>
+<blockquote>
+<p>您可以将模块导入到其他文件中，这样可以避免重复，并有助于将您的代码结构成更容易管理的片段。</p>
+</blockquote>
+<hr>
+<h3 id="Defining-a-module¶定义模块"><a href="#Defining-a-module¶定义模块" class="headerlink" title="Defining a module¶定义模块"></a>Defining a module<a href="https://codeql.github.com/docs/ql-language-reference/modules/#defining-a-module" target="_blank" rel="noopener">¶</a>定义模块</h3><p>There are various ways to define modules—here is an example of the simplest way, declaring an <a href="https://codeql.github.com/docs/ql-language-reference/modules/#explicit-modules" target="_blank" rel="noopener">explicit module</a> named <code>Example</code> containing a class <code>OneTwoThree</code>:</p>
+<blockquote>
+<p>定义模块的方法有很多种–这里举一个最简单的例子，声明一个名为Example的显式模块，包含一个类OneTwoThree。</p>
+</blockquote>
+<p>The name of a module can be any <a href="https://codeql.github.com/docs/ql-language-reference/ql-language-specification/#identifiers" target="_blank" rel="noopener">identifier</a> that starts with an uppercase or lowercase letter.</p>
+<blockquote>
+<p>模块的名称可以是任何以大写或小写字母开头的标识符。</p>
+</blockquote>
+<p><code>.ql</code> or <code>.qll</code> files also implicitly define modules. For more information, see “<a href="https://codeql.github.com/docs/ql-language-reference/modules/#kinds-of-modules" target="_blank" rel="noopener">Kinds of modules</a>.”</p>
+<blockquote>
+<p>.ql或.ql文件也隐式定义模块。更多信息，请参阅 “模块的种类”。</p>
+</blockquote>
+<p>You can also annotate a module. For more information, see of “<a href="https://codeql.github.com/docs/ql-language-reference/annotations/#annotations-overview" target="_blank" rel="noopener">Overview of annotations</a>.”</p>
+<blockquote>
+<p>您也可以对模块进行注释。有关更多信息，请参见 “注释概述”。</p>
+</blockquote>
+<p>Note that you can only annotate <a href="https://codeql.github.com/docs/ql-language-reference/modules/#explicit-modules" target="_blank" rel="noopener">explicit modules</a>. File modules cannot be annotated.</p>
+<blockquote>
+<p>注意，您只能对显式模块进行注释。不能对文件模块进行注释。</p>
+</blockquote>
+<hr>
+<h3 id="Kinds-of-modules¶模块的种类"><a href="#Kinds-of-modules¶模块的种类" class="headerlink" title="Kinds of modules¶模块的种类"></a>Kinds of modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#kinds-of-modules" target="_blank" rel="noopener">¶</a>模块的种类</h3><h4 id="File-modules¶文件模块"><a href="#File-modules¶文件模块" class="headerlink" title="File modules¶文件模块"></a>File modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#file-modules" target="_blank" rel="noopener">¶</a>文件模块</h4><p>Each query file (extension <code>.ql</code>) and library file (extension <code>.qll</code>) implicitly defines a module. The module has the same name as the file, but any spaces in the file name are replaced by underscores (<code>_</code>). The contents of the file form the <a href="https://codeql.github.com/docs/ql-language-reference/modules/#module-bodies" target="_blank" rel="noopener">body of the module</a>.</p>
+<blockquote>
+<p>每个查询文件(扩展名.ql)和库文件(扩展名.ql)都隐含地定义了一个模块。模块的名称与文件相同，但文件名中的任何空格都用下划线（_）代替。文件的内容构成模块的主体。</p>
+</blockquote>
+<hr>
+<h4 id="Library-modules¶库模块"><a href="#Library-modules¶库模块" class="headerlink" title="Library modules¶库模块"></a>Library modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#library-modules" target="_blank" rel="noopener">¶</a>库模块</h4><p>A library module is defined by a .qll file. It can contain any of the elements listed in Module bodies below, apart from select clauses.</p>
+<blockquote>
+<p>一个库模块由一个.qll文件定义。除了选择子句外，它可以包含下面模块体中列出的任何元素。</p>
+</blockquote>
+<p><strong>OneTwoThreeLib.qll</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class OneTwoThree extends int &#123;</span><br><span class="line">  OneTwoThree() &#123;</span><br><span class="line">    this &#x3D; 1 or this &#x3D; 2 or this &#x3D; 3</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This file defines a library module named <code>OneTwoThreeLib</code>. The body of this module defines the class <code>OneTwoThree</code>.</p>
+<blockquote>
+<p>这个文件定义了一个名为OneTwoThreeLib的库模块。这个模块的主体定义了OneTwoThree类。</p>
+</blockquote>
+<hr>
+<h4 id="Query-modules¶查询模块"><a href="#Query-modules¶查询模块" class="headerlink" title="Query modules¶查询模块"></a>Query modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#query-modules" target="_blank" rel="noopener">¶</a>查询模块</h4><p>A query module is defined by a <code>.ql</code> file. It can contain any of the elements listed in <a href="https://codeql.github.com/docs/ql-language-reference/modules/#module-bodies" target="_blank" rel="noopener">Module bodies</a> below.</p>
+<blockquote>
+<p>一个查询模块是由一个.ql文件定义的。它可以包含下面模块体中列出的任何元素。</p>
+</blockquote>
+<p>Query modules are slightly different from other modules:</p>
+<blockquote>
+<p>查询模块与其他模块略有不同:</p>
+</blockquote>
+<ul>
+<li><p>A query module can’t be imported.</p>
+</li>
+<li><blockquote>
+<p>查询模块不能被导入</p>
+</blockquote>
+</li>
+<li><p>A query module must have at least one query in its <a href="https://codeql.github.com/docs/ql-language-reference/name-resolution/#namespaces" target="_blank" rel="noopener">namespace</a>. This is usually a <a href="https://codeql.github.com/docs/ql-language-reference/queries/#select-clauses" target="_blank" rel="noopener">select clause</a>, but can also be a <a href="https://codeql.github.com/docs/ql-language-reference/queries/#query-predicates" target="_blank" rel="noopener">query predicate</a>.</p>
+</li>
+<li><blockquote>
+<p>一个查询模块必须在其命名空间中至少有一个查询。这通常是一个选择子句，但也可以是一个查询谓词。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>OneTwoQuery.ql</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import OneTwoThreeLib</span><br><span class="line"></span><br><span class="line">from OneTwoThree ott</span><br><span class="line">where ott &#x3D; 1 or ott &#x3D; 2</span><br><span class="line">select ott</span><br></pre></td></tr></table></figure>
+
+<p>This file defines a query module named <code>OneTwoQuery</code>. The body of this module consists of an <a href="https://codeql.github.com/docs/ql-language-reference/modules/#importing-modules" target="_blank" rel="noopener">import statement</a> and a <a href="https://codeql.github.com/docs/ql-language-reference/queries/#select-clauses" target="_blank" rel="noopener">select clause</a>.</p>
+<blockquote>
+<p>这个文件定义了一个名为OneTwoQuery的查询模块。这个模块的主体由一个导入语句和一个选择子句组成。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/6u49er6ec/6u49er6ec.png" alt="image-20210316144906027"></p>
+<hr>
+<h3 id="Explicit-modules¶显示模块"><a href="#Explicit-modules¶显示模块" class="headerlink" title="Explicit modules¶显示模块"></a>Explicit modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#explicit-modules" target="_blank" rel="noopener">¶</a>显示模块</h3><p>You can also define a module within another module. This is an explicit module definition.</p>
+<blockquote>
+<p>您也可以在另一个模块中定义一个模块。这是一个明确的模块定义。</p>
+</blockquote>
+<p>An explicit module is defined with the keyword <code>module</code> followed by the module name, and then the module body enclosed in braces. It can contain any of the elements listed in “<a href="https://codeql.github.com/docs/ql-language-reference/modules/#module-bodies" target="_blank" rel="noopener">Module bodies</a>” below, apart from select clauses.</p>
+<blockquote>
+<p>一个显式模块的定义是用关键字模块和模块名称，然后是用括号括起来的模块主体。除了选择句之外，它可以包含下文 “模块体 “中所列的任何元素。</p>
+</blockquote>
+<p>For example, you could add the following QL snippet to the library file <strong>OneTwoThreeLib.qll</strong> defined <a href="https://codeql.github.com/docs/ql-language-reference/modules/#library-modules" target="_blank" rel="noopener">above</a>:</p>
+<blockquote>
+<p>例如，你可以在上面定义的库文件OneTwoThreeLib.qll中添加以下QL代码段。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import OneTwoThreeLib</span><br><span class="line">import M</span><br><span class="line"></span><br><span class="line">from OneTwoThree ott, OneTwo ot</span><br><span class="line">where ott &#x3D; 1 or ott &#x3D; 2 </span><br><span class="line">select ott, ot.getAString()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/28u12er28ec/28u12er28ec.png" alt="image-20210316151228090"></p>
+<p>This defines an explicit module named <code>M</code>. The body of this module defines the class <code>OneTwo</code>.</p>
+<blockquote>
+<p>这定义了一个名为M的显式模块，这个模块的主体定义了OneTwo类。</p>
+</blockquote>
+<hr>
+<h3 id="Module-bodies¶模块主体"><a href="#Module-bodies¶模块主体" class="headerlink" title="Module bodies¶模块主体"></a>Module bodies<a href="https://codeql.github.com/docs/ql-language-reference/modules/#module-bodies" target="_blank" rel="noopener">¶</a>模块主体</h3><p>The body of a module is the code inside the module definition, for example the class <code>OneTwo</code> in the <a href="https://codeql.github.com/docs/ql-language-reference/modules/#explicit-modules" target="_blank" rel="noopener">explicit module</a> <code>M</code>.</p>
+<blockquote>
+<p>模块的主体是模块定义里面的代码，例如显式模块M中的OneTwo类。</p>
+</blockquote>
+<p>In general, the body of a module can contain the following constructs:</p>
+<blockquote>
+<p>一般来说，一个模块的主体可以包含以下结构：</p>
+</blockquote>
+<ul>
+<li><a href="https://codeql.github.com/docs/ql-language-reference/modules/#import-statements" target="_blank" rel="noopener">Import statements</a> 导入语句</li>
+<li><a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates" target="_blank" rel="noopener">Predicates </a>谓词</li>
+<li><a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">Types</a> (including user-defined <a href="https://codeql.github.com/docs/ql-language-reference/types/#classes" target="_blank" rel="noopener">classes</a>)  类型（自定义类型）</li>
+<li><a href="https://codeql.github.com/docs/ql-language-reference/aliases/#aliases" target="_blank" rel="noopener">Aliases</a>别名</li>
+<li><a href="https://codeql.github.com/docs/ql-language-reference/modules/#explicit-modules" target="_blank" rel="noopener">Explicit modules</a>显示模块</li>
+<li><a href="https://codeql.github.com/docs/ql-language-reference/queries/#select-clauses" target="_blank" rel="noopener">Select clauses</a> (only available in a <a href="https://codeql.github.com/docs/ql-language-reference/modules/#query-modules" target="_blank" rel="noopener">query module</a>)select 子句</li>
+</ul>
+<hr>
+<h3 id="Importing-modules¶导入模块"><a href="#Importing-modules¶导入模块" class="headerlink" title="Importing modules¶导入模块"></a>Importing modules<a href="https://codeql.github.com/docs/ql-language-reference/modules/#importing-modules" target="_blank" rel="noopener">¶</a>导入模块</h3><p>The main benefit of storing code in a module is that you can reuse it in other modules. To access the contents of an external module, you can import the module using an <a href="https://codeql.github.com/docs/ql-language-reference/modules/#import-statements" target="_blank" rel="noopener">import statement</a>.</p>
+<blockquote>
+<p>在模块中存储代码的主要好处是可以在其他模块中重复使用。要访问外部模块的内容，你可以使用导入语句来导入模块</p>
+</blockquote>
+<p>When you import a module this brings all the names in its namespace, apart from <a href="https://codeql.github.com/docs/ql-language-reference/annotations/#private" target="_blank" rel="noopener">private</a> names, into the <a href="https://codeql.github.com/docs/ql-language-reference/name-resolution/#namespaces" target="_blank" rel="noopener">namespace</a> of the current module.</p>
+<blockquote>
+<p>当您导入一个模块时，除了私有名称外，会将其名称空间中的所有名称带入当前模块的名称空间。</p>
+</blockquote>
+<hr>
+<h4 id="Import-statements¶导入语句"><a href="#Import-statements¶导入语句" class="headerlink" title="Import statements¶导入语句"></a>Import statements<a href="https://codeql.github.com/docs/ql-language-reference/modules/#import-statements" target="_blank" rel="noopener">¶</a>导入语句</h4><p>Import statements are used for importing modules. They are of the form:</p>
+<blockquote>
+<p>导入语句用于导入模块。它们的形式是：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &lt;module_expression1&gt; as &lt;name&gt;</span><br><span class="line">import &lt;module_expression2&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Import statements are usually listed at the beginning of the module. Each import statement imports one module. You can import multiple modules by including multiple import statements (one for each module you want to import). An import statement can also be <a href="https://codeql.github.com/docs/ql-language-reference/annotations/#private" target="_blank" rel="noopener">annotated</a> with <code>private</code>.</p>
+<blockquote>
+<p>导入语句通常列在模块的开头。每个导入语句导入一个模块。您可以通过包含多个导入语句来导入多个模块（每个要导入的模块一个）。一个导入语句也可以用private来注释。</p>
+</blockquote>
+<p>You can import a module under a different name using the <code>as</code> keyword, for example <code>import javascript as js</code>.</p>
+<blockquote>
+<p>您可以使用as关键字以不同的名称导入一个模块，例如导入javascript为js。</p>
+</blockquote>
+<p>The <code>&lt;module_expression&gt;</code> itself can be a module name, a selection, or a qualified reference. For more information, see “<a href="https://codeql.github.com/docs/ql-language-reference/name-resolution/#name-resolution" target="_blank" rel="noopener">Name resolution</a>.”</p>
+<blockquote>
+<p><module_expression>本身可以是一个模块名，一个选择，或者一个限定引用。更多信息，请参阅 “名称解析”。</module_expression></p>
+</blockquote>
+<p>For information about how import statements are looked up, see “<a href="https://codeql.github.com/docs/ql-language-reference/ql-language-specification/#module-resolution" target="_blank" rel="noopener">Module resolution</a>” in the QL language specification.</p>
+<blockquote>
+<p>关于如何查询导入语句的信息，请参见QL语言规范中的 “模块解析”。</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Modules¶模块"><span class="toc-number">1.</span> <span class="toc-text">Modules¶模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Defining-a-module¶定义模块"><span class="toc-number">1.1.</span> <span class="toc-text">Defining a module¶定义模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kinds-of-modules¶模块的种类"><span class="toc-number">1.2.</span> <span class="toc-text">Kinds of modules¶模块的种类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#File-modules¶文件模块"><span class="toc-number">1.2.1.</span> <span class="toc-text">File modules¶文件模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Library-modules¶库模块"><span class="toc-number">1.2.2.</span> <span class="toc-text">Library modules¶库模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Query-modules¶查询模块"><span class="toc-number">1.2.3.</span> <span class="toc-text">Query modules¶查询模块</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Explicit-modules¶显示模块"><span class="toc-number">1.3.</span> <span class="toc-text">Explicit modules¶显示模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Module-bodies¶模块主体"><span class="toc-number">1.4.</span> <span class="toc-text">Module bodies¶模块主体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Importing-modules¶导入模块"><span class="toc-number">1.5.</span> <span class="toc-text">Importing modules¶导入模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Import-statements¶导入语句"><span class="toc-number">1.5.1.</span> <span class="toc-text">Import statements¶导入语句</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
