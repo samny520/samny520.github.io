@@ -9,9 +9,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
-    <meta name="keywords" content="Summersec,"> 
-    <meta name="description" content="前言&amp;emsp;&amp;emsp; 这是某银行的内部的一个CTF比赛，受邀参加。题目三个关键词权限绕过、shiro、反序列化，题目源码已经被修改，但考察本质没有，题目源码会上传到JavaLearnVuln,"> 
-    <meta name="author" content="Samny"> 
+    <meta name="keywords" content="SummerSec CodeQl,"> 
+    <meta name="description" content="前言文章首发：https://www.anquanke.com/post/id/231488
+&amp;emsp;&amp;emsp; 这是某银行的内部的一个CTF比赛，受邀参加。题目三个关键词权限绕过、shiro,"> 
+    <meta name="author" content="SummerSec"> 
     <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
     
@@ -60,14 +61,15 @@
     <div class='main'>
         <h1 class="title">一道shiro反序列化题目引发的思考</h1>
         <div class="stuff">
-            <span>一月 05, 2021</span>
+            <span>三月 05, 2021</span>
             
   <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Java-shiro/" rel="tag">反序列化 Java shiro</a></li></ul>
 
 
         </div>
         <div class="content markdown">
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp; 这是某银行的内部的一个CTF比赛，受邀参加。题目三个关键词<code>权限绕过</code>、<code>shiro</code>、<code>反序列化</code>，题目源码已经被修改，但考察本质没有，题目源码会上传到<a href="https://github.com/SummerSec/JavaLearnVulnerability" target="_blank" rel="noopener">JavaLearnVulnerability</a>。</p>
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>文章首发：<a href="https://www.anquanke.com/post/id/231488" target="_blank" rel="noopener">https://www.anquanke.com/post/id/231488</a></p>
+<p>&emsp;&emsp; 这是某银行的内部的一个CTF比赛，受邀参加。题目三个关键词<code>权限绕过</code>、<code>shiro</code>、<code>反序列化</code>，题目源码已经被修改，但考察本质没有，题目源码会上传到<a href="https://github.com/SummerSec/JavaLearnVulnerability" target="_blank" rel="noopener">JavaLearnVulnerability</a>。</p>
 <hr>
 <h1 id="黑盒测试"><a href="#黑盒测试" class="headerlink" title="黑盒测试"></a>黑盒测试</h1><ul>
 <li>xray测试shiro的key</li>
