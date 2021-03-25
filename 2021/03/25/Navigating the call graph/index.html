@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Navigating the call graph - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="SummerSec CodeQl,"> 
+    <meta name="description" content="Navigating the call graph¶CodeQL has classes for identifying code that calls other code, and code t,"> 
+    <meta name="author" content="SummerSec"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Navigating the call graph</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Navigating the call graph</h1>
+        <div class="stuff">
+            <span>三月 25, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Navigating-the-call-graph¶"><a href="#Navigating-the-call-graph¶" class="headerlink" title="Navigating the call graph¶"></a>Navigating the call graph<a href="https://codeql.github.com/docs/codeql-language-guides/navigating-the-call-graph/#navigating-the-call-graph" target="_blank" rel="noopener">¶</a></h1><p>CodeQL has classes for identifying code that calls other code, and code that can be called from elsewhere. This allows you to find, for example, methods that are never used.</p>
+<blockquote>
+<p>CodeQL有一些类用于识别调用其他代码的代码，以及可以从其他地方调用的代码。例如，这允许你找到从未使用过的方法。</p>
+</blockquote>
+<h2 id="Call-graph-classes"><a href="#Call-graph-classes" class="headerlink" title="Call graph classes"></a>Call graph classes</h2><p>The CodeQL library for Java provides two abstract classes for representing a program’s call graph: <code>Callable</code> and <code>Call</code>. The former is simply the common superclass of <code>Method</code> and <code>Constructor</code>, the latter is a common superclass of <code>MethodAccess</code>, <code>ClassInstanceExpression</code>, <code>ThisConstructorInvocationStmt</code> and <code>SuperConstructorInvocationStmt</code>. Simply put, a <code>Callable</code> is something that can be invoked, and a <code>Call</code> is something that invokes a <code>Callable</code>.</p>
+<blockquote>
+<p>Java的CodeQL库提供了两个抽象类来表示程序的调用图。Callable和Call。前者只是Method和Constructor的共同超类，后者是MethodAccess、ClassInstanceExpression、ThisConstructorInvocationStmt和SuperConstructorInvocationStmt的共同超类。简单的说，Callable就是可以被调用的东西，Call就是调用Callable的东西。</p>
+</blockquote>
+<p>For example, in the following program all callables and calls have been annotated with comments:</p>
+<blockquote>
+<p>例如，在下面的程序中，所有的可调用和调用都被注解了:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class Super &#123;</span><br><span class="line">    int x;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Super() &#123;</span><br><span class="line">        this(23);       &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Super(int x) &#123;</span><br><span class="line">        this.x &#x3D; x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public int getX() &#123;</span><br><span class="line">        return x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    class Sub extends Super &#123;</span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public Sub(int x) &#123;</span><br><span class="line">        super(x+19);    &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public int getX() &#123;</span><br><span class="line">        return x-19;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Client &#123;</span><br><span class="line">    &#x2F;&#x2F; callable</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Super s &#x3D; new Sub(42);  &#x2F;&#x2F; call</span><br><span class="line">        s.getX();               &#x2F;&#x2F; call</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Class <code>Call</code> provides two call graph navigation predicates:</p>
+<blockquote>
+<p>Class Call提供了两个调用图导航谓词:</p>
+</blockquote>
+<ul>
+<li><code>getCallee</code> returns the <code>Callable</code> that this call (statically) resolves to; note that for a call to an instance (that is, non-static) method, the actual method invoked at runtime may be some other method that overrides this method.</li>
+<li>getCallee返回这个调用（静态）所解析的Callable；注意，对于一个实例（即非静态）方法的调用，在运行时实际调用的方法可能是其他一些覆盖这个方法的方法。</li>
+<li><code>getCaller</code> returns the <code>Callable</code> of which this call is syntactically part.</li>
+<li>getCaller返回这个调用在语法上是其一部分的Callable。</li>
+</ul>
+<p>For instance, in our example <code>getCallee</code> of the second call in <code>Client.main</code> would return <code>Super.getX</code>. At runtime, though, this call would actually invoke <code>Sub.getX</code>.</p>
+<blockquote>
+<p>例如，在我们的例子中，Client.main中第二个调用的getCallee将返回Super.getX。但在运行时，这个调用实际上会调用Sub.getX。</p>
+</blockquote>
+<p>Class <code>Callable</code> defines a large number of member predicates; for our purposes, the two most important ones are:</p>
+<blockquote>
+<p>类Callable定义了大量的成员谓词；对于我们的目的，最重要的两个谓词是。</p>
+</blockquote>
+<ul>
+<li><p><code>calls(Callable target)</code> succeeds if this callable contains a call whose callee is <code>target</code>.</p>
+</li>
+<li><p>calls(Callable target)如果这个callable包含一个call，其calllee是target，则成功。</p>
+</li>
+<li><p><code>polyCalls(Callable target)</code> succeeds if this callable may call <code>target</code> at runtime; this is the case if it contains a call whose callee is either <code>target</code> or a method that <code>target</code> overrides.</p>
+</li>
+<li><p>polyCalls(Callable target)如果这个callable在运行时可以调用target，那么就会成功；如果它包含一个call，其calllee是target或target覆盖的方法，那么就会成功。</p>
+</li>
+</ul>
+<p>In our example, <code>Client.main</code> calls the constructor <code>Sub(int)</code> and the method <code>Super.getX</code>; additionally, it <code>polyCalls</code> method <code>Sub.getX</code>.</p>
+<blockquote>
+<p>在我们的例子中，Client.main调用了构造函数Sub(int)和方法Super.getX；此外，它还polyCalls方法Sub.getX。</p>
+</blockquote>
+<h2 id="Example-Finding-unused-methods"><a href="#Example-Finding-unused-methods" class="headerlink" title="Example: Finding unused methods"></a>Example: Finding unused methods</h2><p>We can use the <code>Callable</code> class to write a query that finds methods that are not called by any other method:</p>
+<blockquote>
+<p>我们可以使用Callable类来写一个查询，找到没有被其他方法调用的方法:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee))</span><br><span class="line">select callee</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/8376915232270534450/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This simple query typically returns a large number of results.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。这种简单的查询通常会返回大量的结果。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/46u44er46ec/46u44er46ec.png" alt="image-20210325154446690"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/11u45er11ec/11u45er11ec.png" alt="image-20210325154511712"></p>
+<blockquote>
+<p>Note</p>
+<p>We have to use <code>polyCalls</code> instead of <code>calls</code> here: we want to be reasonably sure that <code>callee</code> is not called, either directly or via overriding.</p>
+<p>我们必须在这里使用 polyCalls 而不是调用：我们要合理地确定 callee 没有被调用，无论是直接调用还是通过覆盖调用。</p>
+</blockquote>
+<p>Running this query on a typical Java project results in lots of hits in the Java standard library. This makes sense, since no single client program uses every method of the standard library. More generally, we may want to exclude methods and constructors from compiled libraries. We can use the predicate <code>fromSource</code> to check whether a compilation unit is a source file, and refine our query:</p>
+<blockquote>
+<p>在一个典型的Java项目上运行这个查询的结果是，在Java标准库中会有很多点击。这是有道理的，因为没有一个客户程序会使用标准库的每一个方法。更一般的情况下，我们可能希望从编译库中排除方法和构造函数。我们可以使用fromSource谓词来检查一个编译单元是否是源文件，并完善我们的查询:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource()</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/8711624074465690976/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This change reduces the number of results returned for most projects.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。这个变化减少了大多数项目返回的结果数量。</p>
+</blockquote>
+<p><img src="/.io//C:%5CUsers%5CSamny%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210325164432951.png" alt="image-20210325164432951"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/48u44er48ec/48u44er48ec.png" alt="image-20210325164448392"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/54u44er54ec/54u44er54ec.png" alt="image-20210325164454547"></p>
+<p>We might also notice several unused methods with the somewhat strange name <code>&lt;clinit&gt;</code>: these are class initializers; while they are not explicitly called anywhere in the code, they are called implicitly whenever the surrounding class is loaded. Hence it makes sense to exclude them from our query. While we are at it, we can also exclude finalizers, which are similarly invoked implicitly:</p>
+<blockquote>
+<p>我们还可能会注意到几个未使用的方法，它们的名称有些奇怪<clinit>：这些方法是类初始化器；虽然它们在代码中的任何地方都没有被显式调用，但每当加载周围的类时，它们就会被隐式调用。因此，将它们从我们的查询中排除是有意义的。当我们在这里的时候，我们也可以排除最终化器，它们同样是隐式调用的:</clinit></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource() and</span><br><span class="line">    not callee.hasName(&quot;&lt;clinit&gt;&quot;) and not callee.hasName(&quot;finalize&quot;)</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/925473733866047471/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This also reduces the number of results returned by most projects.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。这也减少了大多数项目返回的结果数量。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/52u43er52ec/52u43er52ec.png" alt="image-20210325164333796"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/1u44er1ec/1u44er1ec.png" alt="image-20210325164401002"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/15u44er15ec/15u44er15ec.png" alt="image-20210325164415230"></p>
+<p>We may also want to exclude public methods from our query, since they may be external API entry points:</p>
+<blockquote>
+<p>我们可能还想从查询中排除公共方法，因为它们可能是外部 API 入口点:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource() and</span><br><span class="line">    not callee.hasName(&quot;&lt;clinit&gt;&quot;) and not callee.hasName(&quot;finalize&quot;) and</span><br><span class="line">    not callee.isPublic()</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/6284320987237954610/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This should have a more noticeable effect on the number of results returned.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。这对返回的结果数量应该有比较明显的影响。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/53u49er53ec/53u49er53ec.png" alt="image-20210325164953331"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/15u50er15ec/15u50er15ec.png" alt="image-20210325165015867"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/26u50er26ec/26u50er26ec.png" alt="image-20210325165026661"></p>
+<p>A further special case is non-public default constructors: in the singleton pattern, for example, a class is provided with private empty default constructor to prevent it from being instantiated. Since the very purpose of such constructors is their not being called, they should not be flagged up:</p>
+<blockquote>
+<p>还有一种特殊情况是非公共的默认构造函数：例如，在单子模式中，一个类提供了私有的空默认构造函数，以防止它被实例化。由于这类构造函数的目的就是它们不被调用，所以不应该将它们标记起来:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource() and</span><br><span class="line">    not callee.hasName(&quot;&lt;clinit&gt;&quot;) and not callee.hasName(&quot;finalize&quot;) and</span><br><span class="line">    not callee.isPublic() and</span><br><span class="line">    not callee.(Constructor).getNumberOfParameters() &#x3D; 0</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/2625028545869146918/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This change has a large effect on the results for some projects but little effect on the results for others. Use of this pattern varies widely between different projects.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。这种变化对某些项目的结果影响很大，但对其他项目的结果影响不大。这种模式的使用在不同的项目之间差异很大。</p>
+</blockquote>
+<p><img src="/.io//C:%5CUsers%5CSamny%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210325165429413.png" alt="image-20210325165429413"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/59u54er59ec/59u54er59ec.png" alt="image-20210325165440723"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/46u54er46ec/46u54er46ec.png" alt="image-20210325165446958"></p>
+<p>Finally, on many Java projects there are methods that are invoked indirectly by reflection. So, while there are no calls invoking these methods, they are, in fact, used. It is in general very hard to identify such methods. A very common special case, however, is JUnit test methods, which are reflectively invoked by a test runner. The CodeQL library for Java has support for recognizing test classes of JUnit and other testing frameworks, which we can employ to filter out methods defined in such classes:</p>
+<blockquote>
+<p>最后，在许多Java项目上，有一些方法是通过反射间接调用的。因此，虽然没有调用这些方法，但事实上，它们是被使用的。在一般情况下，很难识别这些方法。然而，一个非常常见的特殊情况是JUnit测试方法，这些方法是由测试运行器反射性调用的。Java的CodeQL库支持识别JUnit和其他测试框架的测试类，我们可以采用它来过滤掉这些类中定义的方法:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable callee</span><br><span class="line">where not exists(Callable caller | caller.polyCalls(callee)) and</span><br><span class="line">    callee.getCompilationUnit().fromSource() and</span><br><span class="line">    not callee.hasName(&quot;&lt;clinit&gt;&quot;) and not callee.hasName(&quot;finalize&quot;) and</span><br><span class="line">    not callee.isPublic() and</span><br><span class="line">    not callee.(Constructor).getNumberOfParameters() &#x3D; 0 and</span><br><span class="line">    not callee.getDeclaringType() instanceof TestClass</span><br><span class="line">select callee, &quot;Not called.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/2055862421970264112/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This should give a further reduction in the number of results returned.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。这应该会进一步减少返回结果的数量。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/35u55er35ec/35u55er35ec.png" alt="image-20210325165535738"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/51u55er51ec/51u55er51ec.png" alt="image-20210325165551041"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/16u56er16ec/16u56er16ec.png" alt="image-20210325165616137"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Navigating-the-call-graph¶"><span class="toc-number">1.</span> <span class="toc-text">Navigating the call graph¶</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Call-graph-classes"><span class="toc-number">1.1.</span> <span class="toc-text">Call graph classes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-Finding-unused-methods"><span class="toc-number">1.2.</span> <span class="toc-text">Example: Finding unused methods</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
