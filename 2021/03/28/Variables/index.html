@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Variables - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="SummerSec CodeQl,"> 
+    <meta name="description" content="
+title: Variablesphotos: https://acg.toubiec.cn/random?ssl=true&amp;amp;id=zOcwUy5cQWGbSmnxdate: 2021-0,"> 
+    <meta name="author" content="SummerSec"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Variables</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Variables</h1>
+        <div class="stuff">
+            <span>三月 28, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <hr>
+<p>title: Variables<br>photos: <a href="https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx" target="_blank" rel="noopener">https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx</a><br>date: 2021-03-16 19:22:16<br>categories: codeql<br>password:<br>permalink: </p>
+<hr>
+<h1 id="Variables¶变量"><a href="#Variables¶变量" class="headerlink" title="Variables¶变量"></a>Variables<a href="https://codeql.github.com/docs/ql-language-reference/variables/#variables" target="_blank" rel="noopener">¶</a>变量</h1><p>Variables in QL are used in a similar way to variables in algebra or logic. They represent sets of values, and those values are usually restricted by a formula.</p>
+<blockquote>
+<p>在QL中，变量的使用方式与代数或逻辑中的变量类似。它们代表一组值，这些值通常受公式限制。</p>
+</blockquote>
+<p>This is different from variables in some other programming languages, where variables represent memory locations that may contain data. That data can also change over time. For example, in QL, <code>n = n + 1</code> is an equality <a href="https://codeql.github.com/docs/ql-language-reference/formulas/#formulas" target="_blank" rel="noopener">formula</a> that holds only if <code>n</code> is equal to <code>n + 1</code> (so in fact it does not hold for any numeric value). In Java, <code>n = n + 1</code> is not an equality, but an assignment that changes the value of <code>n</code> by adding <code>1</code> to the current value.</p>
+<blockquote>
+<p>这与其他一些编程语言中的变量不同，在其他语言中，变量代表可能包含数据的内存位置。这些数据也可以随着时间的推移而改变。例如，在QL中，n = n + 1是一个平等公式，只有当n等于n + 1时才成立（所以事实上它对任何数值都不成立）。在Java中，n = n + 1不是一个等式，而是一个赋值，通过在当前值上加1来改变n的值。</p>
+</blockquote>
+<h2 id="Declaring-a-variable¶变量声明"><a href="#Declaring-a-variable¶变量声明" class="headerlink" title="Declaring a variable¶变量声明"></a>Declaring a variable<a href="https://codeql.github.com/docs/ql-language-reference/variables/#declaring-a-variable" target="_blank" rel="noopener">¶</a>变量声明</h2><p>All variable declarations consist of a <a href="https://codeql.github.com/docs/ql-language-reference/types/#types" target="_blank" rel="noopener">type</a> and a name for the variable. The name can be any <a href="https://codeql.github.com/docs/ql-language-reference/ql-language-specification/#identifiers" target="_blank" rel="noopener">identifier</a> that starts with an uppercase or lowercase letter.</p>
+<blockquote>
+<p>所有的变量声明都由变量的类型和名称组成，名称可以是任何大写或小写字母开头的标识符。名称可以是任何以大写或小写字母开头的标识符。</p>
+</blockquote>
+<p>For example, <code>int i</code>, <code>SsaDefinitionNode node</code>, and <code>LocalScopeVariable lsv</code> declare variables <code>i</code>, <code>node</code>, and <code>lsv</code> with types <code>int</code>, <code>SsaDefinitionNode</code>, and <code>LocalScopeVariable</code> respectively.</p>
+<blockquote>
+<p>例如，int i、SsaDefinitionNode node和LocalScopeVariable lsv分别声明类型为int、SsaDefinitionNode和LocalScopeVariable的变量i、node和lsv。</p>
+</blockquote>
+<p>Variable declarations appear in different contexts, for example in a <a href="https://codeql.github.com/docs/ql-language-reference/queries/#select-clauses" target="_blank" rel="noopener">select clause</a>, inside a <a href="https://codeql.github.com/docs/ql-language-reference/formulas/#quantified-formulas" target="_blank" rel="noopener">quantified formula</a>, as an argument of a <a href="https://codeql.github.com/docs/ql-language-reference/predicates/#predicates" target="_blank" rel="noopener">predicate</a>, and many more.</p>
+<blockquote>
+<p>变量声明出现在不同的上下文中，例如在选择子句中，在量化公式中，作为谓词的一个参数，等等。</p>
+</blockquote>
+<p>Conceptually, you can think of a variable as holding all the values that its type allows, subject to any further constraints.</p>
+<blockquote>
+<p>从概念上讲，你可以把一个变量看作是持有其类型所允许的所有值，并受到任何进一步的约束。</p>
+</blockquote>
+<p>For example, consider the following select clause:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from int i</span><br><span class="line">where i in [0 .. 9]</span><br><span class="line">select i</span><br></pre></td></tr></table></figure>
+
+<p>Just based on its type, the variable <code>i</code> could contain all integers. However, it is constrained by the formula <code>i in [0 .. 9]</code>. Consequently, the result of the select clause is the ten numbers between <code>0</code> and <code>9</code> inclusive.</p>
+<blockquote>
+<p>仅仅根据其类型，变量i可以包含所有的整数。然而，它受到公式i在[0 … 9]中的限制。因此，选择子句的结果是0到9（含）之间的十个数字。</p>
+</blockquote>
+<p>As an aside, note that the following query leads to a compile-time error:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from int i</span><br><span class="line">select i</span><br></pre></td></tr></table></figure>
+
+<p>In theory, it would have infinitely many results, as the variable <code>i</code> is not constrained to a finite number of possible values. For more informaion, see “<a href="https://codeql.github.com/docs/ql-language-reference/evaluation-of-ql-programs/#binding" target="_blank" rel="noopener">Binding</a>.”</p>
+<blockquote>
+<p>理论上，它将会有无限多的结果，因为变量i不受限于有限的可能值。更多信息，请参见 “绑定”。</p>
+</blockquote>
+<hr>
+<h2 id="Free-and-bound-variables¶自由变量和约束变量"><a href="#Free-and-bound-variables¶自由变量和约束变量" class="headerlink" title="Free and bound variables¶自由变量和约束变量"></a>Free and bound variables<a href="https://codeql.github.com/docs/ql-language-reference/variables/#free-and-bound-variables" target="_blank" rel="noopener">¶</a>自由变量和约束变量</h2><p>Variables can have different roles. Some variables are <strong>free</strong>, and their values directly affect the value of an <a href="https://codeql.github.com/docs/ql-language-reference/expressions/#expressions" target="_blank" rel="noopener">expression</a> that uses them, or whether a <a href="https://codeql.github.com/docs/ql-language-reference/formulas/#formulas" target="_blank" rel="noopener">formula</a> that uses them holds or not. Other variables, called <strong>bound</strong> variables, are restricted to specific sets of values.</p>
+<blockquote>
+<p>变量可以有不同的作用。有些变量是自由的，它们的值直接影响使用它们的表达式的值，或者使用它们的公式是否成立。另一些变量，称为约束变量，被限制在特定的值集合中。</p>
+</blockquote>
+<p>It might be easiest to understand this distinction in an example. Take a look at the following expressions:</p>
+<blockquote>
+<p>在一个例子中可能最容易理解这种区别。来看看下面的表达式:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;hello&quot;.indexOf(&quot;l&quot;)</span><br><span class="line"></span><br><span class="line">min(float f | f in [-3 .. 3])</span><br><span class="line"></span><br><span class="line">(i + 7) * 3</span><br><span class="line"></span><br><span class="line">x.sqrt()</span><br></pre></td></tr></table></figure>
+
+<p>The first expression doesn’t have any variables. It finds the (zero-based) indices of where <code>&quot;l&quot;</code> occurs in the string <code>&quot;hello&quot;</code>, so it evaluates to <code>2</code> and <code>3</code>.</p>
+<blockquote>
+<p>第一个表达式没有任何变量。它找到了字符串 “hello “中 “l “出现的位置的（基于零的）指数，所以它的值是2和3。</p>
+</blockquote>
+<p>The second expression evaluates to <code>-3</code>, the minimum value in the range <code>[-3 .. 3]</code>. Although this expression uses a variable <code>f</code>, it is just a placeholder or “dummy” variable, and you can’t assign any values to it. You could replace <code>f</code> with a different variable without changing the meaning of the expression. For example, <code>min(float f | f in [-3 .. 3])</code> is always equal to <code>min(float other | other in [-3 .. 3])</code>. This is an example of a <strong>bound variable</strong>.</p>
+<blockquote>
+<p>第二个表达式的值是-3，即[-3 … 3]范围内的最小值。虽然这个表达式使用了一个变量 f，但它只是一个占位符或 “虚 “变量，你不能给它分配任何值。你可以在不改变表达式含义的情况下，用不同的变量替换f。例如，min(float f | f in [-3 … 3])总是等于min(float other | other in [-3 … 3])。这就是一个约束变量的例子。</p>
+</blockquote>
+<p>What about the expressions <code>(i + 7) * 3</code> and <code>x.sqrt()</code>? In these two cases, the values of the expressions depend on what values are assigned to the variables <code>i</code> and <code>x</code> respectively. In other words, the value of the variable has an impact on the value of the expression. These are examples of <strong>free variables</strong>.</p>
+<blockquote>
+<p>那么表达式(i + 7) * 3和x.sqrt()呢？在这两种情况下，表达式的值取决于分别分配给变量i和x的值。换句话说，变量的值对表达式的值有影响。这些都是自由变量的例子。</p>
+</blockquote>
+<p>Similarly, if a formula contains free variables, then the formula can hold or not hold depending on the values assigned to those variables <a href="https://codeql.github.com/docs/ql-language-reference/variables/#id3" target="_blank" rel="noopener">[1]</a>. For example:</p>
+<blockquote>
+<p>同样，如果一个公式中包含自由变量，那么这个公式可以成立或不成立，取决于分配给这些变量的值[1]。例如：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;hello&quot;.indexOf(&quot;l&quot;) &#x3D; 1</span><br><span class="line"></span><br><span class="line">min(float f | f in [-3 .. 3]) &#x3D; -3</span><br><span class="line"></span><br><span class="line">(i + 7) * 3 instanceof int</span><br><span class="line"></span><br><span class="line">exists(float y | x.sqrt() &#x3D; y)</span><br></pre></td></tr></table></figure>
+
+<p>The first formula doesn’t contain any variables, and it never holds (since <code>&quot;hello&quot;.indexOf(&quot;l&quot;)</code> has values <code>2</code> and <code>3</code>, never <code>1</code>).</p>
+<blockquote>
+<p>存在(float y | x.sqrt() = y)<br>第一个公式不包含任何变量，而且它永远不会成立（因为 “hello”.indexOf(“l”)的值是2和3，而不是1）。</p>
+</blockquote>
+<p>The second formula only contains a bound variable, so is unaffected by changes to that variable. Since <code>min(float f | f in [-3 .. 3])</code> is equal to <code>-3</code>, this formula always holds.</p>
+<blockquote>
+<p>第二个公式只包含一个约束变量，所以不受该变量变化的影响。由于min(float f | f in [-3 … 3])等于-3，所以这个公式总是成立。</p>
+</blockquote>
+<p>The third formula contains a free variable <code>i</code>. Whether or not the formula holds, depends on what values are assigned to <code>i</code>. For example, if <code>i</code> is assigned <code>1</code> or <code>2</code> (or any other <code>int</code>) then the formula holds. On the other hand, if <code>i</code> is assigned <code>3.5</code>, then it doesn’t hold.</p>
+<blockquote>
+<p>第三个公式包含一个自由变量i。公式是否成立，取决于分配给i的值。例如，如果i被分配给1或2（或任何其他int），那么公式成立。另一方面，如果给i赋值为3.5，那么公式就不成立。</p>
+</blockquote>
+<p>The last formula contains a free variable <code>x</code> and a bound variable <code>y</code>. If <code>x</code> is assigned a non-negative number, then the final formula holds. On the other hand, if <code>x</code> is assigned <code>-9</code> for example, then the formula doesn’t hold. The variable <code>y</code> doesn’t affect whether the formula holds or not.</p>
+<blockquote>
+<p>最后一个公式包含一个自由变量x和一个约束变量y，如果x被赋值为非负数，那么最后的公式成立。另一方面，比如x被赋值为-9，那么这个公式就不成立。变量y并不影响公式是否成立。</p>
+</blockquote>
+<p>For more information about how assignments to free variables are computed, see “<a href="https://codeql.github.com/docs/ql-language-reference/evaluation-of-ql-programs/#evaluation-of-ql-programs" target="_blank" rel="noopener">evaluation of QL programs</a>.”</p>
+<blockquote>
+<p>关于如何计算对自由变量的赋值的更多信息，请参阅 “QL程序的评估”。</p>
+</blockquote>
+<p>Footnotes</p>
+<blockquote>
+<p>脚注</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><a href="https://codeql.github.com/docs/ql-language-reference/variables/#id2" target="_blank" rel="noopener">[1]</a></th>
+<th>This is a slight simplification. There are some formulas that are always true or always false, regardless of the assignments to their free variables. However, you won’t usually use these when you’re writing QL. For example, and <code>a = a</code> is always true (known as a <a href="https://en.wikipedia.org/wiki/Tautology_(logic)" target="_blank" rel="noopener">tautology</a>), and <code>x and not x</code> is always false.</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[1]</td>
+<td>这是一种轻微的简化。有一些公式总是真或假，不管它们的自由变量的赋值如何。然而，你在编写QL时通常不会使用这些公式。例如，and a = a总是真（称为同义词），x而不是x总是假。</td>
+</tr>
+</tbody></table>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Variables¶变量"><span class="toc-number">1.</span> <span class="toc-text">Variables¶变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Declaring-a-variable¶变量声明"><span class="toc-number">1.1.</span> <span class="toc-text">Declaring a variable¶变量声明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Free-and-bound-variables¶自由变量和约束变量"><span class="toc-number">1.2.</span> <span class="toc-text">Free and bound variables¶自由变量和约束变量</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
