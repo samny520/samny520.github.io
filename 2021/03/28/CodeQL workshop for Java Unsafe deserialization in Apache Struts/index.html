@@ -67,7 +67,7 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
         </div>
         <div class="content markdown">
             <hr>
-<p>title: CodeQL workshop for Java: Unsafe deserialization in Apache Struts<br>photos: ‘<a href="https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;" target="_blank" rel="noopener">https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;</a><br>date: 2021-03-28 16:01:42<br>tags:<br>categories: codeql<br>password:<br>permalink:</p>
+<p>title: CodeQL workshop for Java: Unsafe deserialization in Apache Struts<br>photos: ‘<a href="https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;" target="_blank" rel="noopener">https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;</a><br>date: 2021-03-29 16:01:42<br>tags:<br>categories: codeql<br>password:<br>permalink:</p>
 <hr>
 <h1 id="CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts"><a href="#CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts" class="headerlink" title="CodeQL workshop for Java: Unsafe deserialization in Apache Struts"></a>CodeQL workshop for Java: Unsafe deserialization in Apache Struts</h1><ul>
 <li>Analyzed language: Java</li>
@@ -272,7 +272,7 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 <details>
     <summary>Solution</summary>
 
-<p>​<br>​    import java<br>​<br>​    predicate isXMLDeserialized(Expr arg) {<br>​      exists(MethodAccess fromXML |<br>​        fromXML.getMethod().getName() = “fromXML” and<br>​        arg = fromXML.getArgument(0)<br>​      )<br>​    }<br>​<br>    from Expr arg<br>    where isXMLDeserialized(arg)<br>    select arg</p>
+<p>​<br>​    import java<br>​<br>​    predicate isXMLDeserialized(Expr arg) {<br>​      exists(MethodAccess fromXML |<br>​        fromXML.getMethod().getName() = “fromXML” and<br>​        arg = fromXML.getArgument(0)<br>​      )<br>​    }<br>​<br>​    from Expr arg<br>​    where isXMLDeserialized(arg)<br>​    select arg</p>
 <h3 id="Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler"><a href="#Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler" class="headerlink" title="Section 2: Find the implementations of the toObject method from ContentTypeHandler "></a>Section 2: Find the implementations of the toObject method from ContentTypeHandler <a id="section2"></a></h3><p>Like predicates, <em>classes</em> in CodeQL can be used to encapsulate reusable portions of logic. Classes represent single sets of values, and they can also include operations (known as <em>member predicates</em>) specific to that set of values. You have already seen numerous instances of CodeQL classes (<code>MethodAccess</code>, <code>Method</code> etc.) and associated member predicates (<code>MethodAccess.getMethod()</code>, <code>Method.getName()</code>, etc.).</p>
 <blockquote>
 <p>像谓词一样，CodeQL中的<em>类</em>可以用来封装逻辑的可重用部分。类代表单一的值集，它们也可以包含特定于该值集的操作（称为_成员谓词_）。你已经看到了许多CodeQL类的实例（<code>MethodAccess</code>、<code>Method</code>等）和相关的成员谓词（<code>MethodAccess.getMethod()</code>、<code>Method.getName()</code>等）。</p>
