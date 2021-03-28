@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Annotations in Java - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="SummerSec CodeQl,"> 
+    <meta name="description" content="Annotations in Java¶CodeQL databases of Java projects contain information about all annotations att,"> 
+    <meta name="author" content="SummerSec"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Annotations in Java</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Annotations in Java</h1>
+        <div class="stuff">
+            <span>三月 26, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Annotations-in-Java¶"><a href="#Annotations-in-Java¶" class="headerlink" title="Annotations in Java¶"></a>Annotations in Java<a href="https://codeql.github.com/docs/codeql-language-guides/annotations-in-java/#annotations-in-java" target="_blank" rel="noopener">¶</a></h1><p>CodeQL databases of Java projects contain information about all annotations attached to program elements.</p>
+<blockquote>
+<p>Java项目的CodeQL数据库包含所有附加在程序元素上的注释信息。</p>
+</blockquote>
+<h2 id="About-working-with-annotations"><a href="#About-working-with-annotations" class="headerlink" title="About working with annotations"></a>About working with annotations</h2><p>Annotations are represented by these CodeQL classes:</p>
+<blockquote>
+<p>注释由这些CodeQL类来表示。</p>
+</blockquote>
+<ul>
+<li><p>The class <code>Annotatable</code> represents all entities that may have an annotation attached to them (that is, packages, reference types, fields, methods, and local variables).</p>
+<blockquote>
+<p>类Annotatable代表所有可能附加注解的实体（即包、引用类型、字段、方法和局部变量）。</p>
+</blockquote>
+</li>
+<li><p>The class <code>AnnotationType</code> represents a Java annotation type, such as <code>java.lang.Override</code>; annotation types are interfaces.</p>
+<blockquote>
+<p>类AnnotationType代表一个Java注释类型，如java.lang.Override；注释类型是接口。</p>
+</blockquote>
+</li>
+<li><p>The class <code>AnnotationElement</code> represents an annotation element, that is, a member of an annotation type.</p>
+<blockquote>
+<p>类AnnotationElement表示一个注解元素，也就是一个注解类型的成员。</p>
+</blockquote>
+</li>
+<li><p>The class <code>Annotation</code> represents an annotation such as <code>@Override</code>; annotation values can be accessed through member predicate <code>getValue</code>.</p>
+<blockquote>
+<p>类Annotation代表一个注解，如@Override；注解值可以通过成员谓词getValue访问。</p>
+</blockquote>
+</li>
+</ul>
+<p>For example, the Java standard library defines an annotation <code>SuppressWarnings</code> that instructs the compiler not to emit certain kinds of warnings:</p>
+<blockquote>
+<p>例如，Java标准库定义了一个注解 SuppressWarnings，它指示编译器不要发出某些种类的警告:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">package java.lang;</span><br><span class="line"></span><br><span class="line">public @interface SuppressWarnings &#123;</span><br><span class="line">    String[] value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>SuppressWarnings</code> is represented as an <code>AnnotationType</code>, with <code>value</code> as its only <code>AnnotationElement</code>.</p>
+<blockquote>
+<p>SuppressWarnings被表示为一个AnnotationType，其值是唯一的AnnotationElement。</p>
+</blockquote>
+<p>A typical usage of <code>SuppressWarnings</code> would be this annotation for preventing a warning about using raw types:</p>
+<blockquote>
+<p>SuppressWarnings的典型用法是这个注解，用于防止使用原始类型的警告。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class A &#123;</span><br><span class="line">    @SuppressWarnings(&quot;rawtypes&quot;)</span><br><span class="line">    public A(java.util.List rawlist) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The expression <code>@SuppressWarnings(&quot;rawtypes&quot;)</code> is represented as an <code>Annotation</code>. The string literal <code>&quot;rawtypes&quot;</code> is used to initialize the annotation element <code>value</code>, and its value can be extracted from the annotation by means of the <code>getValue</code> predicate.</p>
+<blockquote>
+<p>表达式@SuppressWarnings(“rawtypes”)表示为一个Annotation。字符串 “rawtypes “用于初始化注解元素的值，它的值可以通过getValue谓词从注解中提取。</p>
+</blockquote>
+<p>We could then write this query to find all <code>@SuppressWarnings</code> annotations attached to constructors, and return both the annotation itself and the value of its <code>value</code> element:</p>
+<blockquote>
+<p>然后，我们可以写这个查询来查找所有附加在构造函数上的@SuppressWarnings注解，并返回注解本身和它的值元素的值。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Constructor c, Annotation ann, AnnotationType anntp</span><br><span class="line">where ann &#x3D; c.getAnAnnotation() and</span><br><span class="line">    anntp &#x3D; ann.getType() and</span><br><span class="line">    anntp.hasQualifiedName(&quot;java.lang&quot;, &quot;SuppressWarnings&quot;)</span><br><span class="line">select ann, ann.getValue(&quot;value&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/1775658606775222283/" target="_blank" rel="noopener">See the full query in the query console on LGTM.com</a>. Several of the LGTM.com demo projects use the <code>@SuppressWarnings</code> annotation. Looking at the <code>value</code>s of the annotation element returned by the query, we can see that the <em>apache/activemq</em> project uses the <code>&quot;rawtypes&quot;</code> value described above.</p>
+<blockquote>
+<p>➤ 在 LGTM.com 的查询控制台中查看完整的查询。LGTM.com的几个演示项目都使用了@SuppressWarnings注解。观察查询返回的注解元素的值，我们可以看到 apache/activemq 项目使用了上面描述的 “rawtypes “值。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/6u10er6ec/6u10er6ec.png" alt="image-20210326171005866"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/49u10er49ec/49u10er49ec.png" alt="image-20210326171043941"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/49u10er49ec/49u10er49ec.png" alt="image-20210326171049443"></p>
+<p>As another example, this query finds all annotation types that only have a single annotation element, which has name <code>value</code>:</p>
+<blockquote>
+<p>作为另一个例子，这个查询找到了所有只有一个注解元素的注解类型，这个注解元素的值是name:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from AnnotationType anntp</span><br><span class="line">where forex(AnnotationElement elt |</span><br><span class="line">    elt &#x3D; anntp.getAnAnnotationElement() |</span><br><span class="line">    elt.getName() &#x3D; &quot;value&quot;</span><br><span class="line">)</span><br><span class="line">select anntp</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/2145264152490258283/" target="_blank" rel="noopener">See the full query in the query console on LGTM.com</a>.</p>
+<blockquote>
+<p>➤ 查看LGTM.com上查询控制台中的完整查询。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/31u11er31ec/31u11er31ec.png" alt="image-20210326171131837"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/52u11er52ec/52u11er52ec.png" alt="image-20210326171152529"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/15u12er15ec/15u12er15ec.png" alt="image-20210326171215602"></p>
+<h2 id="Example-Finding-missing-Override-annotations"><a href="#Example-Finding-missing-Override-annotations" class="headerlink" title="Example: Finding missing @Override annotations"></a>Example: Finding missing <code>@Override</code> annotations</h2><p>In newer versions of Java, it’s recommended (though not required) that you annotate methods that override another method with an <code>@Override</code> annotation. These annotations, which are checked by the compiler, serve as documentation, and also help you avoid accidental overloading where overriding was intended.</p>
+<blockquote>
+<p>在Java的新版本中，建议（虽然不是必须的）用@Override注解来注解覆盖另一个方法的方法。这些由编译器检查的注解可以作为文档，也可以帮助你避免意外的重载，而重载的目的是什么。</p>
+</blockquote>
+<p>For example, consider this example program:</p>
+<blockquote>
+<p>例如，考虑这个示例程序:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Super &#123;</span><br><span class="line">    public void m() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Sub1 extends Super &#123;</span><br><span class="line">    @Override public void m() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Sub2 extends Super &#123;</span><br><span class="line">    public void m() &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here, both <code>Sub1.m</code> and <code>Sub2.m</code> override <code>Super.m</code>, but only <code>Sub1.m</code> is annotated with <code>@Override</code>.</p>
+<blockquote>
+<p>这里，Sub1.m 和 Sub2.m 都覆盖了 Super.m，但只有 Sub1.m 被注解为 @Override。</p>
+</blockquote>
+<p>We’ll now develop a query for finding methods like <code>Sub2.m</code> that should be annotated with <code>@Override</code>, but are not.</p>
+<blockquote>
+<p>现在，我们将开发一个查询，用于查找像 Sub2.m 这样应该被注解为 @Override 但没有被注解的方法。</p>
+</blockquote>
+<p>As a first step, let’s write a query that finds all <code>@Override</code> annotations. Annotations are expressions, so their type can be accessed using <code>getType</code>. Annotation types, on the other hand, are interfaces, so their qualified name can be queried using <code>hasQualifiedName</code>. Therefore we can implement the query like this:</p>
+<blockquote>
+<p>第一步，让我们写一个查询来查找所有 @Override 注解。注解是表达式，所以可以使用 getType 访问它们的类型。另一方面，注解类型是接口，所以可以使用hasQualifiedName查询它们的限定名。因此我们可以这样实现查询:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Annotation ann</span><br><span class="line">where ann.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;Override&quot;)</span><br><span class="line">select ann</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/38u13er38ec/38u13er38ec.png" alt="image-20210326171338887"></p>
+<p> <img src="https://gitee.com/samny/images/raw/master/59u13er59ec/59u13er59ec.png" alt="image-20210326171351526"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/59u13er59ec/59u13er59ec.png" alt="image-20210326171359169"></p>
+<p>As always, it is a good idea to try this query on a CodeQL database for a Java project to make sure it actually produces some results. On the earlier example, it should find the annotation on <code>Sub1.m</code>. Next, we encapsulate the concept of an <code>@Override</code> annotation as a CodeQL class:</p>
+<blockquote>
+<p>和以往一样，最好在Java项目的CodeQL数据库中尝试这个查询，以确保它确实产生了一些结果。在前面的例子中，它应该能找到Sub1.m上的注解。接下来，我们将@Override注解的概念封装成一个CodeQL类:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class OverrideAnnotation extends Annotation &#123;</span><br><span class="line">    OverrideAnnotation() &#123;</span><br><span class="line">        this.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;Override&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This makes it very easy to write our query for finding methods that override another method, but don’t have an <code>@Override</code> annotation: we use predicate <code>overrides</code> to find out whether one method overrides another, and predicate <code>getAnAnnotation</code> (available on any <code>Annotatable</code>) to retrieve some annotation.</p>
+<blockquote>
+<p>这使得我们很容易写出我们的查询，用于查找覆盖另一个方法，但没有@Override注解的方法：我们使用谓词overrides来查找一个方法是否覆盖了另一个方法，使用谓词getAnAnnotation（在任何Annotatable上可用）来检索一些注解。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Method overriding, Method overridden</span><br><span class="line">where overriding.overrides(overridden) and</span><br><span class="line">    not overriding.getAnAnnotation() instanceof OverrideAnnotation</span><br><span class="line">select overriding, &quot;Method overrides another method, but does not have an @Override annotation.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/7419756266089837339/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. In practice, this query may yield many results from compiled library code, which aren’t very interesting. It’s therefore a good idea to add another conjunct <code>overriding.fromSource()</code> to restrict the result to only report methods for which source code is available.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中可以看到。在实践中，这种查询可能会产生许多来自编译库代码的结果，这些结果并不是很有趣。因此，最好是添加另一个共轭覆盖.fromSource()，以将结果限制为只报告有源代码的方法。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/31u15er31ec/31u15er31ec.png" alt="image-20210326171531336"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/44u15er44ec/44u15er44ec.png" alt="image-20210326171543972"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/49u15er49ec/49u15er49ec.png" alt="image-20210326171549733"></p>
+<h2 id="Example-Finding-calls-to-deprecated-methods"><a href="#Example-Finding-calls-to-deprecated-methods" class="headerlink" title="Example: Finding calls to deprecated methods"></a>Example: Finding calls to deprecated methods</h2><p>As another example, we can write a query that finds calls to methods marked with a <code>@Deprecated</code> annotation.</p>
+<blockquote>
+<p>作为另一个例子，我们可以写一个查询，查找标记有@Deprecated注解的方法的调用。</p>
+</blockquote>
+<p>For example, consider this example program:</p>
+<blockquote>
+<p>例如，考虑这个示例程序:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class A &#123;</span><br><span class="line">    @Deprecated void m() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    @Deprecated void n() &#123;</span><br><span class="line">        m();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void r() &#123;</span><br><span class="line">        m();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here, both <code>A.m</code> and <code>A.n</code> are marked as deprecated. Methods <code>n</code> and <code>r</code> both call <code>m</code>, but note that <code>n</code> itself is deprecated, so we probably should not warn about this call.</p>
+<blockquote>
+<p>这里，A.m和A.n都被标记为废弃。方法n和r都调用了m，但请注意n本身是废弃的，所以我们可能不应该对这个调用发出警告。</p>
+</blockquote>
+<p>As in the previous example, we’ll start by defining a class for representing <code>@Deprecated</code> annotations:</p>
+<blockquote>
+<p>和前面的例子一样，我们先定义一个类来表示@Deprecated注解:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class DeprecatedAnnotation extends Annotation &#123;</span><br><span class="line">    DeprecatedAnnotation() &#123;</span><br><span class="line">        this.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;Deprecated&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now we can define a class for representing deprecated methods:</p>
+<blockquote>
+<p>现在我们可以定义一个类来表示被废弃的方法:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class DeprecatedMethod extends Method &#123;</span><br><span class="line">    DeprecatedMethod() &#123;</span><br><span class="line">        this.getAnAnnotation() instanceof DeprecatedAnnotation</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Finally, we use these classes to find calls to deprecated methods, excluding calls that themselves appear in deprecated methods:</p>
+<blockquote>
+<p>最后，我们使用这些类来查找对废弃方法的调用，排除本身出现在废弃方法中的调用:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Call call</span><br><span class="line">where call.getCallee() instanceof DeprecatedMethod</span><br><span class="line">    and not call.getCaller() instanceof DeprecatedMethod</span><br><span class="line">select call, &quot;This call invokes a deprecated method.&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>In our example, this query flags the call to <code>A.m</code> in <code>A.r</code>, but not the one in <code>A.n</code>.</p>
+<blockquote>
+<p>在我们的例子中，这个查询标记了A.r中对A.m的调用，但没有标记A.n中的调用。</p>
+</blockquote>
+<p>For more information about the class <code>Call</code>, see “<a href="https://codeql.github.com/docs/codeql-language-guides/navigating-the-call-graph/" target="_blank" rel="noopener">Navigating the call graph</a>.”</p>
+<blockquote>
+<p>有关类Call的更多信息，请参阅 “导航调用图”。</p>
+</blockquote>
+<h3 id="Improvements"><a href="#Improvements" class="headerlink" title="Improvements"></a>Improvements</h3><p>The Java standard library provides another annotation type <code>java.lang.SupressWarnings</code> that can be used to suppress certain categories of warnings. In particular, it can be used to turn off warnings about calls to deprecated methods. Therefore, it makes sense to improve our query to ignore calls to deprecated methods from inside methods that are marked with <code>@SuppressWarnings(&quot;deprecated&quot;)</code>.</p>
+<blockquote>
+<p>Java标准库提供了另一个注解类型java.lang.SupressWarnings，可以用来抑制某些类别的警告。特别是，它可以用来关闭对废弃方法的调用的警告。因此，改进我们的查询以忽略来自标记为@SuppressWarnings(“deprecated”)的方法内部对废弃方法的调用是有意义的。</p>
+</blockquote>
+<p>For instance, consider this slightly updated example:</p>
+<blockquote>
+<p>例如，考虑这个稍微更新的例子:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class A &#123;</span><br><span class="line">    @Deprecated void m() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    @Deprecated void n() &#123;</span><br><span class="line">        m();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;deprecated&quot;)</span><br><span class="line">    void r() &#123;</span><br><span class="line">        m();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here, the programmer has explicitly suppressed warnings about deprecated calls in <code>A.r</code>, so our query should not flag the call to <code>A.m</code> any more.</p>
+<blockquote>
+<p>在这里，程序员已经显式地抑制了A.r中关于废弃调用的警告，所以我们的查询不应该再标记对A.m的调用。</p>
+</blockquote>
+<p>To do so, we first introduce a class for representing all <code>@SuppressWarnings</code> annotations where the string <code>deprecated</code> occurs among the list of warnings to suppress:</p>
+<blockquote>
+<p>为此，我们首先引入一个类来表示所有@SuppressWarnings注解，其中字符串deprecated出现在要抑制的警告列表中。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class SuppressDeprecationWarningAnnotation extends Annotation &#123;</span><br><span class="line">    SuppressDeprecationWarningAnnotation() &#123;</span><br><span class="line">        this.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;SuppressWarnings&quot;) and</span><br><span class="line">        this.getAValue().(Literal).getLiteral().regexpMatch(&quot;.*deprecation.*&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here, we use <code>getAValue()</code> to retrieve any annotation value: in fact, annotation type <code>SuppressWarnings</code> only has a single annotation element, so every <code>@SuppressWarnings</code> annotation only has a single annotation value. Then, we ensure that it is a literal, obtain its string value using <code>getLiteral</code>, and check whether it contains the string <code>deprecation</code> using a regular expression match.</p>
+<blockquote>
+<p>在这里，我们使用getAValue()来检索任何注解值：事实上，注解类型SuppressWarnings只有一个注解元素，所以每个@SuppressWarnings注解只有一个注解值。然后，我们确保它是一个文字，使用getLiteral获取它的字符串值，并使用正则表达式匹配检查它是否包含字符串废弃。</p>
+</blockquote>
+<p>For real-world use, this check would have to be generalized a bit: for example, the OpenJDK Java compiler allows <code>@SuppressWarnings(&quot;all&quot;)</code> annotations to suppress all warnings. We may also want to make sure that <code>deprecation</code> is matched as an entire word, and not as part of another word, by changing the regular expression to <code>&quot;.*\\bdeprecation\\b.*&quot;</code>.</p>
+<blockquote>
+<p>对于现实世界的使用，这种检查必须要概括一下：例如，OpenJDK Java编译器允许@SuppressWarnings(“all”)注解来抑制所有警告。我们还可以通过将正则表达式修改为”.<em>/\b/deprecation/\b.</em>“来确保deprecation是作为一个完整的词来匹配的，而不是作为另一个词的一部分。</p>
+</blockquote>
+<p>Now we can extend our query to filter out calls in methods carrying a <code>SuppressDeprecationWarningAnnotation</code>:</p>
+<blockquote>
+<p>现在我们可以扩展我们的查询来过滤掉携带 SuppressDeprecationWarningAnnotation 的方法中的调用。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Represent deprecated methods</span><br><span class="line">class DeprecatedMethod extends Method &#123;</span><br><span class="line">    DeprecatedMethod() &#123;</span><br><span class="line">        this.getAnAnnotation() instanceof DeprecatedAnnotation</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Represent &#96;@SuppressWarnings&#96; annotations with &#96;deprecation&#96;</span><br><span class="line">class SuppressDeprecationWarningAnnotation extends Annotation &#123;</span><br><span class="line">    SuppressDeprecationWarningAnnotation() &#123;</span><br><span class="line">        this.getType().hasQualifiedName(&quot;java.lang&quot;, &quot;SuppressWarnings&quot;) and</span><br><span class="line">        ((Literal)this.getAValue()).getLiteral().regexpMatch(&quot;.*deprecation.*&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from Call call</span><br><span class="line">where call.getCallee() instanceof DeprecatedMethod</span><br><span class="line">    and not call.getCaller() instanceof DeprecatedMethod</span><br><span class="line">    and not call.getCaller().getAnAnnotation() instanceof SuppressDeprecationWarningAnnotation</span><br><span class="line">select call, &quot;This call invokes a deprecated method.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/8706367340403790260/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. It’s fairly common for projects to contain calls to methods that appear to be deprecated.</p>
+<blockquote>
+<p>➤ 在 LGTM.com 的查询控制台中可以看到这一点。项目中包含对似乎已被废弃的方法的调用是相当常见的。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/21u17er21ec/21u17er21ec.png" alt="image-20210326171721573"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/43u17er43ec/43u17er43ec.png" alt="image-20210326171743593"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/52u17er52ec/52u17er52ec.png" alt="image-20210326171752120"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Annotations-in-Java¶"><span class="toc-number">1.</span> <span class="toc-text">Annotations in Java¶</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#About-working-with-annotations"><span class="toc-number">1.1.</span> <span class="toc-text">About working with annotations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-Finding-missing-Override-annotations"><span class="toc-number">1.2.</span> <span class="toc-text">Example: Finding missing @Override annotations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-Finding-calls-to-deprecated-methods"><span class="toc-number">1.3.</span> <span class="toc-text">Example: Finding calls to deprecated methods</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Improvements"><span class="toc-number">1.3.1.</span> <span class="toc-text">Improvements</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>

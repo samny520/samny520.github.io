@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Javadoc - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="SummerSec CodeQl,"> 
+    <meta name="description" content="Javadoc¶You can use CodeQL to find errors in Javadoc comments in Java code.
+
+您可以使用CodeQL来查找Java代码中J,"> 
+    <meta name="author" content="SummerSec"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">Javadoc</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Javadoc</h1>
+        <div class="stuff">
+            <span>三月 26, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Javadoc¶"><a href="#Javadoc¶" class="headerlink" title="Javadoc¶"></a>Javadoc<a href="https://codeql.github.com/docs/codeql-language-guides/javadoc/#javadoc" target="_blank" rel="noopener">¶</a></h1><p>You can use CodeQL to find errors in Javadoc comments in Java code.</p>
+<blockquote>
+<p>您可以使用CodeQL来查找Java代码中Javadoc注释的错误。</p>
+</blockquote>
+<h2 id="About-analyzing-Javadoc"><a href="#About-analyzing-Javadoc" class="headerlink" title="About analyzing Javadoc"></a>About analyzing Javadoc</h2><p>To access Javadoc associated with a program element, we use member predicate <code>getDoc</code> of class <code>Element</code>, which returns a <code>Documentable</code>. Class <code>Documentable</code>, in turn, offers a member predicate <code>getJavadoc</code> to retrieve the Javadoc attached to the element in question, if any.</p>
+<blockquote>
+<p>要访问与程序元素相关联的 Javadoc，我们使用 Element 类的成员谓词 getDoc，它返回一个 Documentable。类Documentable则提供了一个成员谓词getJavadoc来检索与相关元素相关的Javadoc，如果有的话。</p>
+</blockquote>
+<p>Javadoc comments are represented by class <code>Javadoc</code>, which provides a view of the comment as a tree of <code>JavadocElement</code> nodes. Each <code>JavadocElement</code> is either a <code>JavadocTag</code>, representing a tag, or a <code>JavadocText</code>, representing a piece of free-form text.</p>
+<blockquote>
+<p>Javadoc注释由类Javadoc表示，它提供了一个注释的视图，即JavadocElement节点的树。每个 JavadocElement 要么是一个 JavadocTag，代表一个标签，要么是一个 JavadocText，代表一段自由格式的文本。</p>
+</blockquote>
+<p>The most important member predicates of class <code>Javadoc</code> are:</p>
+<blockquote>
+<p>Javadoc类最重要的成员谓词是:</p>
+</blockquote>
+<ul>
+<li><p><code>getAChild</code> - retrieves a top-level <code>JavadocElement</code> node in the tree representation.</p>
+<blockquote>
+<p>getAChild - 检索树型表示中的一个顶层JavadocElement节点。</p>
+</blockquote>
+</li>
+<li><p><code>getVersion</code> - returns the value of the <code>@version</code> tag, if any.</p>
+<blockquote>
+<p>getVersion - 返回@version标签的值（如果有的话）。</p>
+</blockquote>
+</li>
+<li><p><code>getAuthor</code> - returns the value of the <code>@author</code> tag, if any.</p>
+<blockquote>
+<p>getAuthor - 如果有的话，返回@author标签的值。</p>
+</blockquote>
+</li>
+</ul>
+<p>For example, the following query finds all classes that have both an <code>@author</code> tag and a <code>@version</code> tag, and returns this information:</p>
+<blockquote>
+<p>例如，下面的查询可以找到所有同时拥有@author标签和@version标签的类，并返回这些信息:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Class c, Javadoc jdoc, string author, string version</span><br><span class="line">where jdoc &#x3D; c.getDoc().getJavadoc() and</span><br><span class="line">    author &#x3D; jdoc.getAuthor() and</span><br><span class="line">    version &#x3D; jdoc.getVersion()</span><br><span class="line">select c, author, version</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/7u27er7ec/7u27er7ec.png" alt="image-20210327132707004"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/18u27er18ec/18u27er18ec.png" alt="image-20210327132717979"></p>
+<p><code>JavadocElement</code> defines member predicates <code>getAChild</code> and <code>getParent</code> to navigate up and down the tree of elements. It also provides a predicate <code>getTagName</code> to return the tag’s name, and a predicate <code>getText</code> to access the text associated with the tag.</p>
+<blockquote>
+<p>JavadocElement 定义了成员谓词 getAChild 和 getParent，用于在元素树中上下导航。它还提供了一个谓词 getTagName 来返回标记的名称，以及一个谓词 getText 来访问与标记相关的文本。</p>
+</blockquote>
+<p>We could rewrite the above query to use this API instead of <code>getAuthor</code> and <code>getVersion</code>:</p>
+<blockquote>
+<p>我们可以重写上面的查询，使用这个API代替getAuthor和getVersion:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Class c, Javadoc jdoc, JavadocTag authorTag, JavadocTag versionTag</span><br><span class="line">where jdoc &#x3D; c.getDoc().getJavadoc() and</span><br><span class="line">    authorTag.getTagName() &#x3D; &quot;@author&quot; and authorTag.getParent() &#x3D; jdoc and</span><br><span class="line">    versionTag.getTagName() &#x3D; &quot;@version&quot; and versionTag.getParent() &#x3D; jdoc</span><br><span class="line">select c, authorTag.getText(), versionTag.getText()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/7u27er7ec/7u27er7ec.png" alt="image-20210327132707004"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/18u27er18ec/18u27er18ec.png" alt="image-20210327132717979"></p>
+<p>The <code>JavadocTag</code> has several subclasses representing specific kinds of Javadoc tags:</p>
+<blockquote>
+<p>从类c，Javadoc jdoc，JavadocTag authorTag，JavadocTag versionTag:</p>
+</blockquote>
+<ul>
+<li><p><code>ParamTag</code> represents <code>@param</code> tags; member predicate <code>getParamName</code> returns the name of the parameter being documented.</p>
+<blockquote>
+<p>ParamTag代表@param标签；成员谓词getParamName返回被记录的参数名称。</p>
+</blockquote>
+</li>
+<li><p><code>ThrowsTag</code> represents <code>@throws</code> tags; member predicate <code>getExceptionName</code> returns the name of the exception being documented.</p>
+<blockquote>
+<p>ThrowsTag代表@throws标签；成员谓词getExceptionName返回被记录的异常名称。</p>
+</blockquote>
+</li>
+<li><p><code>AuthorTag</code> represents <code>@author</code> tags; member predicate <code>getAuthorName</code> returns the name of the author.</p>
+<blockquote>
+<p>AuthorTag代表@author标签；成员谓词getAuthorName返回被记录的作者名称。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Example-Finding-spurious-param-tags"><a href="#Example-Finding-spurious-param-tags" class="headerlink" title="Example: Finding spurious @param tags"></a>Example: Finding spurious @param tags</h2><p>As an example of using the CodeQL Javadoc API, let’s write a query that finds <code>@param</code> tags that refer to a non-existent parameter.</p>
+<blockquote>
+<p>作为使用CodeQL Javadoc API的一个例子，让我们写一个查询来查找引用一个不存在的参数的@param标签。</p>
+</blockquote>
+<p>For example, consider this program:</p>
+<blockquote>
+<p>例如，考虑这个程序:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class A &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">    * @param lst a list of strings</span><br><span class="line">    *&#x2F;</span><br><span class="line">    public String get(List&lt;String&gt; list) &#123;</span><br><span class="line">        return list.get(0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here, the <code>@param</code> tag on <code>A.get</code> misspells the name of parameter <code>list</code> as <code>lst</code>. Our query should be able to find such cases.</p>
+<blockquote>
+<p>这里，A.get上的@param标签将参数列表的名称误写为lst。我们的查询应该能够找到这种情况。</p>
+</blockquote>
+<p>To begin with, we write a query that finds all callables (that is, methods or constructors) and their <code>@param</code> tags:</p>
+<blockquote>
+<p>首先，我们写一个查询，找到所有可调用的方法（即方法或构造函数）和它们的@param标签:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable c, ParamTag pt</span><br><span class="line">where c.getDoc().getJavadoc() &#x3D; pt.getParent()</span><br><span class="line">select c, pt</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/10u35er10ec/10u35er10ec.png" alt="image-20210327133510876"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/35u35er35ec/35u35er35ec.png" alt="image-20210327133535667"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/48u35er48ec/48u35er48ec.png" alt="image-20210327133548916"></p>
+<p>It’s now easy to add another conjunct to the <code>where</code> clause, restricting the query to <code>@param</code> tags that refer to a non-existent parameter: we simply need to require that no parameter of <code>c</code> has the name <code>pt.getParamName()</code>.</p>
+<blockquote>
+<p>现在很容易在where子句中添加另一个共轭，将查询限制在引用不存在的参数的@param标签上：我们只需要要求c的任何参数都没有pt.getParamName()这个名字。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from Callable c, ParamTag pt</span><br><span class="line">where c.getDoc().getJavadoc() &#x3D; pt.getParent() and</span><br><span class="line">    not c.getAParameter().hasName(pt.getParamName())</span><br><span class="line">select pt, &quot;Spurious @param tag.&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/29u36er29ec/29u36er29ec.png" alt="image-20210327133629753"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/36u36er36ec/36u36er36ec.png" alt="image-20210327133636435"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/49u36er49ec/49u36er49ec.png" alt="image-20210327133649013"></p>
+<h2 id="Example-Finding-spurious-throws-tags"><a href="#Example-Finding-spurious-throws-tags" class="headerlink" title="Example: Finding spurious @throws tags"></a>Example: Finding spurious @throws tags</h2><p>A related, but somewhat more involved, problem is finding <code>@throws</code> tags that refer to an exception that the method in question cannot actually throw.</p>
+<blockquote>
+<p>一个相关的，但比较复杂的问题是找到@throws标签，它指的是一个异常，而该方法实际上不能抛出。</p>
+</blockquote>
+<p>For example, consider this Java program:</p>
+<blockquote>
+<p>例如，考虑这个Java程序:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">class A &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">    * @throws IOException thrown if some IO operation fails</span><br><span class="line">    * @throws RuntimeException thrown if something else goes wrong</span><br><span class="line">    *&#x2F;</span><br><span class="line">    public void foo() &#123;</span><br><span class="line">        &#x2F;&#x2F; ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Notice that the Javadoc comment of <code>A.foo</code> documents two thrown exceptions: <code>IOException</code> and <code>RuntimeException</code>. The former is clearly spurious: <code>A.foo</code> doesn’t have a <code>throws IOException</code> clause, and therefore can’t throw this kind of exception. On the other hand, <code>RuntimeException</code> is an unchecked exception, so it can be thrown even if there is no explicit <code>throws</code> clause listing it. So our query should flag the <code>@throws</code> tag for <code>IOException</code>, but not the one for <code>RuntimeException.</code></p>
+<blockquote>
+<p>请注意，A.foo的Javadoc注释中记录了两个抛出的异常：IOException和RuntimeException。IOException和RuntimeException。前者显然是虚假的：A.foo没有throws IOException子句，因此不能抛出这种异常。另一方面，RuntimeException是一个未被选中的异常，所以即使没有显式的throws子句列出它，它也可以被抛出。所以我们的查询应该标记IOException的@throws标签，而不是RuntimeException的标签。</p>
+</blockquote>
+<p>Remember that the CodeQL library represents <code>@throws</code> tags using class <code>ThrowsTag</code>. This class doesn’t provide a member predicate for determining the exception type that is being documented, so we first need to implement our own version. A simple version might look like this:</p>
+<blockquote>
+<p>记住，CodeQL库使用类ThrowsTag来表示@throws标签。这个类没有提供一个成员谓词来确定被记录的异常类型，所以我们首先需要实现我们自己的版本。一个简单的版本可能是这样的:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RefType getDocumentedException(ThrowsTag tt) &#123;</span><br><span class="line">    result.hasName(tt.getExceptionName())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Similarly, <code>Callable</code> doesn’t come with a member predicate for querying all exceptions that the method or constructor may possibly throw. We can, however, implement this ourselves by using <code>getAnException</code> to find all <code>throws</code> clauses of the callable, and then use <code>getType</code> to resolve the corresponding exception types:</p>
+<blockquote>
+<p>同样，Callable也没有自带一个成员谓词来查询方法或构造函数可能抛出的所有异常。不过，我们可以自己实现这个功能，使用getAnException查找callable的所有抛出子句，然后使用getType解析相应的异常类型:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">predicate mayThrow(Callable c, RefType exn) &#123;</span><br><span class="line">    exn.getASupertype*() &#x3D; c.getAnException().getType()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Note the use of <code>getASupertype*</code> to find both exceptions declared in a <code>throws</code> clause and their subtypes. For instance, if a method has a <code>throws IOException</code> clause, it may throw <code>MalformedURLException</code>, which is a subtype of <code>IOException</code>.</p>
+<blockquote>
+<p>注意使用getASupertype*来查找throws子句中声明的异常和它们的子类型。例如，如果一个方法有一个throws IOException子句，它可能会抛出MalformedURLException，这是IOException的一个子类型。</p>
+</blockquote>
+<p>Now we can write a query for finding all callables <code>c</code> and <code>@throws</code> tags <code>tt</code> such that:</p>
+<blockquote>
+<p>现在我们可以写一个查询，用于查找所有可调用的c和@throws标签tt，这样:</p>
+</blockquote>
+<ul>
+<li><code>tt</code> belongs to a Javadoc comment attached to <code>c</code>. tt属于附加在c上的Javadoc注释。</li>
+<li><code>c</code> can’t throw the exception documented by <code>tt</code>. c不能抛出tt所记录的异常。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Determine the kind of exception for the &#96;ThrowsTag&#96;</span><br><span class="line">RefType getDocumentedException(ThrowsTag tt) &#123;</span><br><span class="line">    result.hasName(tt.getExceptionName())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Find all &#96;throws&#96; clauses of the callable and get the exception type</span><br><span class="line">predicate mayThrow(Callable c, RefType exn) &#123;</span><br><span class="line">    exn.getASupertype*() &#x3D; c.getAnException().getType()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from Callable c, ThrowsTag tt, RefType exn</span><br><span class="line">where c.getDoc().getJavadoc() &#x3D; tt.getParent+() and</span><br><span class="line">    exn &#x3D; getDocumentedException(tt) and</span><br><span class="line">    not mayThrow(c, exn)</span><br><span class="line">select tt, &quot;Spurious @throws tag.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/1258570917227966396/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This finds several results in the LGTM.com demo projects.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中看到这个。这可以在 LGTM.com 演示项目中找到几个结果。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/54u46er54ec/54u46er54ec.png" alt="image-20210327134654810"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/53u52er53ec/53u52er53ec.png" alt="image-20210327135253078"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/42u52er42ec/42u52er42ec.png" alt="image-20210327135242786"></p>
+<h3 id="Improvements"><a href="#Improvements" class="headerlink" title="Improvements"></a>Improvements</h3><p>Currently, there are two problems with this query:</p>
+<blockquote>
+<p>目前，这个查询有两个问题:</p>
+</blockquote>
+<ol>
+<li><p><code>getDocumentedException</code> is too liberal: it will return <em>any</em> reference type with the right name, even if it’s in a different package and not actually visible in the current compilation unit.</p>
+<blockquote>
+<p>getDocumentedException过于自由：它将返回任何名称正确的引用类型，即使它在不同的包中，并且在当前的编译单元中实际上不可见。</p>
+</blockquote>
+</li>
+<li><p><code>mayThrow</code> is too restrictive: it doesn’t account for unchecked exceptions, which do not need to be declared.</p>
+<blockquote>
+<p>mayThrow的限制性太强：它没有考虑到未被选中的异常，而这些异常不需要声明。</p>
+</blockquote>
+</li>
+</ol>
+<p>To see why the former is a problem, consider this program:</p>
+<blockquote>
+<p>要了解为什么前者是个问题，请考虑这个程序:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class IOException extends Exception &#123;&#125;</span><br><span class="line"></span><br><span class="line">class B &#123;</span><br><span class="line">    &#x2F;** @throws IOException an IO exception *&#x2F;</span><br><span class="line">    void bar() throws IOException &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This program defines its own class <code>IOException</code>, which is unrelated to the class <code>java.io.IOException</code> in the standard library: they are in different packages. Our <code>getDocumentedException</code> predicate doesn’t check packages, however, so it will consider the <code>@throws</code> clause to refer to both <code>IOException</code> classes, and thus flag the <code>@param</code> tag as spurious, since <code>B.bar</code> can’t actually throw <code>java.io.IOException</code>.</p>
+<blockquote>
+<p>这个程序定义了自己的类IOException，它与标准库中的类java.io.IOException无关：它们在不同的包中。然而，我们的getDocumentedException谓词并不检查包，因此它会认为@throws子句同时引用两个IOException类，从而将@param标签标记为虚假的，因为B.bar实际上不能抛出java.io.IOException。</p>
+</blockquote>
+<p>As an example of the second problem, method <code>A.foo</code> from our previous example was annotated with a <code>@throws RuntimeException</code> tag. Our current version of <code>mayThrow</code>, however, would think that <code>A.foo</code> can’t throw a <code>RuntimeException</code>, and thus flag the tag as spurious.</p>
+<blockquote>
+<p>作为第二个问题的例子，我们上一个例子中的方法A.foo被注解了一个@throws RuntimeException标签。然而，我们当前版本的mayThrow会认为A.foo不能抛出RuntimeException，从而将这个标签标记为虚假的。</p>
+</blockquote>
+<p>We can make <code>mayThrow</code> less restrictive by introducing a new class to represent unchecked exceptions, which are just the subtypes of <code>java.lang.RuntimeException</code> and <code>java.lang.Error</code>:</p>
+<blockquote>
+<p>我们可以通过引入一个新的类来表示unchecked异常，这只是java.lang.RuntimeException和java.lang.Error的子类型，从而使mayThrow的限制性降低:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class UncheckedException extends RefType &#123;</span><br><span class="line">    UncheckedException() &#123;</span><br><span class="line">        this.getASupertype*().hasQualifiedName(&quot;java.lang&quot;, &quot;RuntimeException&quot;) or</span><br><span class="line">        this.getASupertype*().hasQualifiedName(&quot;java.lang&quot;, &quot;Error&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now we incorporate this new class into our <code>mayThrow</code> predicate:</p>
+<blockquote>
+<p>现在我们将这个新类加入到我们的 mayThrow 谓词中:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">predicate mayThrow(Callable c, RefType exn) &#123;</span><br><span class="line">    exn instanceof UncheckedException or</span><br><span class="line">    exn.getASupertype*() &#x3D; c.getAnException().getType()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Fixing <code>getDocumentedException</code> is more complicated, but we can easily cover three common cases:</p>
+<blockquote>
+<p>修复getDocumentedException比较复杂，但我们可以轻松覆盖三种常见情况:</p>
+</blockquote>
+<ol>
+<li><p>The <code>@throws</code> tag specifies the fully qualified name of the exception.</p>
+<blockquote>
+<p>@throws标签指定了异常的完全限定名称。</p>
+</blockquote>
+</li>
+<li><p>The <code>@throws</code> tag refers to a type in the same package.</p>
+<blockquote>
+<p>@throws标签指的是同一个包中的一个类型。</p>
+</blockquote>
+</li>
+<li><p>The <code>@throws</code> tag refers to a type that is imported by the current compilation unit.</p>
+<blockquote>
+<p>@throws标签指的是当前编译单元导入的类型。</p>
+</blockquote>
+</li>
+</ol>
+<p>The first case can be covered by changing <code>getDocumentedException</code> to use the qualified name of the <code>@throws</code> tag. To handle the second and the third case, we can introduce a new predicate <code>visibleIn</code> that checks whether a reference type is visible in a compilation unit, either by virtue of belonging to the same package or by being explicitly imported. We then rewrite <code>getDocumentedException</code> as:</p>
+<blockquote>
+<p>第一种情况可以通过修改getDocumentedException来使用@throws标签的限定名来处理。为了处理第二种和第三种情况，我们可以引入一个新的谓词visibleIn，它可以检查一个引用类型在编译单元中是否可见，无论是属于同一个包还是被显式导入。然后我们将getDocumentedException重写成:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Determine whether a reference type is visible in a compilation unit</span><br><span class="line">predicate visibleIn(CompilationUnit cu, RefType tp) &#123;</span><br><span class="line">    cu.getPackage() &#x3D; tp.getPackage()</span><br><span class="line">    or</span><br><span class="line">    exists(ImportType it | it.getCompilationUnit() &#x3D; cu | it.getImportedType() &#x3D; tp)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Determine the kind of exception for the &#96;ThrowsTag&#96;</span><br><span class="line">RefType getDocumentedException(ThrowsTag tt) &#123;</span><br><span class="line">    result.getQualifiedName() &#x3D; tt.getExceptionName()</span><br><span class="line">    or</span><br><span class="line">    (result.hasName(tt.getExceptionName()) and visibleIn(tt.getFile(), result))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Define a class to represent unchecked exceptions</span><br><span class="line">class UncheckedException extends RefType &#123;</span><br><span class="line">    UncheckedException() &#123;</span><br><span class="line">        this.getASupertype*().hasQualifiedName(&quot;java.lang&quot;, &quot;RuntimeException&quot;) or</span><br><span class="line">        this.getASupertype*().hasQualifiedName(&quot;java.lang&quot;, &quot;Error&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Find all &#96;throws&#96; clauses of the callable and get the exception type</span><br><span class="line">predicate mayThrow(Callable c, RefType exn) &#123;</span><br><span class="line">    exn instanceof UncheckedException or</span><br><span class="line">    exn.getASupertype*() &#x3D; c.getAnException().getType()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from Callable c, ThrowsTag tt, RefType exn</span><br><span class="line">where c.getDoc().getJavadoc() &#x3D; tt.getParent+() and</span><br><span class="line">    exn &#x3D; getDocumentedException(tt) and</span><br><span class="line">    not mayThrow(c, exn)</span><br><span class="line">select tt, &quot;Spurious @throws tag.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a href="https://lgtm.com/query/8016848987103345329/" target="_blank" rel="noopener">See this in the query console on LGTM.com</a>. This finds many fewer, more interesting results in the LGTM.com demo projects.</p>
+<blockquote>
+<p>➤ 在LGTM.com的查询控制台中看到。这在LGTM.com的演示项目中发现了很多少而有趣的结果。</p>
+</blockquote>
+<p><img src="https://gitee.com/samny/images/raw/master/40u53er40ec/40u53er40ec.png" alt="image-20210327135340417"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/54u53er54ec/54u53er54ec.png" alt="image-20210327135354874"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/0u54er0ec/0u54er0ec.png" alt="image-20210327135400636"></p>
+<p>Currently, <code>visibleIn</code> only considers single-type imports, but you could extend it with support for other kinds of imports.</p>
+<blockquote>
+<p>目前，visibleIn只考虑单一类型的导入，但你可以扩展它，支持其他类型的导入。</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Javadoc¶"><span class="toc-number">1.</span> <span class="toc-text">Javadoc¶</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#About-analyzing-Javadoc"><span class="toc-number">1.1.</span> <span class="toc-text">About analyzing Javadoc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-Finding-spurious-param-tags"><span class="toc-number">1.2.</span> <span class="toc-text">Example: Finding spurious @param tags</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-Finding-spurious-throws-tags"><span class="toc-number">1.3.</span> <span class="toc-text">Example: Finding spurious @throws tags</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Improvements"><span class="toc-number">1.3.1.</span> <span class="toc-text">Improvements</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
