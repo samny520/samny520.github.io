@@ -1,0 +1,727 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CodeQL workshop for Java Unsafe deserialization in Apache Struts - 像清水一般清澈透明</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="SummerSec CodeQl,"> 
+    <meta name="description" content="
+title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: ‘https://acg.toubi,"> 
+    <meta name="author" content="SummerSec"> 
+    <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">像清水一般清澈透明</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://summersec.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">CodeQL workshop for Java Unsafe deserialization in Apache Struts</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">CodeQL workshop for Java Unsafe deserialization in Apache Struts</h1>
+        <div class="stuff">
+            <span>三月 28, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <hr>
+<p>title: CodeQL workshop for Java: Unsafe deserialization in Apache Struts<br>photos: ‘<a href="https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;" target="_blank" rel="noopener">https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;</a><br>date: 2021-03-28 16:01:42<br>tags:<br>categories: codeql<br>password:<br>permalink:</p>
+<hr>
+<h1 id="CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts"><a href="#CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts" class="headerlink" title="CodeQL workshop for Java: Unsafe deserialization in Apache Struts"></a>CodeQL workshop for Java: Unsafe deserialization in Apache Struts</h1><ul>
+<li>Analyzed language: Java</li>
+<li>Difficulty level: 200</li>
+</ul>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><ul>
+<li><a href="#problemstatement">Problem statement</a> 问题描述</li>
+<li><a href="#setupinstructions">Setup instructions</a> 安装说明</li>
+<li><a href="#documentationlinks">Documentation links</a> 文件链接</li>
+<li><a href="#workshop">Workshop</a><ul>
+<li><a href="#section1">Section 1: Finding XML deserialization</a></li>
+<li><a href="#section2">Section 2: Find the implementations of the <code>toObject</code> method from ContentTypeHandler</a></li>
+<li><a href="#section3">Section 3: Unsafe XML deserialization</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Problem-statement"><a href="#Problem-statement" class="headerlink" title="Problem statement "></a>Problem statement <a id="problemstatement"></a></h2><p><em>Serialization</em> is the process of converting in memory objects to text or binary output formats, usually for the purpose of sharing or saving program state. This serialized data can then be loaded back into memory at a future point through the process of <em>deserialization</em>.</p>
+<blockquote>
+<p>序列化_是将内存中的对象转换为文本或二进制输出格式的过程，通常是为了共享或保存程序状态。这种序列化的数据可以在未来的某一时刻通过_解序列化_过程加载回内存。</p>
+</blockquote>
+<p>In languages such as Java, Python and Ruby, deserialization provides the ability to restore not only primitive data, but also complex types such as library and user defined classes. This provides great power and flexibility, but introduces a signficant attack vector if the deserialization happens on untrusted user data without restriction.</p>
+<blockquote>
+<p>在Java、Python和Ruby等语言中，反序列化不仅提供了还原原始数据的能力，还提供了还原库和用户定义类等复杂类型的能力。这提供了强大的功能和灵活性，但如果反序列化发生在无限制的不受信任的用户数据上，则引入了一个重要的攻击向量。</p>
+</blockquote>
+<p><a href="https://struts.apache.org/" target="_blank" rel="noopener">Apache Struts</a> is a popular open-source MVC framework for creating web applications in Java. In 2017, a researcher from the predecessor of the <a href="https://securitylab.github.com/" target="_blank" rel="noopener">GitHub Security Lab</a> found <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-9805" target="_blank" rel="noopener">CVE-2017-9805</a>, an XML deserialization vulnerability in Apache Struts that would allow remote code execution.</p>
+<blockquote>
+<p><a href="https://struts.apache.org/" target="_blank" rel="noopener">Apache Struts</a>是一个流行的开源MVC框架，用于用Java创建Web应用。2017年，<a href="https://securitylab.github.com/" target="_blank" rel="noopener">GitHub安全实验室</a>前身的研究人员发现<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-9805" target="_blank" rel="noopener">CVE-2017-9805</a>，Apache Struts中存在一个XML反序列化漏洞，将允许远程代码执行。</p>
+</blockquote>
+<p>The problem occurred because included as part of the Apache Struts framework is the ability to accept requests in multiple different formats, or <em>content types</em>. It provides a pluggable system for supporting these content types through the <a href="https://struts.apache.org/maven/struts2-plugins/struts2-rest-plugin/apidocs/org/apache/struts2/rest/handler/ContentTypeHandler.html" target="_blank" rel="noopener"><code>ContentTypeHandler</code></a> interface, which provides the following interface method:</p>
+<blockquote>
+<p>问题发生的原因是，作为Apache Struts框架的一部分，包含了接受多种不同格式或_内容类型_的请求的能力。它通过<a href="https://struts.apache.org/maven/struts2-plugins/struts2-rest-plugin/apidocs/org/apache/struts2/rest/handler/ContentTypeHandler.html" target="_blank" rel="noopener"><code>ContentTypeHandler</code></a>接口提供了一个可插拔的系统来支持这些内容类型，它提供了以下接口方法:</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Populates an object using data from the input stream</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> in The input stream, usually the body of the request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target The target, usually the action class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IOException If unable to write to the output stream</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">toObject</span><span class="params">(Reader in, Object target)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>New content type handlers are defined by implementing the interface and defining a <code>toObject</code> method which takes data in the specified content type (in the form of a <code>Reader</code>) and uses it to populate the Java object <code>target</code>, often via a deserialization routine. However, the <code>in</code> parameter is typically populated from the body of a request without sanitization or safety checks. This means it should be treated as “untrusted” user data, and only deserialized under certain safe conditions.</p>
+<blockquote>
+<p>新的内容类型处理程序是通过实现接口和定义 “toObject “方法来定义的，该方法接受指定内容类型的数据（以 “Reader “的形式），并使用它来填充Java对象 “target”，通常是通过反序列化例程。然而，”in “参数通常是从请求的主体中填充的，没有经过净化或安全检查。这意味着它应该被视为 “不受信任 “的用户数据，只有在某些安全条件下才会被反序列化。</p>
+</blockquote>
+<p>In this workshop, we will write a query to find CVE-2017-9805 in a database built from the known vulnerable version of Apache Struts.</p>
+<blockquote>
+<p>在本工作坊中，我们将编写一个查询，在一个由已知的Apache Struts脆弱版本构建的数据库中找到CVE-2017-9805。</p>
+</blockquote>
+<h2 id="Setup-instructions-for-Visual-Studio-Code"><a href="#Setup-instructions-for-Visual-Studio-Code" class="headerlink" title="Setup instructions for Visual Studio Code "></a>Setup instructions for Visual Studio Code <a id="setupinstructions"></a></h2><p>To take part in the workshop you will need to follow these steps to get the CodeQL development environment setup:</p>
+<blockquote>
+<p>要参加研讨会，你需要按照以下步骤来设置CodeQL开发环境。</p>
+</blockquote>
+<ol>
+<li>Install the Visual Studio Code IDE.  安装Visual Studio Code IDE。</li>
+<li>Download and install the <a href="https://help.semmle.com/codeql/codeql-for-vscode.html" target="_blank" rel="noopener">CodeQL extension for Visual Studio Code</a>. Full setup instructions are <a href="https://help.semmle.com/codeql/codeql-for-vscode/procedures/setting-up.html" target="_blank" rel="noopener">here</a>. 下载并安装<a href="https://help.semmle.com/codeql/codeql-for-vscode.html" target="_blank" rel="noopener">Visual Studio Code的CodeQL扩展</a>。完整的安装说明在<a href="https://help.semmle.com/codeql/codeql-for-vscode/procedures/setting-up.html" target="_blank" rel="noopener">这里</a></li>
+<li><a href="https://help.semmle.com/codeql/codeql-for-vscode/procedures/setting-up.html#using-the-starter-workspace" target="_blank" rel="noopener">Set up the starter workspace</a>.<ul>
+<li><strong><strong>Important</strong></strong>: Don’t forget to <code>git clone --recursive</code> or <code>git submodule update --init --remote</code>, so that you obtain the standard query libraries.</li>
+</ul>
+</li>
+<li>Open the starter workspace: File &gt; Open Workspace &gt; Browse to <code>vscode-codeql-starter/vscode-codeql-starter.code-workspace</code>.</li>
+<li>Download and unzip the <a href="https://github.com/githubsatelliteworkshops/codeql/releases/download/v1.0/apache_struts_cve_2017_9805.zip" target="_blank" rel="noopener">apache_struts_cve_2017_9805.zip database</a>.</li>
+<li>Choose this database in CodeQL (using <code>Ctrl + Shift + P</code> to open the command palette, then selecting “CodeQL: Choose Database”).</li>
+<li>Create a new file in the <code>codeql-custom-queries-java</code> directory called <code>UnsafeDeserialization.ql</code>.</li>
+</ol>
+<h2 id="Documentation-links"><a href="#Documentation-links" class="headerlink" title="Documentation links "></a>Documentation links <a id="documentationlinks"></a></h2><p>If you get stuck, try searching our documentation and blog posts for help and ideas. Below are a few links to help you get started:</p>
+<blockquote>
+<p>如果你被卡住了，请尝试搜索我们的文档和博客文章以获得帮助和想法。以下是一些帮助你入门的链接:</p>
+</blockquote>
+<ul>
+<li><a href="https://help.semmle.com/QL/learn-ql" target="_blank" rel="noopener">Learning CodeQL</a></li>
+<li><a href="https://help.semmle.com/QL/learn-ql/cpp/ql-for-java.html" target="_blank" rel="noopener">Learning CodeQL for Java</a></li>
+<li><a href="https://help.semmle.com/codeql/codeql-for-vscode.html" target="_blank" rel="noopener">Using the CodeQL extension for VS Code</a></li>
+</ul>
+<h2 id="Workshop"><a href="#Workshop" class="headerlink" title="Workshop "></a>Workshop <a id="workshop"></a></h2><p>The workshop is split into several steps. You can write one query per step, or work with a single query that you refine at each step. Each step has a <strong>hint</strong> that describes useful classes and predicates in the CodeQL standard libraries for Java. You can explore these in your IDE using the autocomplete suggestions (<code>Ctrl + Space</code>) and the jump-to-definition command (<code>F12</code>).</p>
+<blockquote>
+<p>该研讨会分为几个步骤。你可以在每个步骤中编写一个查询，或者在每个步骤中完善一个查询。每个步骤都有一个<strong>提示</strong>，描述了Java的CodeQL标准库中有用的类和谓词。你可以在IDE中使用自动完成建议(<code>Ctrl + Space</code>)和跳转到定义命令(<code>F12</code>)来探索这些。</p>
+</blockquote>
+<h3 id="Section-1-Finding-XML-deserialization"><a href="#Section-1-Finding-XML-deserialization" class="headerlink" title="Section 1: Finding XML deserialization "></a>Section 1: Finding XML deserialization <a id="section1"></a></h3><p><a href="https://x-stream.github.io/index.html" target="_blank" rel="noopener">XStream</a> is a Java framework for serializing Java objects to XML used by Apache Struts. It provides a method <code>XStream.fromXML</code> for deserializing XML to a Java object. By default, the input is not validated in any way, and is vulnerable to remote code execution exploits. In this section, we will identify calls to <code>fromXML</code> in the codebase.</p>
+<blockquote>
+<p><a href="https://x-stream.github.io/index.html" target="_blank" rel="noopener">XStream</a>是一个Java框架，用于将Java对象序列化为Apache Struts使用的XML。它提供了一个方法<code>XStream.fromXML</code>，用于将XML反序列化为一个Java对象。默认情况下，输入的内容不会以任何方式进行验证，并且容易受到远程代码执行的攻击。在本节中，我们将识别代码库中对<code>fromXML</code>的调用。</p>
+</blockquote>
+<ol>
+<li><p>Find all method calls in the program. </p>
+<blockquote>
+<ol>
+<li>查找程序中的所有方法调用。</li>
+</ol>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li>A method call is represented by the <code>MethodAccess</code> type in the CodeQL Java library.</li>
+</ul>
+<blockquote>
+<p>在CodeQL Java库中，方法调用由<code>MethodAccess</code>类型表示。</p>
+</blockquote>
+</details>
+
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">    </span><br><span class="line">    from MethodAccess call</span><br><span class="line">    select call</span><br></pre></td></tr></table></figure>
+</details>
+</li>
+<li><p>Update your query to report the method being called by each method call.</p>
+<blockquote>
+<p>更新你的查询，报告每个方法调用的方法。</p>
+</blockquote>
+<details>
+<summary>Hints</summary>
+
+
+</details></li>
+</ol>
+<ul>
+<li><p>Add a CodeQL variable called <code>method</code> with type <code>Method</code>.</p>
+<pre><code>&gt;   添加一个名为 &quot;method &quot;的CodeQL变量，类型为 &quot;Method&quot;。</code></pre></li>
+<li><p><code>MethodAccess</code> has a predicate called <code>getMethod()</code> for returning the method.</p>
+<pre><code>&gt;  `MethodAccess`有一个叫做`getMethod()`的谓词用于返回方法。</code></pre><ul>
+<li><p>Add a <code>where</code> clause.</p>
+<blockquote>
+<p> 添加一个<code>where</code>子句。</p>
+</blockquote>
+
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess call, Method method</span><br><span class="line">where call.getMethod() &#x3D; method</span><br><span class="line">select call, method</span><br></pre></td></tr></table></figure>
+</details>
+
+</li>
+</ul>
+<ol>
+<li><p>Find all calls in the program to methods called <code>fromXML</code>.<a id="question1"></a></p>
+<blockquote>
+<p> 找出程式中所有调用<code>fromXML</code>的方法。</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li><p><code>Method.getName()</code> returns a string representing the name of the method.</p>
+<blockquote>
+<p><code>Method.getName()</code>返回一个代表方法名称的字符串。</p>
+</blockquote>
+</li>
+</ul>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess fromXML, Method method</span><br><span class="line">where</span><br><span class="line">  fromXML.getMethod() &#x3D; method and</span><br><span class="line">  method.getName() &#x3D; &quot;fromXML&quot;</span><br><span class="line">select fromXML</span><br></pre></td></tr></table></figure>
+<p>However, as we now want to report only the call itself, we can inline the temporary <code>method</code> variable like so:</p>
+<blockquote>
+<p> 然而，由于我们现在只想报告调用本身，我们可以像这样内联临时<code>method</code>变量。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess fromXML</span><br><span class="line">where fromXML.getMethod().getName() &#x3D; &quot;fromXML&quot;</span><br><span class="line">select fromXML</span><br></pre></td></tr></table></figure>
+</details>
+</li>
+<li><p>The <code>XStream.fromXML</code> method deserializes the first argument (i.e. the argument at index <code>0</code>). Update your query to report the deserialized argument.</p>
+<blockquote>
+<p><code>XStream.fromXML</code>方法反序列化第一个参数（即索引<code>0</code>的参数）。更新你的查询以报告反序列化的参数。</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li><p><code>MethodCall.getArgument(int i)</code> returns the argument at the i-th index.</p>
+<blockquote>
+<p><code>MethodCall.getArgument(int i)</code>返回第i个索引的参数。</p>
+</blockquote>
+</li>
+<li><p>The arguments are <em>expressions</em> in the program, represented by the CodeQL class <code>Expr</code>. Introduce a new variable to hold the argument expression.</p>
+<blockquote>
+<p>参数是程序中的_表达式，由CodeQL类<code>Expr</code>表示。引入一个新的变量来存放参数表达式。</p>
+</blockquote>
+</li>
+</ul>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess fromXML, Expr arg</span><br><span class="line">where</span><br><span class="line">  fromXML.getMethod().getName() &#x3D; &quot;fromXML&quot; and</span><br><span class="line">  arg &#x3D; fromXML.getArgument(0)</span><br><span class="line">select fromXML, arg</span><br></pre></td></tr></table></figure>
+</details>
+</li>
+<li><p>Recall that <em>predicates</em> allow you to encapsulate logical conditions in a reusable format. Convert your previous query to a predicate which identifies the set of expressions in the program which are deserialized directly by <code>fromXML</code>. You can use the following template:</p>
+<blockquote>
+<p>回顾一下，_predicate_允许你以可重复使用的格式封装逻辑条件。将你之前的查询转换为一个谓词，该谓词标识了程序中直接由<code>fromXML</code>反序列化的表达式集。你可以使用下面的模板:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    predicate isXMLDeserialized(Expr arg) &#123;</span><br><span class="line">      exists(MethodAccess fromXML |</span><br><span class="line">        &#x2F;&#x2F; TODO fill me in</span><br><span class="line">      )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://help.semmle.com/QL/ql-handbook/formulas.html#exists" target="_blank" rel="noopener"><code>exists</code></a> is a mechanism for introducing temporary variables with a restricted scope. You can think of them as their own <code>from</code>-<code>where</code>-<code>select</code>. In this case, we use it to introduce the <code>fromXML</code> temporary variable, with type <code>MethodAccess</code>.</p>
+<blockquote>
+<p><a href="https://help.semmle.com/QL/ql-handbook/formulas.html#exists" target="_blank" rel="noopener"><code>exists</code></a>是一种引入范围有限的临时变量的机制。你可以把它们看作是自己的<code>from</code>-<code>where</code>-<code>select</code>。在本例中，我们使用它来引入类型为 “MethodAccess “的 “fromXML “临时变量。</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li>Copy the <code>where</code> clause of the previous query.</li>
+</ul>
+</details></li>
+</ol>
+<blockquote>
+<p> 复制上一个查询的 “where “子</p>
+</blockquote>
+</li>
+</ul>
+<details>
+    <summary>Solution</summary>
+
+<p>​<br>​    import java<br>​<br>​    predicate isXMLDeserialized(Expr arg) {<br>​      exists(MethodAccess fromXML |<br>​        fromXML.getMethod().getName() = “fromXML” and<br>​        arg = fromXML.getArgument(0)<br>​      )<br>​    }<br>​<br>    from Expr arg<br>    where isXMLDeserialized(arg)<br>    select arg</p>
+<h3 id="Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler"><a href="#Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler" class="headerlink" title="Section 2: Find the implementations of the toObject method from ContentTypeHandler "></a>Section 2: Find the implementations of the toObject method from ContentTypeHandler <a id="section2"></a></h3><p>Like predicates, <em>classes</em> in CodeQL can be used to encapsulate reusable portions of logic. Classes represent single sets of values, and they can also include operations (known as <em>member predicates</em>) specific to that set of values. You have already seen numerous instances of CodeQL classes (<code>MethodAccess</code>, <code>Method</code> etc.) and associated member predicates (<code>MethodAccess.getMethod()</code>, <code>Method.getName()</code>, etc.).</p>
+<blockquote>
+<p>像谓词一样，CodeQL中的<em>类</em>可以用来封装逻辑的可重用部分。类代表单一的值集，它们也可以包含特定于该值集的操作（称为_成员谓词_）。你已经看到了许多CodeQL类的实例（<code>MethodAccess</code>、<code>Method</code>等）和相关的成员谓词（<code>MethodAccess.getMethod()</code>、<code>Method.getName()</code>等）。</p>
+</blockquote>
+<ol>
+<li><p>Create a CodeQL class called <code>ContentTypeHandler</code> to find the interface <code>org.apache.struts2.rest.handler.ContentTypeHandler</code>. You can use this template:</p>
+<blockquote>
+<p>创建一个名为<code>ContentTypeHandler</code>的CodeQL类，找到接口<code>org.apache.struts2.rest.handler.ContentTypeHandler</code>。可以使用这个模板。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class ContentTypeHandler extends RefType &#123;</span><br><span class="line">  ContentTypeHandler() &#123;</span><br><span class="line">      &#x2F;&#x2F; TODO Fill me in</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li><p>Use <code>RefType.hasQualifiedName(string packageName, string className)</code> to identify classes with the given package name and class name. For example:</p>
+<blockquote>
+<p>使用<code>RefType.hasQualifiedName(string packageName, string className)</code>来识别具有给定包名和类名的类:</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from RefType r</span><br><span class="line">where r.hasQualifiedName(&quot;java.lang&quot;, &quot;String&quot;)</span><br><span class="line">select r</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Within the characteristic predicate you can use the magic variable <code>this</code> to refer to the RefType</p>
+<blockquote>
+<p>在特性谓词中，你可以使用神奇的变量<code>this</code>来引用RefType。</p>
+</blockquote>
+</li>
+</ul>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">&#x2F;** The interface &#96;org.apache.struts2.rest.handler.ContentTypeHandler&#96;. *&#x2F;</span><br><span class="line">class ContentTypeHandler extends RefType &#123;</span><br><span class="line">  ContentTypeHandler() &#123;</span><br><span class="line">    this.hasQualifiedName(&quot;org.apache.struts2.rest.handler&quot;, &quot;ContentTypeHandler&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+</li>
+<li><p>Create a CodeQL class called <code>ContentTypeHandlerToObject</code> for identfying <code>Method</code>s called <code>toObject</code> on classes whose direct super-types include <code>ContentTypeHandler</code>.</p>
+<blockquote>
+<p>创建一个名为 “ContentTypeHandlerToObject “的CodeQL类，用于识别直接超类型包括 “ContentTypeHandler “的类上调用 “toObject “的 “Method”。</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li><p>Use <code>Method.getName()</code> to identify the name of the method.</p>
+<blockquote>
+<p> 使用<code>Method.getName()</code>来识别方法的名称。</p>
+</blockquote>
+</li>
+<li><p>To identify whether the method is declared on a class whose direct super-type includes <code>ContentTypeHandler</code>, you will need to:</p>
+<blockquote>
+<p>要识别该方法是否在直接超级类型包括<code>ContentTypeHandler</code>的类上声明，你需要:</p>
+</blockquote>
+<ul>
+<li><p>Identify the declaring type of the method using <code>Method.getDeclaringType()</code>.</p>
+<blockquote>
+<p>使用<code>Method.getDeclaringType()</code>识别方法的声明类型。</p>
+</blockquote>
+</li>
+<li><p>Identify the super-types of that type using <code>RefType.getASuperType()</code></p>
+<blockquote>
+<p>使用<code>RefType.getASuperType()</code>识别该类型的超级类型。</p>
+</blockquote>
+</li>
+<li><p>Use <code>instanceof</code> to assert that one of the super-types is a <code>ContentTypeHandler</code></p>
+<blockquote>
+<p>使用 “instanceof “断言其中一个超级类型是 “ContentTypeHandler”。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;** A &#96;toObject&#96; method on a subtype of &#96;org.apache.struts2.rest.handler.ContentTypeHandler&#96;. *&#x2F;</span><br><span class="line">class ContentTypeHandlerToObject extends Method &#123;</span><br><span class="line">  ContentTypeHandlerToObject() &#123;</span><br><span class="line">    this.getDeclaringType().getASupertype() instanceof ContentTypeHandler and</span><br><span class="line">    this.hasName(&quot;toObject&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+</li>
+<li><p><code>toObject</code> methods should consider the first parameter as untrusted user input. Write a query to find the first (i.e. index 0) parameter for <code>toObject</code> methods.</p>
+<blockquote>
+<p><code>toObject</code>方法应将第一个参数视为不受信任的用户输入。写一个查询来查找<code>toObject</code>方法的第一个（即索引0）参数。</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li><p>Use <code>Method.getParameter(int index)</code> to get the i-th index parameter.</p>
+<blockquote>
+<p>使用<code>Method.getParameter(int index)</code>来获取第i个索引参数。</p>
+</blockquote>
+</li>
+<li><p>Create a query with a single CodeQL variable of type <code>ContentTypeHandlerToObject</code>.</p>
+<blockquote>
+<p>用类型为<code>ContentTypeHandlerToObject</code>的单个CodeQL变量创建一个查询。</p>
+</blockquote>
+</li>
+</ul>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from ContentTypeHandlerToObject toObjectMethod</span><br><span class="line">select toObjectMethod.getParameter(0)</span><br></pre></td></tr></table></figure>
+</details>
+
+</li>
+</ol>
+<h3 id="Section-3-Unsafe-XML-deserialization"><a href="#Section-3-Unsafe-XML-deserialization" class="headerlink" title="Section 3: Unsafe XML deserialization "></a>Section 3: Unsafe XML deserialization <a id="section3"></a></h3><p>We have now identified (a) places in the program which receive untrusted data and (b) places in the program which potentially perform unsafe XML deserialization. We now want to tie these two together to ask: does the untrusted data ever <em>flow</em> to the potentially unsafe XML deserialization call?</p>
+<blockquote>
+<p>我们现在已经确定了(a)程序中接收不受信任数据的地方和(b)程序中可能执行不安全的XML反序列化的地方。我们现在想把这两个地方联系起来问：未受信任的数据是否曾经_流向潜在的不安全的XML反序列化调用？</p>
+</blockquote>
+<p>In program analysis we call this a <em>data flow</em> problem. Data flow helps us answer questions like: does this expression ever hold a value that originates from a particular other place in the program?</p>
+<blockquote>
+<p>在程序分析中，我们称之为_数据流_问题。数据流帮助我们回答这样的问题：这个表达式是否曾经持有一个源自程序中其他特定地方的值？</p>
+</blockquote>
+<p>We can visualize the data flow problem as one of finding paths through a directed graph, where the nodes of the graph are elements in program, and the edges represent the flow of data between those elements. If a path exists, then the data flows between those two nodes.</p>
+<blockquote>
+<p>我们可以把数据流问题想象成一个通过有向图寻找路径的问题，图中的节点是程序中的元素，而边则代表这些元素之间的数据流。如果存在一条路径，那么数据就在这两个节点之间流动。</p>
+</blockquote>
+<p>Consider this example Java method:</p>
+<blockquote>
+<p>考虑这个Java方法的例子:</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> tainted)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">int</span> x = tainted;</span><br><span class="line">   <span class="keyword">if</span> (someCondition) &#123;</span><br><span class="line">     <span class="keyword">int</span> y = x;</span><br><span class="line">     callFoo(y);</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="keyword">return</span> x;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The data flow graph for this method will look something like this:</p>
+<blockquote>
+<p>这个方法的数据流图会是这样的:</p>
+</blockquote>
+<img src="https://gitee.com/samny/images/raw/master/20u06er20ec/20u06er20ec.png" alt="drawing" width="260">
+
+<p>This graph represents the flow of data from the tainted parameter. The nodes of graph represent program elements that have a value, such as function parameters and expressions. The edges of this graph represent flow through these nodes.</p>
+<blockquote>
+<p>这个图表示污点参数的数据流。图的节点代表有值的程序元素，如函数参数和表达式。该图的边代表流经这些节点的流量。</p>
+</blockquote>
+<p>CodeQL for Java provides data flow analysis as part of the standard library. You can import it using <code>semmle.code.java.dataflow.DataFlow</code>. The library models nodes using the <code>DataFlow::Node</code> CodeQL class. These nodes are separate and distinct from the AST (Abstract Syntax Tree, which represents the basic structure of the program) nodes, to allow for flexibility in how data flow is modeled.</p>
+<blockquote>
+<p>CodeQL for Java提供的数据流分析是标准库的一部分。你可以使用<code>semmle.code.java.dataflow.DataFlow</code>导入它。该库使用<code>DataFlow::Node</code>CodeQL类对节点进行建模。这些节点与AST（Abstract Syntax Tree，表示程序的基本结构）节点是分开的，有别于AST节点，以便灵活地对数据流进行建模。</p>
+</blockquote>
+<p>There are a small number of data flow node types – expression nodes and parameter nodes are most common.</p>
+<blockquote>
+<p>有少量的数据流节点类型–表达式节点和参数节点是最常见的。</p>
+</blockquote>
+<p>In this section we will create a data flow query by populating this template:</p>
+<blockquote>
+<p>在本节中，我们将通过填充这个模板来创建一个数据流查询:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * @name Unsafe XML deserialization</span><br><span class="line"> * @kind problem</span><br><span class="line"> * @id java&#x2F;unsafe-deserialization</span><br><span class="line"> *&#x2F;</span><br><span class="line">import java</span><br><span class="line">import semmle.code.java.dataflow.DataFlow</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; TODO add previous class and predicate definitions here</span><br><span class="line"></span><br><span class="line">class StrutsUnsafeDeserializationConfig extends DataFlow::Configuration &#123;</span><br><span class="line">  StrutsUnsafeDeserializationConfig() &#123; this &#x3D; &quot;StrutsUnsafeDeserializationConfig&quot; &#125;</span><br><span class="line">  override predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">    exists(&#x2F;** TODO fill me in **&#x2F; |</span><br><span class="line">      source.asParameter() &#x3D; &#x2F;** TODO fill me in **&#x2F;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">  override predicate isSink(DataFlow::Node sink) &#123;</span><br><span class="line">    exists(&#x2F;** TODO fill me in **&#x2F; |</span><br><span class="line">      &#x2F;** TODO fill me in **&#x2F;</span><br><span class="line">      sink.asExpr() &#x3D; &#x2F;** TODO fill me in **&#x2F;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from StrutsUnsafeDeserializationConfig config, DataFlow::Node source, DataFlow::Node sink</span><br><span class="line">where config.hasFlow(source, sink)</span><br><span class="line">select sink, &quot;Unsafe XML deserialization&quot;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>Complete the <code>isSource</code> predicate using the query you wrote for <a href="#section2">Section 2</a>.</p>
+<blockquote>
+<p>使用你为<a href="#section2">第2节</a>写的查询完成 “isSource “谓词。</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li><p>You can translate from a query clause to a predicate by:</p>
+<blockquote>
+<p>你可以通过以下方式从查询子句翻译成谓词: </p>
+</blockquote>
+<ul>
+<li><p>Converting the variable declarations in the <code>from</code> part to the variable declarations of an <code>exists</code></p>
+<blockquote>
+<p>将 “from “部分的变量声明转换为 “exists “部分的变量声明。</p>
+</blockquote>
+</li>
+<li><p>Placing the <code>where</code> clause conditions (if any) in the body of the exists</p>
+<blockquote>
+<p>将 “where “子句条件(如果有的话)放在existence的正文中。</p>
+</blockquote>
+</li>
+<li><p>Adding a condition which equates the <code>select</code> to one of the parameters of the predicate.</p>
+<blockquote>
+<p>添加一个条件，将<code>select</code>等同于谓词的一个参数。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>Remember to include the <code>ContentTypeHandlerToObject</code> class you defined earlier.</p>
+<blockquote>
+<p>记住要包含你之前定义的<code>ContentTypeHandlerToObject</code>类。</p>
+</blockquote>
+</li>
+</ul>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">override predicate isSource(Node source) &#123;</span><br><span class="line">  exists(ContentTypeHandlerToObject toObjectMethod |</span><br><span class="line">    source.asParameter() &#x3D; toObjectMethod.getParameter(0)</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+</li>
+<li><p>Complete the <code>isSink</code> predicate by using the final query you wrote for <a href="#section1">Section 1</a>. Remember to use the <code>isXMLDeserialized</code> predicate!</p>
+<blockquote>
+<p>使用你为<a href="#section1">Section1</a>写的最后一个查询来完成<code>isSink</code>谓词。记得使用<code>isXMLDeserialized</code>谓词!</p>
+</blockquote>
+<details>
+<summary>Hint</summary>
+
+<ul>
+<li>Complete the same process as above.</li>
+</ul>
+<blockquote>
+<p>完成与上述相同的过程。</p>
+</blockquote>
+</details>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">override predicate isSink(Node sink) &#123;</span><br><span class="line">  exists(Expr arg |</span><br><span class="line">    isXMLDeserialized(arg) and</span><br><span class="line">    sink.asExpr() &#x3D; arg</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+</li>
+</ol>
+<p>You can now run the completed query. You should find exactly one result, which is the CVE reported by our security researchers in 2017!</p>
+<blockquote>
+<p>您现在可以运行完成的查询。你应该会发现正好有一个结果，这就是我们的安全研究人员在2017年报告的CVE!</p>
+</blockquote>
+<p>For this result, it is easy to verify that it is correct, because both the source and sink are in the same method. However, for many data flow problems this is not the case.</p>
+<blockquote>
+<p>对于这个结果，很容易验证它是正确的，因为源和汇都在同一个方法中。然而，对于很多数据流问题来说，情况并非如此。</p>
+</blockquote>
+<p>We can update the query so that it not only reports the sink, but it also reports the source and the path to that source. We can do this by making these changes:</p>
+<blockquote>
+<p>我们可以更新查询，使其不仅报告汇，而且还报告源和通往该源的路径。我们可以通过做这些改变来实现。</p>
+</blockquote>
+<p>The answer to this is to convert the query to a <em>path problem</em> query. There are five parts we will need to change:</p>
+<blockquote>
+<p>答案是将查询转换为_路径问题查询。我们需要改变的有五个部分:</p>
+</blockquote>
+<ul>
+<li><p>Convert the <code>@kind</code> from <code>problem</code> to <code>path-problem</code>. This tells the CodeQL toolchain to interpret the results of this query as path results.</p>
+<blockquote>
+<p>将”@kind “从 “problem “转换为 “path -problem”。这告诉CodeQL工具链将这个查询的结果解释为路径结果。</p>
+</blockquote>
+</li>
+<li><p>Add a new import <code>DataFlow::PathGraph</code>, which will report the path data alongside the query results.</p>
+<blockquote>
+<p>增加一个新的导入<code>DataFlow::PathGraph</code>，它将在查询结果的同时报告路径数据。</p>
+</blockquote>
+</li>
+<li><p>Change <code>source</code> and <code>sink</code> variables from <code>DataFlow::Node</code> to <code>DataFlow::PathNode</code>, to ensure that the nodes retain path information.</p>
+<blockquote>
+<p>将<code>source</code>和<code>sink</code>变量由<code>DataFlow::Node</code>改为<code>DataFlow::PathNode</code>，以保证节点保留路径信息。</p>
+</blockquote>
+</li>
+<li><p>Use <code>hasFlowPath</code> instead of <code>hasFlow</code>.</p>
+<blockquote>
+<p>使用<code>hasFlowPath</code>代替<code>hasFlow</code>。</p>
+</blockquote>
+</li>
+<li><p>Change the select to report the <code>source</code> and <code>sink</code> as the second and third columns. The toolchain combines this data with the path information from <code>PathGraph</code> to build the paths.</p>
+<blockquote>
+<p>改变选择，将<code>source</code>和<code>sink</code>报成第二列和第三列。工具链将这些数据与<code>PathGraph</code>中的路径信息结合起来，建立路径。</p>
+</blockquote>
+</li>
+</ul>
+<ol start="3">
+<li><p>Convert your previous query to a path-problem query.</p>
+<blockquote>
+<p> 将之前的查询转换为路径问题查询。</p>
+</blockquote>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span><br><span class="line">    * @name Unsafe XML deserialization</span><br><span class="line">    * @kind path-problem</span><br><span class="line">    * @id java&#x2F;unsafe-deserialization</span><br><span class="line">    *&#x2F;</span><br><span class="line">import java</span><br><span class="line">    import semmle.code.java.dataflow.DataFlow</span><br><span class="line">    import DataFlow::PathGraph</span><br><span class="line">    </span><br><span class="line">    predicate isXMLDeserialized(Expr arg) &#123;</span><br><span class="line">      exists(MethodAccess fromXML |</span><br><span class="line">        fromXML.getMethod().getName() &#x3D; &quot;fromXML&quot; and</span><br><span class="line">    arg &#x3D; fromXML.getArgument(0)</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** The interface &#96;org.apache.struts2.rest.handler.ContentTypeHandler&#96;. *&#x2F;</span><br><span class="line">    class ContentTypeHandler extends RefType &#123;</span><br><span class="line">      ContentTypeHandler() &#123;</span><br><span class="line">    this.hasQualifiedName(&quot;org.apache.struts2.rest.handler&quot;, &quot;ContentTypeHandler&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** A &#96;toObject&#96; method on a subtype of &#96;org.apache.struts2.rest.handler.ContentTypeHandler&#96;. *&#x2F;</span><br><span class="line">    class ContentTypeHandlerToObject extends Method &#123;</span><br><span class="line">      ContentTypeHandlerToObject() &#123;</span><br><span class="line">        this.getDeclaringType().getASupertype() instanceof ContentTypeHandler and</span><br><span class="line">    this.hasName(&quot;toObject&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    class StrutsUnsafeDeserializationConfig extends DataFlow::Configuration &#123;</span><br><span class="line">      StrutsUnsafeDeserializationConfig() &#123; this &#x3D; &quot;StrutsUnsafeDeserializationConfig&quot; &#125;</span><br><span class="line">      override predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">        exists(ContentTypeHandlerToObject toObjectMethod |</span><br><span class="line">          source.asParameter() &#x3D; toObjectMethod.getParameter(0)</span><br><span class="line">        )</span><br><span class="line">      &#125;</span><br><span class="line">      override predicate isSink(DataFlow::Node sink) &#123;</span><br><span class="line">        exists(Expr arg |</span><br><span class="line">          isXMLDeserialized(arg) and</span><br><span class="line">          sink.asExpr() &#x3D; arg</span><br><span class="line">    )</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    from StrutsUnsafeDeserializationConfig config, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">    where config.hasFlowPath(source, sink)</span><br><span class="line">    select sink, source, sink, &quot;Unsafe XML deserialization&quot;</span><br></pre></td></tr></table></figure>
+</details>
+
+</li>
+</ol>
+<p>For more information on how the vulnerability was identified, you can read the <a href="https://securitylab.github.com/research/apache-struts-vulnerability-cve-2017-9805" target="_blank" rel="noopener">blog disclosing the original problem</a>.</p>
+<blockquote>
+<p>关于如何发现该漏洞的更多信息，你可以阅读<a href="https://securitylab.github.com/research/apache-struts-vulnerability-cve-2017-9805" target="_blank" rel="noopener">披露原始问题的博客</a>。</p>
+</blockquote>
+<p>Although we have created a query from scratch to find this problem, it can also be found with one of our default security queries, <a href="https://github.com/github/codeql/blob/master/java/ql/src/Security/CWE/CWE-502/UnsafeDeserialization.ql" target="_blank" rel="noopener">UnsafeDeserialization.ql</a>. You can see this on a <a href="https://github.com/m-y-mo/struts_9805" target="_blank" rel="noopener">vulnerable copy of Apache Struts</a> that has been <a href="https://lgtm.com/projects/g/m-y-mo/struts_9805/snapshot/31a8d6be58033679a83402b022bb89dad6c6e330/files/plugins/rest/src/main/java/org/apache/struts2/rest/handler/XStreamHandler.java?sort=name&dir=ASC&mode=heatmap#x121788d71061ed86:1" target="_blank" rel="noopener">analyzed on LGTM.com</a>, our free open source analysis platform.</p>
+<blockquote>
+<p>虽然我们从头开始创建了一个查询来发现这个问题，但也可以通过我们的一个默认安全查询，<a href="https://github.com/github/codeql/blob/master/java/ql/src/Security/CWE/CWE-502/UnsafeDeserialization.ql" target="_blank" rel="noopener">UnsafeDeserialization.ql</a>来发现。你可以在<a href="https://github.com/m-y-mo/struts_9805" target="_blank" rel="noopener">Apache Struts的脆弱副本</a>上看到这个问题，这个漏洞已经被<a href="https://lgtm.com/projects/g/m-y-mo/struts_9805/snapshot/31a8d6be58033679a83402b022bb89dad6c6e330/files/plugins/rest/src/main/java/org/apache/struts2/rest/handler/XStreamHandler.java?sort=name&dir=ASC&mode=heatmap#x121788d71061ed86:1" target="_blank" rel="noopener">在LGTM.com</a>上分析过了，LGTM.com是我们免费的开源分析平台。</p>
+</blockquote>
+<h2 id="What’s-next"><a href="#What’s-next" class="headerlink" title="What’s next?"></a>What’s next?</h2><ul>
+<li><p>Read the <a href="https://help.semmle.com/QL/learn-ql/java/dataflow.html" target="_blank" rel="noopener">tutorial on analyzing data flow in Java</a>.</p>
+<blockquote>
+<p>阅读<a href="https://help.semmle.com/QL/learn-ql/java/dataflow.html" target="_blank" rel="noopener">用Java分析数据流教程</a>。</p>
+</blockquote>
+</li>
+<li><p>Go through more <a href="https://help.semmle.com/QL/learn-ql/ql-training.html#codeql-and-variant-analysis-for-java" target="_blank" rel="noopener">CodeQL training materials for Java</a>.</p>
+<blockquote>
+<p> 浏览更多<a href="https://help.semmle.com/QL/learn-ql/ql-training.html#codeql-and-variant-analysis-for-java" target="_blank" rel="noopener">CodeQL Java培训资料</a>。</p>
+</blockquote>
+</li>
+<li><p>Try out the latest CodeQL Java Capture-the-Flag challenge on the <a href="https://securitylab.github.com/ctf" target="_blank" rel="noopener">GitHub Security Lab website</a> for a chance to win a prize! Or try one of the older Capture-the-Flag challenges to improve your CodeQL skills.</p>
+<blockquote>
+<p>在<a href="https://securitylab.github.com/ctf" target="_blank" rel="noopener">GitHub安全实验室网站</a>上尝试最新的CodeQL Java Capture-the-Flag挑战，有机会获得奖品! 或者试试以前的Capture-the-Flag挑战，以提高您的CodeQL技能。</p>
+</blockquote>
+</li>
+<li><p>Try out a CodeQL course on <a href="https://lab.github.com/githubtraining/codeql-u-boot-challenge-(cc++)" target="_blank" rel="noopener">GitHub Learning Lab</a>.</p>
+<blockquote>
+<p>在<a href="https://lab.github.com/githubtraining/codeql-u-boot-challenge-(cc++)" target="_blank" rel="noopener">GitHub学习实验室</a>上尝试一下CodeQL课程。</p>
+</blockquote>
+</li>
+<li><p>Read about more vulnerabilities found using CodeQL on the <a href="https://securitylab.github.com/research" target="_blank" rel="noopener">GitHub Security Lab research blog</a>.</p>
+<blockquote>
+<p>在<a href="https://securitylab.github.com/research" target="_blank" rel="noopener">GitHub安全实验室研究博客</a>上阅读更多使用CodeQL发现的漏洞。</p>
+</blockquote>
+</li>
+<li><p>Explore the <a href="https://github.com/github/codeql" target="_blank" rel="noopener">open-source CodeQL queries and libraries</a>, and <a href="https://github.com/github/codeql/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">learn how to contribute a new query</a>.</p>
+<blockquote>
+<p>探索<a href="https://github.com/github/codeql" target="_blank" rel="noopener">开源CodeQL查询和库</a>，以及<a href="https://github.com/github/codeql/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">学习如何贡献一个新的查询</a>。</p>
+</blockquote>
+</li>
+</ul>
+</details>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='https://link.hhtjim.com/163/574566207.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='https://link.hhtjim.com/qq/playsong.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='a69212da3fc88cd39af9'
+        data-cs='33d19613b15eb03266763f3a34a0d745cd545464'
+        data-r='gittalk'
+        data-o='summersec'
+        data-a='summersec'
+        data-d='true'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts"><span class="toc-number">1.</span> <span class="toc-text">CodeQL workshop for Java: Unsafe deserialization in Apache Struts</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-number">1.1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Problem-statement"><span class="toc-number">1.2.</span> <span class="toc-text">Problem statement </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setup-instructions-for-Visual-Studio-Code"><span class="toc-number">1.3.</span> <span class="toc-text">Setup instructions for Visual Studio Code </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Documentation-links"><span class="toc-number">1.4.</span> <span class="toc-text">Documentation links </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Workshop"><span class="toc-number">1.5.</span> <span class="toc-text">Workshop </span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Section-1-Finding-XML-deserialization"><span class="toc-number">1.5.1.</span> <span class="toc-text">Section 1: Finding XML deserialization </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler"><span class="toc-number">1.5.2.</span> <span class="toc-text">Section 2: Find the implementations of the toObject method from ContentTypeHandler </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Section-3-Unsafe-XML-deserialization"><span class="toc-number">1.5.3.</span> <span class="toc-text">Section 3: Unsafe XML deserialization </span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What’s-next"><span class="toc-number">1.6.</span> <span class="toc-text">What’s next?</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<span id="busuanzi_container_page_pv">
+   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</span>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<script src="/js/snow.js"></script>
+<script src="/js/test.js"></script>
+<script src="/js/tx.js"></script>
+<script src="/js/x.js"></script>
+<script src="/js/xiantiao.js"></script>
+<script src="/js/baidu.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 在想要使用窗口小部件的地方插入该标签 -->
+<iframe width="900" height="401" src="https://cybermap.kaspersky.com/cn/widget/dynamic/dark" frameborder="0">
+
+
+<script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5jbaycl6wsf&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>
+
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '218065278', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+</html>
