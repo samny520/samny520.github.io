@@ -11,7 +11,8 @@
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="SummerSec CodeQl,"> 
     <meta name="description" content="
-title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: ‘https://acg.toubi,"> 
+title: CodeQL workshop for Java: Unsafe deserialization in Apache Struts
+photos: https://acg.toubi,"> 
     <meta name="author" content="SummerSec"> 
     <link rel="alternative" href="atom.xml" title="像清水一般清澈透明" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -67,7 +68,8 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
         </div>
         <div class="content markdown">
             <hr>
-<p>title: CodeQL workshop for Java: Unsafe deserialization in Apache Struts<br>photos: ‘<a href="https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;" target="_blank" rel="noopener">https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx&#39;</a><br>date: 2021-03-29 16:01:42<br>tags:<br>categories: codeql<br>password:<br>permalink:</p>
+<p>title: CodeQL workshop for Java: Unsafe deserialization in Apache Struts</p>
+<p>photos: <a href="https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx" target="_blank" rel="noopener">https://acg.toubiec.cn/random?ssl=true&amp;id=zOcwUy5cQWGbSmnx</a><br>date: 2021-03-30 19:22:16<br>categories: codeql<br>password:<br>permalink: </p>
 <hr>
 <h1 id="CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts"><a href="#CodeQL-workshop-for-Java-Unsafe-deserialization-in-Apache-Struts" class="headerlink" title="CodeQL workshop for Java: Unsafe deserialization in Apache Struts"></a>CodeQL workshop for Java: Unsafe deserialization in Apache Struts</h1><ul>
 <li>Analyzed language: Java</li>
@@ -101,6 +103,7 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 <p>问题发生的原因是，作为Apache Struts框架的一部分，包含了接受多种不同格式或_内容类型_的请求的能力。它通过<a href="https://struts.apache.org/maven/struts2-plugins/struts2-rest-plugin/apidocs/org/apache/struts2/rest/handler/ContentTypeHandler.html" target="_blank" rel="noopener"><code>ContentTypeHandler</code></a>接口提供了一个可插拔的系统来支持这些内容类型，它提供了以下接口方法:</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Populates an object using data from the input stream</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> in The input stream, usually the body of the request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target The target, usually the action class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IOException If unable to write to the output stream</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">toObject</span><span class="params">(Reader in, Object target)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+
 <p>New content type handlers are defined by implementing the interface and defining a <code>toObject</code> method which takes data in the specified content type (in the form of a <code>Reader</code>) and uses it to populate the Java object <code>target</code>, often via a deserialization routine. However, the <code>in</code> parameter is typically populated from the body of a request without sanitization or safety checks. This means it should be treated as “untrusted” user data, and only deserialized under certain safe conditions.</p>
 <blockquote>
 <p>新的内容类型处理程序是通过实现接口和定义 “toObject “方法来定义的，该方法接受指定内容类型的数据（以 “Reader “的形式），并使用它来填充Java对象 “target”，通常是通过反序列化例程。然而，”in “参数通常是从请求的主体中填充的，没有经过净化或安全检查。这意味着它应该被视为 “不受信任 “的用户数据，只有在某些安全条件下才会被反序列化。</p>
@@ -163,8 +166,11 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 <details>
 <summary>Solution</summary>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">    </span><br><span class="line">    from MethodAccess call</span><br><span class="line">    select call</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess call</span><br><span class="line">select call</span><br></pre></td></tr></table></figure>
 </details>
+
+<p><img src="https://gitee.com/samny/images/raw/master/51u24er51ec/51u24er51ec.png" alt="image-20210329212430433"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/47u24er47ec/47u24er47ec.png" alt="image-20210329212439289"></p>
 </li>
 <li><p>Update your query to report the method being called by each method call.</p>
 <blockquote>
@@ -173,28 +179,34 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 <details>
 <summary>Hints</summary>
 
-
-</details></li>
-</ol>
 <ul>
-<li><p>Add a CodeQL variable called <code>method</code> with type <code>Method</code>.</p>
-<pre><code>&gt;   添加一个名为 &quot;method &quot;的CodeQL变量，类型为 &quot;Method&quot;。</code></pre></li>
-<li><p><code>MethodAccess</code> has a predicate called <code>getMethod()</code> for returning the method.</p>
-<pre><code>&gt;  `MethodAccess`有一个叫做`getMethod()`的谓词用于返回方法。</code></pre><ul>
-<li><p>Add a <code>where</code> clause.</p>
-<blockquote>
+<li>Add a CodeQL variable called <code>method</code> with type <code>Method</code>.<blockquote>
+<p>  添加一个名为 “method “的CodeQL变量，类型为 “Method”。</p>
+</blockquote>
+</li>
+<li><code>MethodAccess</code> has a predicate called <code>getMethod()</code> for returning the method.<blockquote>
+<p><code>MethodAccess</code>有一个叫做<code>getMethod()</code>的谓词用于返回方法。</p>
+</blockquote>
+</li>
+<li>Add a <code>where</code> clause.<blockquote>
 <p> 添加一个<code>where</code>子句。</p>
 </blockquote>
+</li></ul></details>
+
+</li>
 
 <details>
 <summary>Solution</summary>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess call, Method method</span><br><span class="line">where call.getMethod() &#x3D; method</span><br><span class="line">select call, method</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from MethodAccess call, Method method</span><br><span class="line">where call.getMethod() &#x3D; method</span><br><span class="line">select call, method</span><br></pre></td></tr></table></figure>
 </details>
 
-</li>
-</ul>
-<ol>
+
+
+</ol>
+<pre><code>![image-20210329212627120](https://gitee.com/samny/images/raw/master/27u26er27ec/27u26er27ec.png)
+
+![image-20210329212644844](https://gitee.com/samny/images/raw/master/44u26er44ec/44u26er44ec.png)</code></pre><ol>
 <li><p>Find all calls in the program to methods called <code>fromXML</code>.<a id="question1"></a></p>
 <blockquote>
 <p> 找出程式中所有调用<code>fromXML</code>的方法。</p>
@@ -210,10 +222,14 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 </li>
 </ul>
 </details>
+
 <details>
 <summary>Solution</summary>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess fromXML, Method method</span><br><span class="line">where</span><br><span class="line">  fromXML.getMethod() &#x3D; method and</span><br><span class="line">  method.getName() &#x3D; &quot;fromXML&quot;</span><br><span class="line">select fromXML</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess fromXML, Method method</span><br><span class="line">where</span><br><span class="line">    fromXML.getMethod() &#x3D; method and</span><br><span class="line">    method.getName() &#x3D; &quot;fromXML&quot;</span><br><span class="line">select fromXML</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/samny/images/raw/master/21u28er21ec/21u28er21ec.png" alt="image-20210329212821422"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/33u28er33ec/33u28er33ec.png" alt="image-20210329212833431"></p>
 <p>However, as we now want to report only the call itself, we can inline the temporary <code>method</code> variable like so:</p>
 <blockquote>
 <p> 然而，由于我们现在只想报告调用本身，我们可以像这样内联临时<code>method</code>变量。</p>
@@ -246,6 +262,10 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">from MethodAccess fromXML, Expr arg</span><br><span class="line">where</span><br><span class="line">  fromXML.getMethod().getName() &#x3D; &quot;fromXML&quot; and</span><br><span class="line">  arg &#x3D; fromXML.getArgument(0)</span><br><span class="line">select fromXML, arg</span><br></pre></td></tr></table></figure>
 </details>
+
+<p><img src="https://gitee.com/samny/images/raw/master/37u34er37ec/37u34er37ec.png" alt="image-20210329213437656"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/7u35er7ec/7u35er7ec.png" alt="image-20210329213507450"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/22u35er22ec/22u35er22ec.png" alt="image-20210329213522528"></p>
 </li>
 <li><p>Recall that <em>predicates</em> allow you to encapsulate logical conditions in a reusable format. Convert your previous query to a predicate which identifies the set of expressions in the program which are deserialized directly by <code>fromXML</code>. You can use the following template:</p>
 <blockquote>
@@ -260,19 +280,25 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 <summary>Hint</summary>
 
 <ul>
-<li>Copy the <code>where</code> clause of the previous query.</li>
-</ul>
-</details></li>
-</ol>
-<blockquote>
+<li>Copy the <code>where</code> clause of the previous query<blockquote>
 <p> 复制上一个查询的 “where “子</p>
 </blockquote>
 </li>
 </ul>
-<details>
-    <summary>Solution</summary>
+</details>
 
-<p>​<br>​    import java<br>​<br>​    predicate isXMLDeserialized(Expr arg) {<br>​      exists(MethodAccess fromXML |<br>​        fromXML.getMethod().getName() = “fromXML” and<br>​        arg = fromXML.getArgument(0)<br>​      )<br>​    }<br>​<br>​    from Expr arg<br>​    where isXMLDeserialized(arg)<br>​    select arg</p>
+<details>
+<summary>Solution</summary>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line"></span><br><span class="line">predicate isXMLDeserialized(Expr arg) &#123;</span><br><span class="line">    exists(MethodAccess fromXML |</span><br><span class="line">        fromXML.getMethod().getName() &#x3D; &quot;fromXML&quot; and</span><br><span class="line">        arg &#x3D; fromXML.getArgument(0)</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from Expr ar</span><br><span class="line">where isXMLDeserialized(arg)</span><br><span class="line">select arg</span><br></pre></td></tr></table></figure>
+
+</details>
+
+<p><img src="https://gitee.com/samny/images/raw/master/14u39er14ec/14u39er14ec.png" alt="image-20210329213914825"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/24u39er24ec/24u39er24ec.png" alt="image-20210329213924749"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/33u39er33ec/33u39er33ec.png" alt="image-20210329213933795"></p>
+</li>
+</ol>
 <h3 id="Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler"><a href="#Section-2-Find-the-implementations-of-the-toObject-method-from-ContentTypeHandler" class="headerlink" title="Section 2: Find the implementations of the toObject method from ContentTypeHandler "></a>Section 2: Find the implementations of the toObject method from ContentTypeHandler <a id="section2"></a></h3><p>Like predicates, <em>classes</em> in CodeQL can be used to encapsulate reusable portions of logic. Classes represent single sets of values, and they can also include operations (known as <em>member predicates</em>) specific to that set of values. You have already seen numerous instances of CodeQL classes (<code>MethodAccess</code>, <code>Method</code> etc.) and associated member predicates (<code>MethodAccess.getMethod()</code>, <code>Method.getName()</code>, etc.).</p>
 <blockquote>
 <p>像谓词一样，CodeQL中的<em>类</em>可以用来封装逻辑的可重用部分。类代表单一的值集，它们也可以包含特定于该值集的操作（称为_成员谓词_）。你已经看到了许多CodeQL类的实例（<code>MethodAccess</code>、<code>Method</code>等）和相关的成员谓词（<code>MethodAccess.getMethod()</code>、<code>Method.getName()</code>等）。</p>
@@ -373,10 +399,14 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 </li>
 </ul>
 </details>
+
 <details>
 <summary>Solution</summary>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from ContentTypeHandlerToObject toObjectMethod</span><br><span class="line">select toObjectMethod.getParameter(0)</span><br></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/samny/images/raw/master/58u03er58ec/58u03er58ec.png" alt="image-20210330140358683"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/35u04er35ec/35u04er35ec.png" alt="image-20210330140435655"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/47u04er47ec/47u04er47ec.png" alt="image-20210330140447854"></p>
 </details>
 
 </li>
@@ -540,11 +570,12 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 <summary>Solution</summary>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">    &#x2F;**</span><br><span class="line">    * @name Unsafe XML deserialization</span><br><span class="line">    * @kind path-problem</span><br><span class="line">    * @id java&#x2F;unsafe-deserialization</span><br><span class="line">    *&#x2F;</span><br><span class="line">import java</span><br><span class="line">    import semmle.code.java.dataflow.DataFlow</span><br><span class="line">    import DataFlow::PathGraph</span><br><span class="line">    </span><br><span class="line">    predicate isXMLDeserialized(Expr arg) &#123;</span><br><span class="line">      exists(MethodAccess fromXML |</span><br><span class="line">        fromXML.getMethod().getName() &#x3D; &quot;fromXML&quot; and</span><br><span class="line">    arg &#x3D; fromXML.getArgument(0)</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** The interface &#96;org.apache.struts2.rest.handler.ContentTypeHandler&#96;. *&#x2F;</span><br><span class="line">    class ContentTypeHandler extends RefType &#123;</span><br><span class="line">      ContentTypeHandler() &#123;</span><br><span class="line">    this.hasQualifiedName(&quot;org.apache.struts2.rest.handler&quot;, &quot;ContentTypeHandler&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;** A &#96;toObject&#96; method on a subtype of &#96;org.apache.struts2.rest.handler.ContentTypeHandler&#96;. *&#x2F;</span><br><span class="line">    class ContentTypeHandlerToObject extends Method &#123;</span><br><span class="line">      ContentTypeHandlerToObject() &#123;</span><br><span class="line">        this.getDeclaringType().getASupertype() instanceof ContentTypeHandler and</span><br><span class="line">    this.hasName(&quot;toObject&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    class StrutsUnsafeDeserializationConfig extends DataFlow::Configuration &#123;</span><br><span class="line">      StrutsUnsafeDeserializationConfig() &#123; this &#x3D; &quot;StrutsUnsafeDeserializationConfig&quot; &#125;</span><br><span class="line">      override predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">        exists(ContentTypeHandlerToObject toObjectMethod |</span><br><span class="line">          source.asParameter() &#x3D; toObjectMethod.getParameter(0)</span><br><span class="line">        )</span><br><span class="line">      &#125;</span><br><span class="line">      override predicate isSink(DataFlow::Node sink) &#123;</span><br><span class="line">        exists(Expr arg |</span><br><span class="line">          isXMLDeserialized(arg) and</span><br><span class="line">          sink.asExpr() &#x3D; arg</span><br><span class="line">    )</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    from StrutsUnsafeDeserializationConfig config, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">    where config.hasFlowPath(source, sink)</span><br><span class="line">    select sink, source, sink, &quot;Unsafe XML deserialization&quot;</span><br></pre></td></tr></table></figure>
-</details>
-
-</li>
+<p><img src="https://gitee.com/samny/images/raw/master/53u45er53ec/53u45er53ec.png" alt="image-20210330204553733"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/4u46er4ec/4u46er4ec.png" alt="image-20210330204604285"></p>
+<p><img src="https://gitee.com/samny/images/raw/master/13u46er13ec/13u46er13ec.png" alt="image-20210330204613764"></p>
+</details></li>
 </ol>
-<p>For more information on how the vulnerability was identified, you can read the <a href="https://securitylab.github.com/research/apache-struts-vulnerability-cve-2017-9805" target="_blank" rel="noopener">blog disclosing the original problem</a>.</p>
+<pre><code>&lt;/details&gt;</code></pre><p>For more information on how the vulnerability was identified, you can read the <a href="https://securitylab.github.com/research/apache-struts-vulnerability-cve-2017-9805" target="_blank" rel="noopener">blog disclosing the original problem</a>.</p>
 <blockquote>
 <p>关于如何发现该漏洞的更多信息，你可以阅读<a href="https://securitylab.github.com/research/apache-struts-vulnerability-cve-2017-9805" target="_blank" rel="noopener">披露原始问题的博客</a>。</p>
 </blockquote>
@@ -584,7 +615,7 @@ title: CodeQL workshop for Java: Unsafe deserialization in Apache Strutsphotos: 
 </blockquote>
 </li>
 </ul>
-</details>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
                 <source type="audio/mpeg" src="">
